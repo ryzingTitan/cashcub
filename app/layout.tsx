@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import CssBaseline from "@mui/material/CssBaseline";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 
 export const metadata: Metadata = {
@@ -8,7 +9,9 @@ export const metadata: Metadata = {
 
 import { Roboto } from "next/font/google";
 import { ThemeProvider } from "@mui/material/styles";
-import theme from "../theme";
+import Header from "@/components/Header";
+import theme from "@/theme";
+import { SessionProvider } from "next-auth/react";
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -26,7 +29,13 @@ export default function RootLayout({
     <html lang="en" className={roboto.variable}>
       <body>
         <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>{children}</ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <SessionProvider>
+              <Header />
+              {children}
+            </SessionProvider>
+          </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
