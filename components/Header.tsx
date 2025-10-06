@@ -21,7 +21,7 @@ export default function Header() {
           direction="row"
           spacing={1}
           sx={{ flexGrow: 1 }}
-          justifyContent={"flex-end"}
+          justifyContent="flex-end"
         >
           <Tooltip title={session?.data?.user?.name}>
             <Avatar src={session?.data?.user?.image ?? undefined} />
