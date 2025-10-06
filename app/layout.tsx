@@ -12,6 +12,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import Header from "@/components/Header";
 import theme from "@/theme";
 import { SessionProvider } from "next-auth/react";
+import Footer from "@/components/Footer";
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -34,6 +35,7 @@ export default function RootLayout({
             <SessionProvider>
               <Header />
               {children}
+              <Footer />
             </SessionProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>
