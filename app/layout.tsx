@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
 import CssBaseline from "@mui/material/CssBaseline";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
-
-export const metadata: Metadata = {
-  title: "Cash Cub",
-  description: "A simple budgeting app",
-};
-
 import { Roboto } from "next/font/google";
 import { ThemeProvider } from "@mui/material/styles";
 import Header from "@/components/Header";
 import theme from "@/theme";
 import { SessionProvider } from "next-auth/react";
 import Footer from "@/components/Footer";
+import { SWRConfig } from "swr";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
+export const metadata: Metadata = {
+  title: "Cash Cub",
+  description: "A simple budgeting app",
+};
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -33,9 +35,16 @@ export default function RootLayout({
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <SessionProvider>
-              <Header />
-              {children}
-              <Footer />
+              <SWRConfig
+                value={{
+                  refreshInterval: 3000,
+                  revalidateOnFocus: true,
+                }}
+              >
+                <Header />
+                {children}
+                <Footer />
+              </SWRConfig>
             </SessionProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>
