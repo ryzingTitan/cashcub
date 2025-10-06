@@ -8,7 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
-import Logout from "@mui/icons-material/Logout";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 export default function Header() {
   const session = useSession();
@@ -32,7 +32,7 @@ export default function Header() {
                 await signOut();
               }}
             >
-              <Logout />
+              <LogoutIcon />
             </IconButton>
           </Tooltip>
         </Stack>
