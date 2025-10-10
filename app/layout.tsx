@@ -8,8 +8,6 @@ import theme from "@/theme";
 import { SessionProvider } from "next-auth/react";
 import Footer from "@/components/Footer";
 import { SWRConfig } from "swr";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 export const metadata: Metadata = {
   title: "Cash Cub",

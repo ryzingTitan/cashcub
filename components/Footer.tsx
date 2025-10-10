@@ -6,11 +6,12 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import { useState } from "react";
 import Paper from "@mui/material/Paper";
-import { redirect, usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Footer() {
   const pathname = usePathname();
   const [value, setValue] = useState(pathname.includes("analytics") ? 1 : 0);
+  const router = useRouter();
 
   return (
     <Paper
@@ -25,11 +26,11 @@ export default function Footer() {
 
           switch (newValue) {
             case 0:
-              redirect("budgets");
+              router.push("/budgets");
             case 1:
-              redirect("analytics");
+              router.push("/analytics");
             default:
-              redirect("budgets");
+              router.push("/budgets");
           }
         }}
       >

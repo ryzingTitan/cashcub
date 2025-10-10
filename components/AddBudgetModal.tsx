@@ -12,8 +12,9 @@ import { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { useSWRConfig } from "swr";
 import { createBudget } from "@/lib/budgets";
-import Budget from "@/types/api";
+import { Budget } from "@/types/api";
 import { useSnackbar } from "notistack";
+import { useRouter } from "next/navigation";
 
 export default function AddBudgetModal() {
   const [value, toggle] = useToggle(false);
@@ -22,6 +23,7 @@ export default function AddBudgetModal() {
   );
   const { mutate } = useSWRConfig();
   const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
 
   const handleClose = async () => {
     if (!budgetMonthAndYear) {
@@ -34,10 +36,10 @@ export default function AddBudgetModal() {
         month: budgetMonthAndYear.month() + 1,
         year: budgetMonthAndYear.year(),
       };
-      await createBudget("/budgets", newBudget);
+      const createdBudget = await createBudget("/budgets", newBudget);
       await mutate("/budgets");
       enqueueSnackbar("Budget created", { variant: "success" });
-
+      router.push(`/budgets/${createdBudget.id}`);
       toggle();
     } catch (error) {
       enqueueSnackbar("Failed to create budget", { variant: "error" });
