@@ -16,10 +16,15 @@ export interface BudgetSummary {
 }
 
 export interface BudgetItem {
-  id: string;
+  id: string | null;
   name: string;
   plannedAmount: number;
   actualAmount: number;
   budgetId: string;
   categoryId: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
 }
