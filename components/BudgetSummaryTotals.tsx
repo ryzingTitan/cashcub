@@ -4,14 +4,17 @@ import Typography from "@mui/material/Typography";
 import { formatToCurrency } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import useSWR from "swr";
-import { getBudgetSummary } from "@/lib/budgets";
+import { BudgetSummary } from "@/types/api";
 
-export default function BudgetSummaryTotals() {
+interface BudgetSummaryTotalsProps {
+  budget?: BudgetSummary | undefined;
+}
+
+export default function BudgetSummaryTotals({
+  budget,
+}: BudgetSummaryTotalsProps) {
   const params = useParams();
-  const { data, isLoading } = useSWR(
-    `/budgets/${params.slug}`,
-    getBudgetSummary,
-  );
+  const { isLoading } = useSWR(`/budgets/${params.slug}`);
 
   const calculateGainOrLoss = (
     actualIncome: number | undefined,
@@ -30,7 +33,7 @@ export default function BudgetSummaryTotals() {
           Expected Income:
         </Typography>
         <Typography color={"success"} align={"center"} variant={"h6"}>
-          {isLoading ? <Skeleton /> : formatToCurrency(data?.expectedIncome)}
+          {isLoading ? <Skeleton /> : formatToCurrency(budget?.expectedIncome)}
         </Typography>
       </Stack>
 
@@ -39,7 +42,7 @@ export default function BudgetSummaryTotals() {
           Actual Income:
         </Typography>
         <Typography color={"success"} align={"center"} variant={"h6"}>
-          {isLoading ? <Skeleton /> : formatToCurrency(data?.actualIncome)}
+          {isLoading ? <Skeleton /> : formatToCurrency(budget?.actualIncome)}
         </Typography>
       </Stack>
       <Stack>
@@ -47,7 +50,11 @@ export default function BudgetSummaryTotals() {
           Expected Expenses:
         </Typography>
         <Typography color={"error"} align={"center"} variant={"h6"}>
-          {isLoading ? <Skeleton /> : formatToCurrency(data?.expectedExpenses)}
+          {isLoading ? (
+            <Skeleton />
+          ) : (
+            formatToCurrency(budget?.expectedExpenses)
+          )}
         </Typography>
       </Stack>
       <Stack>
@@ -55,7 +62,7 @@ export default function BudgetSummaryTotals() {
           Actual Expenses:
         </Typography>
         <Typography color={"error"} align={"center"} variant={"h6"}>
-          {isLoading ? <Skeleton /> : formatToCurrency(data?.actualExpenses)}
+          {isLoading ? <Skeleton /> : formatToCurrency(budget?.actualExpenses)}
         </Typography>
       </Stack>
       <Stack>
@@ -64,7 +71,8 @@ export default function BudgetSummaryTotals() {
         </Typography>
         <Typography
           color={
-            calculateGainOrLoss(data?.actualIncome, data?.actualExpenses) >= 0
+            calculateGainOrLoss(budget?.actualIncome, budget?.actualExpenses) >=
+            0
               ? "success"
               : "error"
           }
@@ -75,7 +83,7 @@ export default function BudgetSummaryTotals() {
             <Skeleton />
           ) : (
             formatToCurrency(
-              calculateGainOrLoss(data?.actualIncome, data?.actualExpenses),
+              calculateGainOrLoss(budget?.actualIncome, budget?.actualExpenses),
             )
           )}
         </Typography>
