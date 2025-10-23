@@ -19,8 +19,8 @@ export interface BudgetItem {
   id: string | null;
   name: string;
   plannedAmount: number;
-  actualAmount: number;
-  budgetId: string;
+  actualAmount: number | null;
+  budgetId: string | null;
   categoryId: string;
 }
 

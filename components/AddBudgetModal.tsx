@@ -25,7 +25,7 @@ export default function AddBudgetModal() {
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
 
-  const handleClose = async () => {
+  const handleSave = async () => {
     if (!budgetMonthAndYear) {
       return;
     }
@@ -46,6 +46,11 @@ export default function AddBudgetModal() {
     }
   };
 
+  const handleClose = () => {
+    toggle();
+    setBudgetMonthAndYear(dayjs());
+  };
+
   return (
     <>
       <Tooltip title="Add Budget">
@@ -53,7 +58,7 @@ export default function AddBudgetModal() {
           <AddIcon onClick={toggle} />
         </IconButton>
       </Tooltip>
-      <Dialog open={value} onClose={toggle}>
+      <Dialog open={value} onClose={handleClose}>
         <DialogTitle>Add Budget</DialogTitle>
         <DialogContent>
           <DatePicker
@@ -66,8 +71,8 @@ export default function AddBudgetModal() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={toggle}>Cancel</Button>
-          <Button onClick={handleClose} autoFocus>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSave} autoFocus>
             Save
           </Button>
         </DialogActions>
