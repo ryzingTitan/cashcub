@@ -1,6 +1,5 @@
 import { BudgetItem } from "@/types/api";
 import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import { formatToCurrency } from "@/lib/utils";
@@ -12,11 +11,11 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { useToggle } from "usehooks-ts";
 import { useSWRConfig } from "swr";
 import { useSnackbar } from "notistack";
-import { useParams } from "next/navigation";
 import { useFormik } from "formik";
 import { budgetItemValidationSchema } from "@/types/validations";
-import { createBudgetItem, updateBudgetItem } from "@/lib/budgets";
+import { deleteBudgetItem, updateBudgetItem } from "@/lib/budgets";
 import TextField from "@mui/material/TextField";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface BudgetItemProps {
   budgetItem: BudgetItem;
@@ -70,6 +69,18 @@ export default function BudgetItemSummary({
 
   const handleSave = () => {
     formik.handleSubmit();
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteBudgetItem(
+        `/budgets/${budgetItem.budgetId}/items/${budgetItem.id}`,
+      );
+      await mutate(`/budgets/${budgetItem.budgetId}`);
+      enqueueSnackbar("Budget item deleted", { variant: "success" });
+    } catch (error) {
+      enqueueSnackbar("Failed to delete budget item", { variant: "error" });
+    }
   };
 
   return (
@@ -163,11 +174,18 @@ export default function BudgetItemSummary({
           </Tooltip>
         </>
       ) : (
-        <Tooltip title="Edit Budget Item">
-          <IconButton>
-            <EditIcon onClick={toggle} />
-          </IconButton>
-        </Tooltip>
+        <>
+          <Tooltip title="Edit Budget Item">
+            <IconButton>
+              <EditIcon onClick={toggle} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete Budget Item">
+            <IconButton>
+              <DeleteIcon onClick={handleDelete} />
+            </IconButton>
+          </Tooltip>
+        </>
       )}
     </Stack>
   );
