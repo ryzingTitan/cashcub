@@ -15,8 +15,9 @@ import { useParams } from "next/navigation";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
-import * as yup from "yup";
+
 import { useFormik } from "formik";
+import { budgetItemValidationSchema } from "@/types/validations";
 
 interface AddBudgetItemModalProps {
   budgetId?: string | undefined;
@@ -30,36 +31,28 @@ export default function AddBudgetItemModal({
   const [value, toggle] = useToggle(false);
   const { mutate } = useSWRConfig();
   const { enqueueSnackbar } = useSnackbar();
-  const params = useParams();
-
-  const validationSchema = yup.object({
-    plannedAmount: yup
-      .number()
-      .moreThan(0, "Planned amount must be greater than 0")
-      .required("Planned amount is required"),
-    name: yup.string().required("Name is required"),
-  });
 
   const formik = useFormik({
     initialValues: {
       plannedAmount: 1,
       name: "New Budget Item",
     },
-    validationSchema: validationSchema,
-    onSubmit: async (values, { setSubmitting }) => {
+    validationSchema: budgetItemValidationSchema,
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         const newBudgetItem: BudgetItem = {
           id: null,
           plannedAmount: values.plannedAmount,
-          actualAmount: 0,
+          actualAmount: null,
           name: values.name,
-          budgetId: budgetId!,
+          budgetId: null,
           categoryId: categoryId!,
         };
-        await createBudgetItem(`/budgets/${params.slug}/items`, newBudgetItem);
-        await mutate(`/budgets/${params.slug}`);
+        await createBudgetItem(`/budgets/${budgetId}/items`, newBudgetItem);
+        await mutate(`/budgets/${budgetId}`);
         enqueueSnackbar("Budget item created", { variant: "success" });
         toggle();
+        resetForm();
       } catch (error) {
         enqueueSnackbar("Failed to create budget item", { variant: "error" });
       } finally {
@@ -68,6 +61,11 @@ export default function AddBudgetItemModal({
     },
   });
 
+  const handleClose = () => {
+    toggle();
+    formik.resetForm();
+  };
+
   return (
     <>
       <Tooltip title="Add Budget Item">
@@ -75,7 +73,7 @@ export default function AddBudgetItemModal({
           <AddIcon onClick={toggle} fontSize={"small"} />
         </IconButton>
       </Tooltip>
-      <Dialog open={value} onClose={toggle}>
+      <Dialog open={value} onClose={handleClose}>
         <Box component="form" onSubmit={formik.handleSubmit}>
           <DialogTitle>Add Budget Item</DialogTitle>
           <DialogContent>
@@ -110,7 +108,7 @@ export default function AddBudgetItemModal({
             </Stack>
           </DialogContent>
           <DialogActions>
-            <Button onClick={toggle}>Cancel</Button>
+            <Button onClick={handleClose}>Cancel</Button>
             <Button type={"submit"} disabled={!formik.isValid} autoFocus>
               Save
             </Button>

@@ -82,6 +82,34 @@ export async function createBudgetItem(
   return response.json();
 }
 
+export async function updateBudgetItem(
+  url: string,
+  budgetItem: BudgetItem,
+): Promise<BudgetItem> {
+  const session = await auth();
+
+  if (!session) {
+    redirect("/");
+  }
+
+  const response = await fetch(baseUrl + url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session.id_token}`,
+    },
+    body: JSON.stringify(budgetItem),
+  });
+
+  if (!response.ok) {
+    console.error(
+      `Failed to update budget item with status: ${response.status}`,
+    );
+    return Promise.reject("Failed to update budget item");
+  }
+  return response.json();
+}
+
 export async function getBudgetSummary(url: string): Promise<BudgetSummary> {
   const session = await auth();
 
