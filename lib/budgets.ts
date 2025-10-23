@@ -82,6 +82,30 @@ export async function createBudgetItem(
   return response.json();
 }
 
+export async function deleteBudgetItem(url: string): Promise<null> {
+  const session = await auth();
+
+  if (!session) {
+    redirect("/");
+  }
+
+  const response = await fetch(baseUrl + url, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session.id_token}`,
+    },
+  });
+
+  if (!response.ok) {
+    console.error(
+      `Failed to delete budget item with status: ${response.status}`,
+    );
+    return Promise.reject("Failed to delete budget item");
+  }
+  return null;
+}
+
 export async function updateBudgetItem(
   url: string,
   budgetItem: BudgetItem,
