@@ -42,6 +42,7 @@ export default function AddBudgetModal() {
       router.push(`/budgets/${createdBudget.id}`);
       toggle();
     } catch (error) {
+      console.log(error);
       enqueueSnackbar("Failed to create budget", { variant: "error" });
     }
   };
