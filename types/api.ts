@@ -28,3 +28,14 @@ export interface Category {
   id: string;
   name: string;
 }
+
+export interface Transaction {
+  id: string | null;
+  date: string;
+  amount: number;
+  transactionType: string;
+  merchant: string | null;
+  notes: string | null;
+  budgetId: string | null;
+  budgetItemId: string | null;
+}

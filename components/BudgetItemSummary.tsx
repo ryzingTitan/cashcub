@@ -16,6 +16,7 @@ import { budgetItemValidationSchema } from "@/types/validations";
 import { deleteBudgetItem, updateBudgetItem } from "@/lib/budgets";
 import TextField from "@mui/material/TextField";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Transactions from "@/components/Transactions";
 
 interface BudgetItemProps {
   budgetItem: BudgetItem;
@@ -55,6 +56,7 @@ export default function BudgetItemSummary({
         toggle();
         resetForm();
       } catch (error) {
+        console.log(error);
         enqueueSnackbar("Failed to update budget item", { variant: "error" });
       } finally {
         setSubmitting(false);
@@ -79,6 +81,7 @@ export default function BudgetItemSummary({
       await mutate(`/budgets/${budgetItem.budgetId}`);
       enqueueSnackbar("Budget item deleted", { variant: "success" });
     } catch (error) {
+      console.log(error);
       enqueueSnackbar("Failed to delete budget item", { variant: "error" });
     }
   };
@@ -175,6 +178,10 @@ export default function BudgetItemSummary({
         </>
       ) : (
         <>
+          <Transactions
+            budgetId={budgetItem.budgetId!}
+            budgetItemId={budgetItem.id!}
+          />
           <Tooltip title="Edit Budget Item">
             <IconButton>
               <EditIcon onClick={toggle} />

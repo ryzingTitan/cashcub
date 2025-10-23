@@ -16,7 +16,7 @@ interface BudgetCategoriesProps {
 }
 
 export default function BudgetCategories({ budget }: BudgetCategoriesProps) {
-  const { data, error, isLoading } = useSWR(`/categories`, getAllCategories);
+  const { data, isLoading } = useSWR(`/categories`, getAllCategories);
 
   return (
     <Stack spacing={2} alignItems={"center"}>

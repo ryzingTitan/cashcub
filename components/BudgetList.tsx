@@ -9,7 +9,7 @@ import { Budget } from "@/types/api";
 import { useEffect, useState } from "react";
 
 export default function BudgetList() {
-  const { data, error, isLoading } = useSWR(`/budgets`, getAllBudgets);
+  const { data, isLoading } = useSWR(`/budgets`, getAllBudgets);
   const params = useParams();
   const router = useRouter();
   const [value, setValue] = useState<Budget | null>(

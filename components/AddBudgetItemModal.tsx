@@ -11,7 +11,6 @@ import { useSWRConfig } from "swr";
 import { createBudgetItem } from "@/lib/budgets";
 import { BudgetItem } from "@/types/api";
 import { useSnackbar } from "notistack";
-import { useParams } from "next/navigation";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
@@ -34,8 +33,8 @@ export default function AddBudgetItemModal({
 
   const formik = useFormik({
     initialValues: {
-      plannedAmount: 1,
-      name: "New Budget Item",
+      plannedAmount: 0,
+      name: "",
     },
     validationSchema: budgetItemValidationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
@@ -54,6 +53,7 @@ export default function AddBudgetItemModal({
         toggle();
         resetForm();
       } catch (error) {
+        console.log(error);
         enqueueSnackbar("Failed to create budget item", { variant: "error" });
       } finally {
         setSubmitting(false);
