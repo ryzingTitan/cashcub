@@ -30,7 +30,7 @@ export default function BudgetSummaryTotals({
     <Stack direction={"row"} sx={{ m: 2 }} justifyContent={"space-around"}>
       <Stack>
         <Typography align={"center"} variant={"h5"}>
-          Expected Income:
+          Expected Income
         </Typography>
         <Typography color={"success"} align={"center"} variant={"h6"}>
           {isLoading ? <Skeleton /> : formatToCurrency(budget?.expectedIncome)}
@@ -39,7 +39,7 @@ export default function BudgetSummaryTotals({
 
       <Stack>
         <Typography align={"center"} variant={"h5"}>
-          Actual Income:
+          Actual Income
         </Typography>
         <Typography color={"success"} align={"center"} variant={"h6"}>
           {isLoading ? <Skeleton /> : formatToCurrency(budget?.actualIncome)}
@@ -47,7 +47,7 @@ export default function BudgetSummaryTotals({
       </Stack>
       <Stack>
         <Typography align={"center"} variant={"h5"}>
-          Expected Expenses:
+          Expected Expenses
         </Typography>
         <Typography color={"error"} align={"center"} variant={"h6"}>
           {isLoading ? (
@@ -59,7 +59,7 @@ export default function BudgetSummaryTotals({
       </Stack>
       <Stack>
         <Typography align={"center"} variant={"h5"}>
-          Actual Expenses:
+          Actual Expenses
         </Typography>
         <Typography color={"error"} align={"center"} variant={"h6"}>
           {isLoading ? <Skeleton /> : formatToCurrency(budget?.actualExpenses)}
@@ -67,7 +67,7 @@ export default function BudgetSummaryTotals({
       </Stack>
       <Stack>
         <Typography align={"center"} variant={"h5"}>
-          Gain/Loss:
+          Gain/Loss
         </Typography>
         <Typography
           color={

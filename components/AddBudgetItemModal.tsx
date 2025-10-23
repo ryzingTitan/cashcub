@@ -46,7 +46,7 @@ export default function AddBudgetItemModal({
       name: "New Budget Item",
     },
     validationSchema: validationSchema,
-    onSubmit: async (values, { setSubmitting}) => {
+    onSubmit: async (values, { setSubmitting }) => {
       try {
         const newBudgetItem: BudgetItem = {
           id: null,
