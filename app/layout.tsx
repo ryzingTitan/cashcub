@@ -5,7 +5,6 @@ import { Roboto } from "next/font/google";
 import { ThemeProvider } from "@mui/material/styles";
 import Header from "@/components/Header";
 import theme from "@/theme";
-import { SessionProvider } from "next-auth/react";
 import Footer from "@/components/Footer";
 import { SWRConfig } from "swr";
 
@@ -32,18 +31,16 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <SessionProvider>
-              <SWRConfig
-                value={{
-                  refreshInterval: 3000,
-                  revalidateOnFocus: true,
-                }}
-              >
-                <Header />
-                {children}
-                <Footer />
-              </SWRConfig>
-            </SessionProvider>
+            <SWRConfig
+              value={{
+                refreshInterval: 3000,
+                revalidateOnFocus: true,
+              }}
+            >
+              <Header />
+              {children}
+              <Footer />
+            </SWRConfig>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
