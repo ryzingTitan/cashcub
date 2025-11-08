@@ -1,23 +1,23 @@
 "use server";
 
 import { Budget, BudgetItem, BudgetSummary } from "@/types/api";
-import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { auth0, loginUrl } from "@/lib/auth0";
 
 const baseUrl = process.env.API_BASE_URL;
 
 export async function getAllBudgets(url: string): Promise<Budget[]> {
-  const session = await auth();
+  const session = await auth0.getSession();
 
   if (!session) {
-    redirect("/");
+    redirect(loginUrl);
   }
 
   const response = await fetch(baseUrl + url, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session.id_token}`,
+      Authorization: `Bearer ${session.tokenSet.idToken}`,
     },
   });
 
@@ -32,17 +32,17 @@ export async function createBudget(
   url: string,
   budget: Budget,
 ): Promise<Budget> {
-  const session = await auth();
+  const session = await auth0.getSession();
 
   if (!session) {
-    redirect("/");
+    redirect(loginUrl);
   }
 
   const response = await fetch(baseUrl + url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session.id_token}`,
+      Authorization: `Bearer ${session.tokenSet.idToken}`,
     },
     body: JSON.stringify(budget),
   });
@@ -58,17 +58,17 @@ export async function createBudgetItem(
   url: string,
   budgetItem: BudgetItem,
 ): Promise<BudgetItem> {
-  const session = await auth();
+  const session = await auth0.getSession();
 
   if (!session) {
-    redirect("/");
+    redirect(loginUrl);
   }
 
   const response = await fetch(baseUrl + url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session.id_token}`,
+      Authorization: `Bearer ${session.tokenSet.idToken}`,
     },
     body: JSON.stringify(budgetItem),
   });
@@ -83,17 +83,17 @@ export async function createBudgetItem(
 }
 
 export async function deleteBudgetItem(url: string): Promise<null> {
-  const session = await auth();
+  const session = await auth0.getSession();
 
   if (!session) {
-    redirect("/");
+    redirect(loginUrl);
   }
 
   const response = await fetch(baseUrl + url, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session.id_token}`,
+      Authorization: `Bearer ${session.tokenSet.idToken}`,
     },
   });
 
@@ -110,17 +110,17 @@ export async function updateBudgetItem(
   url: string,
   budgetItem: BudgetItem,
 ): Promise<BudgetItem> {
-  const session = await auth();
+  const session = await auth0.getSession();
 
   if (!session) {
-    redirect("/");
+    redirect(loginUrl);
   }
 
   const response = await fetch(baseUrl + url, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session.id_token}`,
+      Authorization: `Bearer ${session.tokenSet.idToken}`,
     },
     body: JSON.stringify(budgetItem),
   });
@@ -135,17 +135,17 @@ export async function updateBudgetItem(
 }
 
 export async function getBudgetSummary(url: string): Promise<BudgetSummary> {
-  const session = await auth();
+  const session = await auth0.getSession();
 
   if (!session) {
-    redirect("/");
+    redirect(loginUrl);
   }
 
   const response = await fetch(baseUrl + url, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session.id_token}`,
+      Authorization: `Bearer ${session.tokenSet.idToken}`,
     },
   });
 

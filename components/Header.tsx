@@ -7,11 +7,13 @@ import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Image from "next/image";
-import { signOut, useSession } from "next-auth/react";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { useUser } from "@auth0/nextjs-auth0";
+import { redirect } from "next/navigation";
+import { logoutUrl } from "@/lib/auth0";
 
 export default function Header() {
-  const session = useSession();
+  const { user } = useUser();
 
   return (
     <AppBar position="static">
@@ -23,13 +25,13 @@ export default function Header() {
           sx={{ flexGrow: 1 }}
           justifyContent="flex-end"
         >
-          <Tooltip title={session?.data?.user?.name}>
-            <Avatar src={session?.data?.user?.image ?? undefined} />
+          <Tooltip title={user?.name}>
+            <Avatar src={user?.image ?? undefined} />
           </Tooltip>
           <Tooltip title="Logout">
             <IconButton
               onClick={async () => {
-                await signOut();
+                redirect(logoutUrl);
               }}
             >
               <LogoutIcon />
