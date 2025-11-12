@@ -54,6 +54,32 @@ export async function createBudget(
   return response.json();
 }
 
+export async function cloneBudget(
+  url: string,
+  budget: Budget,
+): Promise<Budget> {
+  const session = await auth0.getSession();
+
+  if (!session) {
+    redirect(loginUrl);
+  }
+
+  const response = await fetch(baseUrl + url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session.tokenSet.idToken}`,
+    },
+    body: JSON.stringify(budget),
+  });
+
+  if (!response.ok) {
+    console.error(`Failed to clone budget with status: ${response.status}`);
+    return Promise.reject("Failed to clone budget");
+  }
+  return response.json();
+}
+
 export async function createBudgetItem(
   url: string,
   budgetItem: BudgetItem,

@@ -6,6 +6,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Stack from "@mui/material/Stack";
 import AddBudgetModal from "@/components/AddBudgetModal";
+import CloneBudgetModal from "@/components/CloneBudgetModal";
 
 export default function BudgetLayout({
   children,
@@ -28,6 +29,7 @@ export default function BudgetLayout({
         >
           <BudgetList />
           <AddBudgetModal />
+          <CloneBudgetModal />
         </Stack>
         {children}
       </SnackbarProvider>
