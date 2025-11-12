@@ -12,7 +12,7 @@ export default function BudgetSummary() {
   const { data } = useSWR(`/budgets/${params.slug}`, getBudgetSummary);
 
   return (
-    <Stack>
+    <Stack sx={{ pb: 7 }}>
       <BudgetSummaryTotals budget={data} />
       <BudgetCategories budget={data} />
     </Stack>
