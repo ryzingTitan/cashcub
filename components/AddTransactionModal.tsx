@@ -62,15 +62,12 @@ export default function AddTransactionModal() {
     validationSchema: transactionValidationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
-        const newTransaction: Transaction = {
-          id: null,
+        const newTransaction: Partial<Transaction> = {
           date: transactionDate!.toISOString(),
           amount: values.amount,
           transactionType: values.transactionType,
           merchant: values.merchant.trim() === "" ? null : values.merchant,
           notes: values.notes.trim() === "" ? null : values.notes,
-          budgetId: null,
-          budgetItemId: null,
         };
         await createTransaction(
           `/budgets/${params.slug}/items/${values.budgetItemId}/transactions`,

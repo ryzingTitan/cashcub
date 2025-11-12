@@ -30,7 +30,7 @@ export async function getAllBudgets(url: string): Promise<Budget[]> {
 
 export async function createBudget(
   url: string,
-  budget: Budget,
+  budget: Partial<Budget>,
 ): Promise<Budget> {
   const session = await auth0.getSession();
 
@@ -56,7 +56,7 @@ export async function createBudget(
 
 export async function cloneBudget(
   url: string,
-  budget: Budget,
+  budget: Partial<Budget>,
 ): Promise<Budget> {
   const session = await auth0.getSession();
 
@@ -82,7 +82,7 @@ export async function cloneBudget(
 
 export async function createBudgetItem(
   url: string,
-  budgetItem: BudgetItem,
+  budgetItem: Partial<BudgetItem>,
 ): Promise<BudgetItem> {
   const session = await auth0.getSession();
 
@@ -108,7 +108,7 @@ export async function createBudgetItem(
   return response.json();
 }
 
-export async function deleteBudgetItem(url: string): Promise<null> {
+export async function deleteBudgetItem(url: string): Promise<void> {
   const session = await auth0.getSession();
 
   if (!session) {
@@ -129,12 +129,11 @@ export async function deleteBudgetItem(url: string): Promise<null> {
     );
     return Promise.reject("Failed to delete budget item");
   }
-  return null;
 }
 
 export async function updateBudgetItem(
   url: string,
-  budgetItem: BudgetItem,
+  budgetItem: Partial<BudgetItem>,
 ): Promise<BudgetItem> {
   const session = await auth0.getSession();
 

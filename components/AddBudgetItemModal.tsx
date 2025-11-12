@@ -39,12 +39,9 @@ export default function AddBudgetItemModal({
     validationSchema: budgetItemValidationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
-        const newBudgetItem: BudgetItem = {
-          id: null,
+        const newBudgetItem: Partial<BudgetItem> = {
           plannedAmount: values.plannedAmount,
-          actualAmount: null,
           name: values.name,
-          budgetId: null,
           categoryId: categoryId!,
         };
         await createBudgetItem(`/budgets/${budgetId}/items`, newBudgetItem);

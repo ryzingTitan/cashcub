@@ -17,6 +17,7 @@ import { deleteBudgetItem, updateBudgetItem } from "@/lib/budgets";
 import TextField from "@mui/material/TextField";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Transactions from "@/components/Transactions";
+import InputAdornment from "@mui/material/InputAdornment";
 
 interface BudgetItemProps {
   budgetItem: BudgetItem;
@@ -39,12 +40,9 @@ export default function BudgetItemSummary({
     validationSchema: budgetItemValidationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
-        const updatedBudgetItem: BudgetItem = {
-          id: null,
+        const updatedBudgetItem: Partial<BudgetItem> = {
           plannedAmount: values.plannedAmount,
-          actualAmount: null,
           name: values.name,
-          budgetId: null,
           categoryId: budgetItem.categoryId,
         };
         await updateBudgetItem(
@@ -125,6 +123,13 @@ export default function BudgetItemSummary({
               helperText={
                 formik.touched.plannedAmount && formik.errors.plannedAmount
               }
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">$</InputAdornment>
+                  ),
+                },
+              }}
               sx={{ m: 2 }}
             />
           ) : (

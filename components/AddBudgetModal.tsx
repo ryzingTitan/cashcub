@@ -31,8 +31,7 @@ export default function AddBudgetModal() {
     }
 
     try {
-      const newBudget: Budget = {
-        id: null,
+      const newBudget: Partial<Budget> = {
         month: budgetMonthAndYear.month() + 1,
         year: budgetMonthAndYear.year(),
       };
