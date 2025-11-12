@@ -32,8 +32,7 @@ export default function CloneBudgetModal() {
     }
 
     try {
-      const newBudget: Budget = {
-        id: null,
+      const newBudget: Partial<Budget> = {
         month: budgetMonthAndYear.month() + 1,
         year: budgetMonthAndYear.year(),
       };
