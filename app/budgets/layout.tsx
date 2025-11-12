@@ -17,7 +17,7 @@ export default function BudgetLayout({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <SnackbarProvider
         maxSnack={3}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
         preventDuplicate={true}
       >
         <Stack
