@@ -27,10 +27,10 @@ export default function Footer() {
           switch (newValue) {
             case 0:
               router.push("/budgets");
+              return;
             case 1:
               router.push("/analytics");
-            default:
-              router.push("/budgets");
+              return;
           }
         }}
       >
