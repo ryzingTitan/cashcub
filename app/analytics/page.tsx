@@ -9,6 +9,7 @@ import useSWR from "swr";
 import { getAnalyticsData } from "@/lib/analytics";
 import CashFlowGraph from "@/components/CashFlowGraph";
 import BudgetItemGraph from "@/components/BudgetItemGraph";
+import CategoryGraph from "@/components/CategoryGraph";
 
 export default function Analytics() {
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
@@ -48,6 +49,7 @@ export default function Analytics() {
       </LocalizationProvider>
       <CashFlowGraph budgets={data} loading={isLoading} />
       <BudgetItemGraph budgets={data} loading={isLoading} />
+      <CategoryGraph budgets={data} loading={isLoading} />
     </>
   );
 }
