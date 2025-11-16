@@ -1,9 +1,9 @@
 export function formatToCurrency(
-  amount: number | undefined,
+  amount: number | undefined | null,
   currencyCode: string = "USD",
   locale: string = "en-US",
 ): string {
-  if (amount === undefined) {
+  if (amount === undefined || amount === null) {
     return "$0.00";
   }
 
