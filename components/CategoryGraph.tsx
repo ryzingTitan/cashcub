@@ -2,6 +2,7 @@ import { BudgetSummary } from "@/types/api";
 import { PieChart } from "@mui/x-charts";
 import useSWR from "swr";
 import { getAllCategories } from "@/lib/categories";
+import Typography from "@mui/material/Typography";
 
 interface CategoryGraphProps {
   budgets?: BudgetSummary[] | undefined;
@@ -41,15 +42,20 @@ export default function CategoryGraph({
   );
 
   return (
-    <PieChart
-      sx={{ pb: 7 }}
-      loading={loading || categoriesLoading}
-      series={[
-        {
-          data: pieData,
-        },
-      ]}
-      height={300}
-    />
+    <>
+      <Typography align="center" sx={{ m: 2 }}>
+        Totals by Category
+      </Typography>
+      <PieChart
+        sx={{ pb: 7 }}
+        loading={loading || categoriesLoading}
+        series={[
+          {
+            data: pieData,
+          },
+        ]}
+        height={300}
+      />
+    </>
   );
 }
