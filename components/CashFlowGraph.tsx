@@ -4,9 +4,13 @@ import { formatToCurrency } from "@/lib/utils";
 
 interface CashFlowGraphProps {
   budgets?: BudgetSummary[] | undefined;
+  loading: boolean;
 }
 
-export default function CashFlowGraph({ budgets }: CashFlowGraphProps) {
+export default function CashFlowGraph({
+  budgets,
+  loading,
+}: CashFlowGraphProps) {
   let totalExpenses = 0;
   let totalIncome = 0;
   const chartData =
@@ -29,6 +33,7 @@ export default function CashFlowGraph({ budgets }: CashFlowGraphProps) {
 
   return (
     <LineChart
+      loading={loading}
       dataset={chartData}
       xAxis={[
         {

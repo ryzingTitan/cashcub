@@ -8,12 +8,13 @@ import Stack from "@mui/material/Stack";
 import useSWR from "swr";
 import { getAnalyticsData } from "@/lib/analytics";
 import CashFlowGraph from "@/components/CashFlowGraph";
+import BudgetItemGraph from "@/components/BudgetItemGraph";
 
 export default function Analytics() {
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
   const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
 
-  const { data, isLoading, mutate } = useSWR(
+  const { data, isLoading } = useSWR(
     ["/analytics", startDate?.format("MM-YYYY"), endDate?.format("MM-YYYY")],
     getAnalyticsData,
   );
@@ -45,7 +46,8 @@ export default function Analytics() {
           />
         </Stack>
       </LocalizationProvider>
-      <CashFlowGraph budgets={data} />
+      <CashFlowGraph budgets={data} loading={isLoading} />
+      <BudgetItemGraph budgets={data} loading={isLoading} />
     </>
   );
 }
