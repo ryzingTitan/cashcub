@@ -59,11 +59,13 @@ export default function CashFlowGraph({
             dataKey: "actualIncome",
             label: "Income",
             valueFormatter: (value: number | null) => formatToCurrency(value),
+            area: true,
           },
           {
             dataKey: "actualExpenses",
             label: "Expenses",
             valueFormatter: (value: number | null) => formatToCurrency(value),
+            area: true,
           },
         ]}
         height={300}
