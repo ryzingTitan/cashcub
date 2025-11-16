@@ -1,6 +1,7 @@
 import { BudgetSummary } from "@/types/api";
 import { BarChart } from "@mui/x-charts";
 import { formatToCurrency } from "@/lib/utils";
+import Typography from "@mui/material/Typography";
 
 interface BudgetItemGraphProps {
   budgets?: BudgetSummary[] | undefined;
@@ -38,28 +39,34 @@ export default function BudgetItemGraph({
   });
 
   return (
-    <BarChart
-      loading={loading}
-      dataset={chartData}
-      xAxis={[
-        {
-          scaleType: "band",
-          dataKey: "x",
-          valueFormatter: (value) => `${value.month}/${value.year}`,
-        },
-      ]}
-      yAxis={[
-        {
-          width: 75,
-          valueFormatter: (value: number | null) => formatToCurrency(value),
-        },
-      ]}
-      series={itemKeys.map((key) => ({
-        dataKey: key,
-        stack: "total",
-        label: key,
-      }))}
-      height={300}
-    />
+    <>
+      <Typography align="center" sx={{ m: 2 }}>
+        Totals by Budget Item
+      </Typography>
+
+      <BarChart
+        loading={loading}
+        dataset={chartData}
+        xAxis={[
+          {
+            scaleType: "band",
+            dataKey: "x",
+            valueFormatter: (value) => `${value.month}/${value.year}`,
+          },
+        ]}
+        yAxis={[
+          {
+            width: 75,
+            valueFormatter: (value: number | null) => formatToCurrency(value),
+          },
+        ]}
+        series={itemKeys.map((key) => ({
+          dataKey: key,
+          stack: "total",
+          label: key,
+        }))}
+        height={300}
+      />
+    </>
   );
 }
