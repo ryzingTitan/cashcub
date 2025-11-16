@@ -39,7 +39,6 @@ export default function BudgetItemGraph({
 
   return (
     <BarChart
-      sx={{ pb: 7 }}
       loading={loading}
       dataset={chartData}
       xAxis={[
