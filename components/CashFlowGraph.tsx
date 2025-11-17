@@ -8,13 +8,20 @@ interface CashFlowGraphProps {
   loading: boolean;
 }
 
+// Dataset row for the line chart: use a string label for the x value to satisfy band/point scale typing.
+type CashFlowDatasetRow = {
+  x: string;
+  actualIncome: number;
+  actualExpenses: number;
+} & Record<string, number | string>;
+
 export default function CashFlowGraph({
   budgets,
   loading,
 }: CashFlowGraphProps) {
   let totalExpenses = 0;
   let totalIncome = 0;
-  const chartData =
+  const chartData: CashFlowDatasetRow[] =
     budgets
       ?.sort((a, b) => {
         if (a.year !== b.year) {
@@ -22,11 +29,11 @@ export default function CashFlowGraph({
         }
         return a.month - b.month;
       })
-      .map((budget) => {
+      .map((budget): CashFlowDatasetRow => {
         totalExpenses += budget.actualExpenses;
         totalIncome += budget.actualIncome;
         return {
-          x: { month: budget.month, year: budget.year },
+          x: `${budget.month}/${budget.year}`,
           actualIncome: totalIncome,
           actualExpenses: totalExpenses,
         };
@@ -45,7 +52,6 @@ export default function CashFlowGraph({
           {
             scaleType: "point",
             dataKey: "x",
-            valueFormatter: (value) => `${value.month}/${value.year}`,
           },
         ]}
         yAxis={[
