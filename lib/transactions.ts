@@ -1,23 +1,19 @@
 "use server";
 
 import { Transaction } from "@/types/api";
-import { redirect } from "next/navigation";
-import { auth0, loginUrl } from "@/lib/auth0";
+import { auth0, ensureValidSession } from "@/lib/auth0";
 
 const baseUrl = process.env.API_BASE_URL;
 
 export async function getAllTransactions(url: string): Promise<Transaction[]> {
   const session = await auth0.getSession();
-
-  if (!session) {
-    redirect(loginUrl);
-  }
+  ensureValidSession(session);
 
   const response = await fetch(baseUrl + url, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session.tokenSet.idToken}`,
+      Authorization: `Bearer ${session?.tokenSet.idToken}`,
     },
   });
 
@@ -35,16 +31,13 @@ export async function createTransaction(
   transaction: Partial<Transaction>,
 ): Promise<Transaction> {
   const session = await auth0.getSession();
-
-  if (!session) {
-    redirect(loginUrl);
-  }
+  ensureValidSession(session);
 
   const response = await fetch(baseUrl + url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session.tokenSet.idToken}`,
+      Authorization: `Bearer ${session?.tokenSet.idToken}`,
     },
     body: JSON.stringify(transaction),
   });
@@ -64,16 +57,13 @@ export async function updateTransaction(
   patch: Partial<Transaction>,
 ): Promise<Transaction> {
   const session = await auth0.getSession();
-
-  if (!session) {
-    redirect(loginUrl);
-  }
+  ensureValidSession(session);
 
   const response = await fetch(`${baseUrl}${url}/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session.tokenSet.idToken}`,
+      Authorization: `Bearer ${session?.tokenSet.idToken}`,
     },
     body: JSON.stringify(patch),
   });
@@ -92,16 +82,13 @@ export async function deleteTransaction(
   id: string,
 ): Promise<void> {
   const session = await auth0.getSession();
-
-  if (!session) {
-    redirect(loginUrl);
-  }
+  ensureValidSession(session);
 
   const response = await fetch(`${baseUrl}${url}/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session.tokenSet.idToken}`,
+      Authorization: `Bearer ${session?.tokenSet.idToken}`,
     },
   });
 
