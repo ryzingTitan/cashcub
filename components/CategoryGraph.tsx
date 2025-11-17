@@ -3,6 +3,7 @@ import { PieChart } from "@mui/x-charts";
 import useSWR from "swr";
 import { getAllCategories } from "@/lib/categories";
 import Typography from "@mui/material/Typography";
+import { formatToCurrency } from "@/lib/utils";
 
 interface CategoryGraphProps {
   budgets?: BudgetSummary[] | undefined;
@@ -52,6 +53,7 @@ export default function CategoryGraph({
         series={[
           {
             data: pieData,
+            valueFormatter: ({ value }) => formatToCurrency(value),
           },
         ]}
         height={300}
