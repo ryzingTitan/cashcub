@@ -12,6 +12,8 @@ export default function BudgetItemGraph({
   budgets,
   loading,
 }: BudgetItemGraphProps) {
+  // Each dataset row must provide a categorical "x" (band scale) and numeric series values.
+  type BudgetDatasetRow = { x: string } & Record<string, number>;
   const sortedBudgets =
     budgets?.sort((a, b) => {
       if (a.year !== b.year) return a.year - b.year;
@@ -22,18 +24,21 @@ export default function BudgetItemGraph({
     new Set(sortedBudgets.flatMap((b) => b.budgetItems.map((bi) => bi.name))),
   );
 
-  const chartData = sortedBudgets.map((budget) => {
+  const chartData: BudgetDatasetRow[] = sortedBudgets.map((budget) => {
     const itemMap = new Map<string, number>();
     for (const item of budget.budgetItems) {
       const amount = (item.actualAmount ?? item.plannedAmount ?? 0) as number;
       itemMap.set(item.name, (itemMap.get(item.name) ?? 0) + amount);
     }
 
-    const dataEntry: Record<string, unknown> = {
-      x: { month: budget.month, year: budget.year },
-    };
+    // Use a string label for band scale on the x-axis (e.g., "3/2025").
+    const dataEntry: BudgetDatasetRow = {
+      x: `${budget.month}/${budget.year}`,
+    } as BudgetDatasetRow;
     for (const key of itemKeys) {
-      dataEntry[key] = itemMap.get(key) ?? 0;
+      // Populate numeric series values; missing keys default to 0.
+      (dataEntry as Record<string, number | string>)[key] =
+        itemMap.get(key) ?? 0;
     }
     return dataEntry;
   });
@@ -51,7 +56,6 @@ export default function BudgetItemGraph({
           {
             scaleType: "band",
             dataKey: "x",
-            valueFormatter: (value) => `${value.month}/${value.year}`,
           },
         ]}
         yAxis={[
