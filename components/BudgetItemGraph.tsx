@@ -68,6 +68,7 @@ export default function BudgetItemGraph({
           dataKey: key,
           stack: "total",
           label: key,
+          valueFormatter: (value: number | null) => formatToCurrency(value),
         }))}
         height={300}
       />
