@@ -3,12 +3,11 @@
 import { Budget, BudgetItem, BudgetSummary } from "@/types/api";
 import { auth0, ensureValidSession } from "@/lib/auth0";
 
-const baseUrl = process.env.API_BASE_URL;
-
 export async function getAllBudgets(url: string): Promise<Budget[]> {
   const session = await auth0.getSession();
   ensureValidSession(session);
 
+  const baseUrl = process.env.API_BASE_URL;
   const response = await fetch(baseUrl + url, {
     method: "GET",
     headers: {
@@ -31,6 +30,7 @@ export async function createBudget(
   const session = await auth0.getSession();
   ensureValidSession(session);
 
+  const baseUrl = process.env.API_BASE_URL;
   const response = await fetch(baseUrl + url, {
     method: "POST",
     headers: {
@@ -54,6 +54,7 @@ export async function cloneBudget(
   const session = await auth0.getSession();
   ensureValidSession(session);
 
+  const baseUrl = process.env.API_BASE_URL;
   const response = await fetch(baseUrl + url, {
     method: "POST",
     headers: {
@@ -77,6 +78,7 @@ export async function createBudgetItem(
   const session = await auth0.getSession();
   ensureValidSession(session);
 
+  const baseUrl = process.env.API_BASE_URL;
   const response = await fetch(baseUrl + url, {
     method: "POST",
     headers: {
@@ -99,6 +101,7 @@ export async function deleteBudgetItem(url: string): Promise<void> {
   const session = await auth0.getSession();
   ensureValidSession(session);
 
+  const baseUrl = process.env.API_BASE_URL;
   const response = await fetch(baseUrl + url, {
     method: "DELETE",
     headers: {
@@ -122,6 +125,7 @@ export async function updateBudgetItem(
   const session = await auth0.getSession();
   ensureValidSession(session);
 
+  const baseUrl = process.env.API_BASE_URL;
   const response = await fetch(baseUrl + url, {
     method: "PUT",
     headers: {
@@ -144,6 +148,7 @@ export async function getBudgetSummary(url: string): Promise<BudgetSummary> {
   const session = await auth0.getSession();
   ensureValidSession(session);
 
+  const baseUrl = process.env.API_BASE_URL;
   const response = await fetch(baseUrl + url, {
     method: "GET",
     headers: {
