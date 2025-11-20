@@ -1,10 +1,11 @@
 "use server";
 
 import { auth0, ensureValidSession } from "@/lib/auth0";
+import { ApiError } from "./api-error";
 
 type FetchOptions = {
   method?: "GET" | "POST" | "PUT" | "DELETE";
-  body?: any;
+  body?: unknown;
   params?: Record<string, string>;
 };
 
@@ -32,8 +33,11 @@ export async function fetchWithAuth<T>(
   });
 
   if (!response.ok) {
-    console.error(`Request to ${url} failed with status: ${response.status}`);
-    return Promise.reject(`Request failed with status ${response.status}`);
+    throw new ApiError(
+      `Request failed with status ${response.status}`,
+      response.status,
+      response.statusText,
+    );
   }
 
   if (response.status === 204) {
