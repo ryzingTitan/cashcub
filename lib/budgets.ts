@@ -3,7 +3,7 @@
 import { Budget, BudgetItem, BudgetSummary } from "@/types/api";
 import { fetchWithAuth } from "./api";
 
-const handleBudgetError = (error: any, message: string) => {
+const handleBudgetError = (error: unknown, message: string) => {
   console.error(`${message}:`, error);
   return Promise.reject(message);
 };
