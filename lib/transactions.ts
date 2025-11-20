@@ -3,12 +3,11 @@
 import { Transaction } from "@/types/api";
 import { auth0, ensureValidSession } from "@/lib/auth0";
 
-const baseUrl = process.env.API_BASE_URL;
-
 export async function getAllTransactions(url: string): Promise<Transaction[]> {
   const session = await auth0.getSession();
   ensureValidSession(session);
 
+  const baseUrl = process.env.API_BASE_URL;
   const response = await fetch(baseUrl + url, {
     method: "GET",
     headers: {
@@ -33,6 +32,7 @@ export async function createTransaction(
   const session = await auth0.getSession();
   ensureValidSession(session);
 
+  const baseUrl = process.env.API_BASE_URL;
   const response = await fetch(baseUrl + url, {
     method: "POST",
     headers: {
@@ -59,6 +59,7 @@ export async function updateTransaction(
   const session = await auth0.getSession();
   ensureValidSession(session);
 
+  const baseUrl = process.env.API_BASE_URL;
   const response = await fetch(`${baseUrl}${url}/${id}`, {
     method: "PUT",
     headers: {
@@ -84,6 +85,7 @@ export async function deleteTransaction(
   const session = await auth0.getSession();
   ensureValidSession(session);
 
+  const baseUrl = process.env.API_BASE_URL;
   const response = await fetch(`${baseUrl}${url}/${id}`, {
     method: "DELETE",
     headers: {
