@@ -1,6 +1,6 @@
 {
   "name": "cashcub",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -39,9 +39,11 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^5.1.1",
+    "@vitest/coverage-v8": "^4.0.12",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "jsdom": "^27.2.0",
+    "msw": "^2.12.2",
     "typescript": "^5",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^4.0.9"

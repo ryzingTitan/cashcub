@@ -1,54 +1,33 @@
 "use server";
 
 import { Transaction } from "@/types/api";
-import { auth0, ensureValidSession } from "@/lib/auth0";
+import { fetchWithAuth } from "./api";
 
-const baseUrl = process.env.API_BASE_URL;
+const handleTransactionError = (error: unknown, message: string) => {
+  console.error(`${message}:`, error);
+  return Promise.reject(message);
+};
 
 export async function getAllTransactions(url: string): Promise<Transaction[]> {
-  const session = await auth0.getSession();
-  ensureValidSession(session);
-
-  const response = await fetch(baseUrl + url, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${session?.tokenSet.idToken}`,
-    },
-  });
-
-  if (!response.ok) {
-    console.error(
-      `Failed to fetch transactions with status: ${response.status}`,
-    );
-    return Promise.reject("Failed to fetch transactions");
+  try {
+    return await fetchWithAuth<Transaction[]>(url);
+  } catch (error) {
+    return handleTransactionError(error, "Failed to fetch transactions");
   }
-  return response.json();
 }
 
 export async function createTransaction(
   url: string,
   transaction: Partial<Transaction>,
 ): Promise<Transaction> {
-  const session = await auth0.getSession();
-  ensureValidSession(session);
-
-  const response = await fetch(baseUrl + url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${session?.tokenSet.idToken}`,
-    },
-    body: JSON.stringify(transaction),
-  });
-
-  if (!response.ok) {
-    console.error(
-      `Failed to create transaction with status: ${response.status}`,
-    );
-    return Promise.reject("Failed to create transaction");
+  try {
+    return await fetchWithAuth<Transaction, Partial<Transaction>>(url, {
+      method: "POST",
+      body: transaction,
+    });
+  } catch (error) {
+    return handleTransactionError(error, "Failed to create transaction");
   }
-  return response.json();
 }
 
 export async function updateTransaction(
@@ -56,46 +35,23 @@ export async function updateTransaction(
   id: string,
   patch: Partial<Transaction>,
 ): Promise<Transaction> {
-  const session = await auth0.getSession();
-  ensureValidSession(session);
-
-  const response = await fetch(`${baseUrl}${url}/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${session?.tokenSet.idToken}`,
-    },
-    body: JSON.stringify(patch),
-  });
-
-  if (!response.ok) {
-    console.error(
-      `Failed to update transaction with status: ${response.status}`,
-    );
-    return Promise.reject("Failed to update transaction");
+  try {
+    return await fetchWithAuth<Transaction, Partial<Transaction>>(`${url}/${id}`, {
+      method: "PUT",
+      body: patch,
+    });
+  } catch (error) {
+    return handleTransactionError(error, "Failed to update transaction");
   }
-  return response.json();
 }
 
 export async function deleteTransaction(
   url: string,
   id: string,
 ): Promise<void> {
-  const session = await auth0.getSession();
-  ensureValidSession(session);
-
-  const response = await fetch(`${baseUrl}${url}/${id}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${session?.tokenSet.idToken}`,
-    },
-  });
-
-  if (!response.ok) {
-    console.error(
-      `Failed to delete transaction with status: ${response.status}`,
-    );
-    return Promise.reject("Failed to delete transaction");
+  try {
+    await fetchWithAuth<void>(`${url}/${id}`, { method: "DELETE" });
+  } catch (error) {
+    return handleTransactionError(error, "Failed to delete transaction");
   }
 }
