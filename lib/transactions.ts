@@ -3,7 +3,7 @@
 import { Transaction } from "@/types/api";
 import { fetchWithAuth } from "./api";
 
-const handleTransactionError = (error: any, message: string) => {
+const handleTransactionError = (error: unknown, message: string) => {
   console.error(`${message}:`, error);
   return Promise.reject(message);
 };

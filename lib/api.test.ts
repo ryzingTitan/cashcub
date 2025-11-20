@@ -1,5 +1,14 @@
 import { fetchWithAuth } from "./api";
-import { describe, it, expect, vi, beforeAll, afterAll, afterEach, beforeEach } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  vi,
+  beforeAll,
+  afterAll,
+  afterEach,
+  beforeEach,
+} from "vitest";
 import { auth0 } from "./auth0";
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
@@ -18,7 +27,7 @@ const server = setupServer(
   }),
   http.delete("http://localhost:3001/api/test", () => {
     return new HttpResponse(null, { status: 204 });
-  })
+  }),
 );
 
 beforeAll(() => server.listen());
@@ -74,7 +83,7 @@ describe("fetchWithAuth", () => {
           return HttpResponse.json({ success: true });
         }
         return new HttpResponse(null, { status: 500 });
-      })
+      }),
     );
     const data = await fetchWithAuth("/test", { params: { foo: "bar" } });
     expect(data).toEqual({ success: true });
@@ -83,9 +92,14 @@ describe("fetchWithAuth", () => {
   it("should reject with an error if the fetch fails", async () => {
     server.use(
       http.get("http://localhost:3001/api/test", () => {
-        return new HttpResponse(null, { status: 500 });
-      })
+        return new HttpResponse(null, {
+          status: 500,
+          statusText: "Internal Server Error",
+        });
+      }),
     );
-    await expect(fetchWithAuth("/test")).rejects.toEqual("Request failed with status 500");
+    await expect(fetchWithAuth("/test")).rejects.toThrow(
+      "Request failed with status 500",
+    );
   });
 });
