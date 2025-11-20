@@ -3,12 +3,11 @@
 import { Category } from "@/types/api";
 import { auth0, ensureValidSession } from "@/lib/auth0";
 
-const baseUrl = process.env.API_BASE_URL;
-
 export async function getAllCategories(url: string): Promise<Category[]> {
   const session = await auth0.getSession();
   ensureValidSession(session);
 
+  const baseUrl = process.env.API_BASE_URL;
   const response = await fetch(baseUrl + url, {
     method: "GET",
     headers: {
