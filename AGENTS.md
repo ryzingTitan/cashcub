@@ -93,5 +93,6 @@ export const Counter = ({ initialCount = 0 }: CounterProps) => {
 Before marking a task as complete, verify:
 - [ ] `npm run type-check` (or `tsc --noEmit`) passes.
 - [ ] `npm run lint` passes with no errors.
+- [ ] `npm run format` runs and formats any files that have been changed.
 - [ ] `npm run test` passes (all suites green).
 - [ ] `npm run build` completes successfully.
