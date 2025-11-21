@@ -1,12 +1,15 @@
+export type TransactionType = "INCOME" | "EXPENSE";
+
 export interface Budget {
-  id: string | null;
+  readonly id: string | null;
   month: number;
   year: number;
 }
 
 export interface BudgetSummary {
-  id: string;
+  readonly id: string;
   month: number;
+
   year: number;
   expectedIncome: number;
   actualIncome: number;
@@ -16,26 +19,26 @@ export interface BudgetSummary {
 }
 
 export interface BudgetItem {
-  id: string | null;
+  readonly id: string | null;
   name: string;
   plannedAmount: number;
   actualAmount: number | null;
-  budgetId: string | null;
-  categoryId: string;
+  readonly budgetId: string | null;
+  readonly categoryId: string;
 }
 
 export interface Category {
-  id: string;
+  readonly id: string;
   name: string;
 }
 
 export interface Transaction {
-  id: string | null;
+  readonly id: string | null;
   date: string;
   amount: number;
-  transactionType: string;
+  transactionType: TransactionType;
   merchant: string | null;
   notes: string | null;
-  budgetId: string | null;
-  budgetItemId: string | null;
+  readonly budgetId: string | null;
+  readonly budgetItemId: string | null;
 }
