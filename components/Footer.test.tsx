@@ -10,8 +10,10 @@ vi.mock("next/navigation", () => ({
     push: vi.fn(),
   }),
 }));
+import { BottomNavigationActionProps } from "@mui/material";
+
 vi.mock("@mui/material/BottomNavigationAction", () => ({
-  default: (props: any) => <button {...props}>{props.label}</button>,
+  default: (props: BottomNavigationActionProps) => <button {...props}>{props.label}</button>,
 }));
 vi.mock("@mui/icons-material", async (importOriginal) => {
   const actual = await importOriginal();

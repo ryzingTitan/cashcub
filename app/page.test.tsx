@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import Home from "./page";
-import { auth0, loginUrl } from "@/lib/auth0";
+import { auth0 } from "@/lib/auth0";
 import { redirect } from "next/navigation";
 import { vi, describe, it, expect, Mock } from "vitest";
 
