@@ -66,8 +66,8 @@ export default function AddBudgetItemModal({
   return (
     <>
       <Tooltip title="Add Budget Item">
-        <IconButton>
-          <AddIcon onClick={toggle} fontSize={"small"} />
+        <IconButton onClick={toggle}>
+          <AddIcon fontSize={"small"} />
         </IconButton>
       </Tooltip>
       <Dialog open={value} onClose={handleClose}>
