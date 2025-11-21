@@ -64,7 +64,7 @@ export default function AddTransactionModal() {
       try {
         const newTransaction: Partial<Transaction> = {
           date: transactionDate!.toISOString(),
-          amount: values.amount,
+          amount: Number(values.amount),
           transactionType: values.transactionType,
           merchant: values.merchant.trim() === "" ? null : values.merchant,
           notes: values.notes.trim() === "" ? null : values.notes,
@@ -96,8 +96,12 @@ export default function AddTransactionModal() {
   return (
     <>
       <Tooltip title={"Add Transaction"}>
-        <Fab color="primary" sx={{ position: "fixed", bottom: 16, right: 16 }}>
-          <AddIcon onClick={toggle} />
+        <Fab
+          color="primary"
+          sx={{ position: "fixed", bottom: 16, right: 16 }}
+          onClick={toggle}
+        >
+          <AddIcon />
         </Fab>
       </Tooltip>
       <Dialog open={value} onClose={handleClose}>
@@ -111,8 +115,9 @@ export default function AddTransactionModal() {
                 onChange={(newValue) => setTransactionDate(newValue)}
               />
               <FormControl fullWidth>
-                <InputLabel>Budget Item</InputLabel>
+                <InputLabel id="budgetItem-label">Budget Item</InputLabel>
                 <Select
+                  labelId="budgetItem-label"
                   value={formik.values.budgetItemId}
                   label="Budget Item"
                   name="budgetItemId"
@@ -131,8 +136,11 @@ export default function AddTransactionModal() {
                 </Select>
               </FormControl>
               <FormControl fullWidth>
-                <InputLabel>Transaction Type</InputLabel>
+                <InputLabel id="transactionType-label">
+                  Transaction Type
+                </InputLabel>
                 <Select
+                  labelId="transactionType-label"
                   value={formik.values.transactionType}
                   label="Transaction Type"
                   name="transactionType"

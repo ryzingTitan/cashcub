@@ -1,55 +1,67 @@
 "use client";
 
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { useState } from "react";
+import { Skeleton, Stack } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import Stack from "@mui/material/Stack";
-import useSWR from "swr";
-import { getAnalyticsData } from "@/lib/analytics";
-import CashFlowGraph from "@/components/CashFlowGraph";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAnalyticsData } from "@/hooks/analytics/hooks";
+import DatePickers from "@/components/analytics/DatePickers";
 import BudgetItemGraph from "@/components/BudgetItemGraph";
+import CashFlowGraph from "@/components/CashFlowGraph";
 import CategoryGraph from "@/components/CategoryGraph";
 
 export default function Analytics() {
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
   const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
+  const router = useRouter();
+  const { data, isLoading, error } = useAnalyticsData(startDate, endDate);
 
-  const { data, isLoading } = useSWR(
-    ["/analytics", startDate?.format("MM-YYYY"), endDate?.format("MM-YYYY")],
-    getAnalyticsData,
-  );
+  if (error) {
+    router.push("/error");
+  }
 
   return (
     <>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Stack
-          spacing={2}
-          justifyContent={"center"}
-          direction={"row"}
-          sx={{ m: 2 }}
-        >
-          <DatePicker
-            label="Start Date"
-            views={["year", "month"]}
-            format="MM/YYYY"
-            value={startDate}
-            onChange={(newValue) => setStartDate(newValue)}
-            sx={{ m: 2 }}
+      {isLoading ? (
+        <Stack spacing={2} alignItems={"center"} sx={{ m: 2 }}>
+          <Skeleton
+            variant="rectangular"
+            width={"75%"}
+            height={40}
+            data-testid="skeleton"
           />
-          <DatePicker
-            label="End Date"
-            views={["year", "month"]}
-            format="MM/YYYY"
-            value={endDate}
-            onChange={(newValue) => setEndDate(newValue)}
-            sx={{ m: 2 }}
+          <Skeleton
+            variant="rectangular"
+            width={"75%"}
+            height={400}
+            data-testid="skeleton"
+          />
+          <Skeleton
+            variant="rectangular"
+            width={"75%"}
+            height={400}
+            data-testid="skeleton"
+          />
+          <Skeleton
+            variant="rectangular"
+            width={"75%"}
+            height={400}
+            data-testid="skeleton"
           />
         </Stack>
-      </LocalizationProvider>
-      <CashFlowGraph budgets={data} loading={isLoading} />
-      <BudgetItemGraph budgets={data} loading={isLoading} />
-      <CategoryGraph budgets={data} loading={isLoading} />
+      ) : (
+        <>
+          <DatePickers
+            startDate={startDate}
+            endDate={endDate}
+            onStartDateChange={setStartDate}
+            onEndDateChange={setEndDate}
+          />
+          <CashFlowGraph budgets={data} loading={isLoading} />
+          <BudgetItemGraph budgets={data} loading={isLoading} />
+          <CategoryGraph budgets={data} loading={isLoading} />
+        </>
+      )}
     </>
   );
 }
