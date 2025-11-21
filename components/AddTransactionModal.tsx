@@ -6,7 +6,7 @@ import Tooltip from "@mui/material/Tooltip";
 import useSWR, { useSWRConfig } from "swr";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
-import { Transaction } from "@/types/api";
+import { Transaction, TransactionType } from "@/types/api";
 import { useToggle } from "usehooks-ts";
 import Dialog from "@mui/material/Dialog";
 import Box from "@mui/material/Box";
@@ -19,6 +19,7 @@ import Button from "@mui/material/Button";
 import dayjs, { Dayjs } from "dayjs";
 import * as yup from "yup";
 import { useParams } from "next/navigation";
+import { transactionValidationSchema } from "@/types/validations";
 import { createTransaction } from "@/lib/transactions";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -37,20 +38,6 @@ export default function AddTransactionModal() {
   const params = useParams();
   const { data } = useSWR(`/budgets/${params.slug}`, getBudgetSummary);
 
-  const transactionValidationSchema = yup.object({
-    amount: yup
-      .number()
-      .moreThan(0, "Amount must be greater than 0")
-      .required("Amount is required"),
-    merchant: yup.string().optional(),
-    notes: yup.string().optional(),
-    budgetItemId: yup.string().uuid().required("Budget item id is required"),
-    transactionType: yup
-      .string()
-      .oneOf(["INCOME", "EXPENSE"])
-      .required("Transaction type is required"),
-  });
-
   const formik = useFormik({
     initialValues: {
       amount: 0,
@@ -59,13 +46,17 @@ export default function AddTransactionModal() {
       notes: "",
       budgetItemId: "",
     },
-    validationSchema: transactionValidationSchema,
+    validationSchema: transactionValidationSchema.concat(
+      yup.object({
+        budgetItemId: yup.string().uuid().required("Budget item id is required"),
+      }),
+    ),
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         const newTransaction: Partial<Transaction> = {
           date: transactionDate!.toISOString(),
           amount: Number(values.amount),
-          transactionType: values.transactionType,
+          transactionType: values.transactionType as TransactionType,
           merchant: values.merchant.trim() === "" ? null : values.merchant,
           notes: values.notes.trim() === "" ? null : values.notes,
         };
