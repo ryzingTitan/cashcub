@@ -13,8 +13,8 @@ export const transactionValidationSchema = yup.object({
     .number()
     .moreThan(0, "Amount must be greater than 0")
     .required("Amount is required"),
-  date: yup.string().required("Date is required"),
-  merchant: yup.string().required("Merchant is required"),
+  merchant: yup.string().optional(),
+  notes: yup.string().optional(),
   transactionType: yup
     .string()
     .oneOf(["INCOME", "EXPENSE"])
