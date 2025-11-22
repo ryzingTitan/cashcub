@@ -59,7 +59,7 @@ export default function Analytics() {
           />
           <CashFlowGraph budgets={data} loading={isLoading} />
           <BudgetItemGraph budgets={data} loading={isLoading} />
-          <CategoryGraph budgets={data} loading={isLoading} />
+          <CategoryGraph budgets={data} />
         </>
       )}
     </>

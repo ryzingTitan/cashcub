@@ -89,7 +89,7 @@ describe("useBudgetList", () => {
     expect(result.current.selectedBudget?.id).toBe("1");
   });
 
-    it("should return null for selected budget if slug does not match", () => {
+  it("should return null for selected budget if slug does not match", () => {
     mockedUseSWR.mockReturnValue({
       data: mockBudgets,
       isLoading: false,
@@ -122,7 +122,7 @@ describe("useBudgetList", () => {
     expect(mockPush).toHaveBeenCalledWith(`/budgets/${newSelectedBudget.id}`);
   });
 
-    it("should handle budget deselection and navigate to budgets overview", () => {
+  it("should handle budget deselection and navigate to budgets overview", () => {
     mockedUseSWR.mockReturnValue({
       data: mockBudgets,
       isLoading: false,
@@ -140,7 +140,7 @@ describe("useBudgetList", () => {
   });
 
   it("should format the option label correctly", () => {
-     mockedUseSWR.mockReturnValue({
+    mockedUseSWR.mockReturnValue({
       data: [],
       isLoading: false,
       error: undefined,
@@ -150,7 +150,13 @@ describe("useBudgetList", () => {
     mockedUseParams.mockReturnValue({ slug: "" });
 
     const { result } = renderHook(() => useBudgetList());
-    const budget = { year: 2024, month: 1, id: "1", created_at: "", updated_at: "" };
+    const budget = {
+      year: 2024,
+      month: 1,
+      id: "1",
+      created_at: "",
+      updated_at: "",
+    };
 
     expect(result.current.getOptionLabel(budget)).toBe("January 2024");
   });
