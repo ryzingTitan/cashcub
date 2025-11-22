@@ -102,7 +102,7 @@ describe("AddBudgetItemModal", () => {
         name: "Test Item",
         plannedAmount: 100,
         categoryId: "1",
-      })
+      }),
     );
   });
 
@@ -114,7 +114,7 @@ describe("AddBudgetItemModal", () => {
         <SnackbarProvider>
           <AddBudgetItemModal budgetId="1" categoryId="1" />
         </SnackbarProvider>
-      </SWRConfig>
+      </SWRConfig>,
     );
 
     const addButton = screen.getByRole("button", { name: /add budget item/i });
@@ -135,7 +135,7 @@ describe("AddBudgetItemModal", () => {
         "Failed to create budget item",
         {
           variant: "error",
-        }
+        },
       );
     });
   });

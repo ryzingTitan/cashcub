@@ -16,11 +16,11 @@ Audience: Advanced Next.js/TypeScript developers working on this repository.
   - Turbopack is used for both dev and build. Some webpack-only plugins/loaders won’t apply.
 
 - TypeScript
-  - Strict mode enabled. Path alias: @/* → project root.
+  - Strict mode enabled. Path alias: @/\* → project root.
   - ModuleResolution: bundler. Keep imports ESM-compatible.
 
 - Environment Variables
-  - Required at runtime (server actions in lib/*):
+  - Required at runtime (server actions in lib/\*):
     - API_BASE_URL: Base URL of the CashCub backend API (e.g., https://api.example.com).
     - Auth0 config (via lib/auth0). Ensure the necessary Auth0 environment is provided as used by your local lib/auth0 module (domain, client id/secret, secrets, callback URLs). This repo references auth0 and expects a valid session for server-side fetches.
   - Local .env example (do not commit):
@@ -47,12 +47,12 @@ Audience: Advanced Next.js/TypeScript developers working on this repository.
   - Or build the Docker image:
     docker build -t cashcub:local .
     docker run --rm -p 3000:3000 ^
-      -e API_BASE_URL=https://api.example.com ^
-      -e AUTH0_SECRET=... ^
-      -e AUTH0_BASE_URL=http://localhost:3000 ^
-      -e AUTH0_ISSUER_BASE_URL=... ^
-      -e AUTH0_CLIENT_ID=... ^
-      -e AUTH0_CLIENT_SECRET=... cashcub:local
+    -e API_BASE_URL=https://api.example.com ^
+    -e AUTH0_SECRET=... ^
+    -e AUTH0_BASE_URL=http://localhost:3000 ^
+    -e AUTH0_ISSUER_BASE_URL=... ^
+    -e AUTH0_CLIENT_ID=... ^
+    -e AUTH0_CLIENT_SECRET=... cashcub:local
 
 3. Data Fetching Patterns
 
@@ -72,7 +72,7 @@ Audience: Advanced Next.js/TypeScript developers working on this repository.
 5. Linting/Style
 
 - ESLint 9 with eslint-config-next. Run npm run lint.
-- Types are strict; prefer explicit types on exported functions. Keep imports using the @/* alias where appropriate.
+- Types are strict; prefer explicit types on exported functions. Keep imports using the @/\* alias where appropriate.
 
 6. Testing Guidance
 
@@ -86,7 +86,7 @@ There is no dedicated test runner configured in this repo. Until a full test sta
   - Remove the file after it passes to keep the repo clean.
 
 - Adding a proper test setup later
-  - Recommended: Vitest + @vitejs/plugin-react or Jest with next/jest. Given ESM and React 19, prefer Vitest with ts-node/esbuild for TS support. Configure tsconfig paths (tsconfigPaths) or jest-moduleNameMapper for @/* alias.
+  - Recommended: Vitest + @vitejs/plugin-react or Jest with next/jest. Given ESM and React 19, prefer Vitest with ts-node/esbuild for TS support. Configure tsconfig paths (tsconfigPaths) or jest-moduleNameMapper for @/\* alias.
 
 7. Example Temporary Test Used for Verification
 
@@ -99,21 +99,21 @@ During preparation of these guidelines, a temporary smoke test was executed to v
 
 Example contents used temporarily for this repository validation (do not commit permanently):
 
-  // scripts/smoke.test.mjs
-  // Run: node scripts/smoke.test.mjs
-  import fs from 'node:fs';
-  import path from 'node:path';
-  const pkg = JSON.parse(fs.readFileSync(path.resolve('package.json'), 'utf8'));
-  for (const s of ['dev','build','start','lint']) {
-    if (!pkg.scripts?.[s]) { throw new Error(`Missing script: ${s}`); }
-  }
-  const formatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(1234.5);
-  if (formatted !== '$1,234.50') { throw new Error('Unexpected currency formatting'); }
-  console.log('SMOKE TEST PASSED');
+// scripts/smoke.test.mjs
+// Run: node scripts/smoke.test.mjs
+import fs from 'node:fs';
+import path from 'node:path';
+const pkg = JSON.parse(fs.readFileSync(path.resolve('package.json'), 'utf8'));
+for (const s of ['dev','build','start','lint']) {
+if (!pkg.scripts?.[s]) { throw new Error(`Missing script: ${s}`); }
+}
+const formatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(1234.5);
+if (formatted !== '$1,234.50') { throw new Error('Unexpected currency formatting'); }
+console.log('SMOKE TEST PASSED');
 
 8. Adding New API Calls
 
-- Follow existing patterns in lib/*.ts:
+- Follow existing patterns in lib/\*.ts:
   - Read API_BASE_URL from process.env.
   - Acquire session via auth0.getSession(); redirect to loginUrl if absent.
   - Include Authorization: Bearer idToken header.

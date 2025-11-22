@@ -38,7 +38,9 @@ describe("Budget page", () => {
       <div data-testid="budget-summary">Loading...</div>,
     );
     render(<Budget />);
-    expect(screen.getByTestId("budget-summary")).toHaveTextContent("Loading...");
+    expect(screen.getByTestId("budget-summary")).toHaveTextContent(
+      "Loading...",
+    );
   });
 
   it("should render the error state", () => {
