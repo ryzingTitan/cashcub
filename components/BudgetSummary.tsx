@@ -9,11 +9,14 @@ import { getBudgetSummary } from "@/lib/budgets";
 
 export default function BudgetSummary() {
   const params = useParams();
-  const { data } = useSWR(`/budgets/${params.slug}`, getBudgetSummary);
+  const { data, isLoading } = useSWR(
+    `/budgets/${params.slug}`,
+    getBudgetSummary,
+  );
 
   return (
     <Stack sx={{ pb: 7 }}>
-      <BudgetSummaryTotals budget={data} />
+      <BudgetSummaryTotals budget={data} isLoading={isLoading} />
       <BudgetCategories budget={data} />
     </Stack>
   );
