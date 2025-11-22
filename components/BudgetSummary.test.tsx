@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import BudgetSummary from "@/components/BudgetSummary";
@@ -66,10 +65,10 @@ describe("BudgetSummary", () => {
 
     expect(screen.getByTestId("budget-summary")).toBeInTheDocument();
     expect(screen.getByTestId("budget-summary-totals")).toHaveTextContent(
-      JSON.stringify(budget)
+      JSON.stringify(budget),
     );
     expect(screen.getByTestId("budget-categories")).toHaveTextContent(
-      JSON.stringify(budget)
+      JSON.stringify(budget),
     );
   });
 });

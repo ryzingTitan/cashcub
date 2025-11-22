@@ -19,14 +19,12 @@ export function useBudgetList() {
 
   const sortedData = useMemo(() => {
     return (
-      data
-        ?.slice()
-        .sort((a, b) => {
-          if (a.year !== b.year) {
-            return a.year - b.year;
-          }
-          return a.month - b.month;
-        }) ?? []
+      data?.slice().sort((a, b) => {
+        if (a.year !== b.year) {
+          return a.year - b.year;
+        }
+        return a.month - b.month;
+      }) ?? []
     );
   }, [data]);
 

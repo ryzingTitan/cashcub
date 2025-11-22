@@ -10,7 +10,7 @@ export const useBudgetSummary = () => {
   const key = params.slug ? `/budgets/${params.slug}` : null;
   const { data, isLoading, error } = useSWR<BudgetSummaryType>(
     key,
-    getBudgetSummary
+    getBudgetSummary,
   );
 
   return {

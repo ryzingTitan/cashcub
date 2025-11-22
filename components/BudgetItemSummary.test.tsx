@@ -58,9 +58,7 @@ describe("BudgetItemSummary", () => {
     expect(screen.getByText("Groceries")).toBeInTheDocument();
     expect(screen.getByTestId("planned-amount")).toHaveTextContent("$500.00");
     expect(screen.getByTestId("actual-amount")).toHaveTextContent("$250.00");
-    expect(screen.getByTestId("remaining-amount")).toHaveTextContent(
-      "$250.00",
-    );
+    expect(screen.getByTestId("remaining-amount")).toHaveTextContent("$250.00");
   });
 
   it("should toggle to edit mode when edit button is clicked", async () => {
@@ -70,7 +68,9 @@ describe("BudgetItemSummary", () => {
       </SWRConfig>,
     );
 
-    await userEvent.click(screen.getByRole("button", { name: /edit budget item/i }));
+    await userEvent.click(
+      screen.getByRole("button", { name: /edit budget item/i }),
+    );
 
     expect(screen.getByLabelText(/name/i)).toHaveValue(mockBudgetItem.name);
     expect(screen.getByLabelText(/planned amount/i)).toHaveValue(
@@ -88,19 +88,25 @@ describe("BudgetItemSummary", () => {
       </SWRConfig>,
     );
 
-    await userEvent.click(screen.getByRole("button", { name: /edit budget item/i }));
+    await userEvent.click(
+      screen.getByRole("button", { name: /edit budget item/i }),
+    );
 
     const nameInput = screen.getByLabelText(/name/i);
     await userEvent.clear(nameInput);
     await userEvent.type(nameInput, "New Name");
-    await userEvent.click(screen.getByRole("button", { name: /save budget item/i }));
+    await userEvent.click(
+      screen.getByRole("button", { name: /save budget item/i }),
+    );
 
     await waitFor(() => {
       expect(updateBudgetItem).toHaveBeenCalledWith(
         `/budgets/${mockBudgetItem.budgetId}/items/${mockBudgetItem.id}`,
         expect.objectContaining({ name: "New Name" }),
       );
-      expect(mockMutate).toHaveBeenCalledWith(`/budgets/${mockBudgetItem.budgetId}`);
+      expect(mockMutate).toHaveBeenCalledWith(
+        `/budgets/${mockBudgetItem.budgetId}`,
+      );
       expect(mockEnqueueSnackbar).toHaveBeenCalledWith("Budget item updated", {
         variant: "success",
       });
@@ -114,11 +120,15 @@ describe("BudgetItemSummary", () => {
       </SWRConfig>,
     );
 
-    await userEvent.click(screen.getByRole("button", { name: /edit budget item/i }));
+    await userEvent.click(
+      screen.getByRole("button", { name: /edit budget item/i }),
+    );
 
     const nameInput = screen.getByLabelText(/name/i);
     await userEvent.clear(nameInput);
-    await userEvent.click(screen.getByRole("button", { name: /save budget item/i }));
+    await userEvent.click(
+      screen.getByRole("button", { name: /save budget item/i }),
+    );
 
     expect(await screen.findByText("Name is required")).toBeInTheDocument();
   });
@@ -133,13 +143,17 @@ describe("BudgetItemSummary", () => {
       </SWRConfig>,
     );
 
-    await userEvent.click(screen.getByRole("button", { name: /delete budget item/i }));
+    await userEvent.click(
+      screen.getByRole("button", { name: /delete budget item/i }),
+    );
 
     await waitFor(() => {
       expect(deleteBudgetItem).toHaveBeenCalledWith(
         `/budgets/${mockBudgetItem.budgetId}/items/${mockBudgetItem.id}`,
       );
-      expect(mockMutate).toHaveBeenCalledWith(`/budgets/${mockBudgetItem.budgetId}`);
+      expect(mockMutate).toHaveBeenCalledWith(
+        `/budgets/${mockBudgetItem.budgetId}`,
+      );
       expect(mockEnqueueSnackbar).toHaveBeenCalledWith("Budget item deleted", {
         variant: "success",
       });
