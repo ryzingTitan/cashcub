@@ -31,7 +31,7 @@ describe("AddBudgetItemModal", () => {
         <SnackbarProvider>
           <AddBudgetItemModal budgetId="1" categoryId="1" />
         </SnackbarProvider>
-      </SWRConfig>
+      </SWRConfig>,
     );
 
     const addButton = screen.getByRole("button", { name: /add budget item/i });
@@ -49,7 +49,7 @@ describe("AddBudgetItemModal", () => {
         <SnackbarProvider>
           <AddBudgetItemModal budgetId="1" categoryId="1" />
         </SnackbarProvider>
-      </SWRConfig>
+      </SWRConfig>,
     );
 
     const addButton = screen.getByRole("button", { name: /add budget item/i });
@@ -80,7 +80,7 @@ describe("AddBudgetItemModal", () => {
         <SnackbarProvider>
           <AddBudgetItemModal budgetId="1" categoryId="1" />
         </SnackbarProvider>
-      </SWRConfig>
+      </SWRConfig>,
     );
 
     const addButton = screen.getByRole("button", { name: /add budget item/i });

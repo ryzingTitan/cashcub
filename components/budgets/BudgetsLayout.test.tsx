@@ -7,7 +7,7 @@ describe("BudgetsLayout", () => {
     render(
       <BudgetsLayout>
         <div>Test Child</div>
-      </BudgetsLayout>
+      </BudgetsLayout>,
     );
 
     expect(screen.getByText("Test Child")).toBeInTheDocument();
