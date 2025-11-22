@@ -26,11 +26,19 @@ export function useAddBudgetItem({
     },
     validationSchema: budgetItemValidationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
+      if (!budgetId || !categoryId) {
+        enqueueSnackbar("Budget or category ID is missing", {
+          variant: "error",
+        });
+        setSubmitting(false);
+        return;
+      }
+
       try {
         const newBudgetItem: Partial<BudgetItem> = {
           plannedAmount: Number(values.plannedAmount),
           name: values.name,
-          categoryId: categoryId!,
+          categoryId: categoryId,
         };
         await createBudgetItem(`/budgets/${budgetId}/items`, newBudgetItem);
         await mutate(`/budgets/${budgetId}`);

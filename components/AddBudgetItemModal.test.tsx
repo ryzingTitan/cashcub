@@ -139,4 +139,36 @@ describe("AddBudgetItemModal", () => {
       );
     });
   });
+
+  it("should show an error message if budgetId is missing", async () => {
+    render(
+      <SWRConfig value={{ provider: () => new Map() }}>
+        <SnackbarProvider>
+          <AddBudgetItemModal categoryId="1" />
+        </SnackbarProvider>
+      </SWRConfig>,
+    );
+
+    const addButton = screen.getByRole("button", { name: /add budget item/i });
+    await userEvent.click(addButton);
+
+    const nameInput = screen.getByLabelText(/name/i);
+    await userEvent.type(nameInput, "Test Item");
+
+    const plannedAmountInput = screen.getByLabelText(/planned amount/i);
+    await userEvent.clear(plannedAmountInput);
+    await userEvent.type(plannedAmountInput, "100");
+
+    const saveButton = screen.getByRole("button", { name: /save/i });
+    await userEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(enqueueSnackbar).toHaveBeenCalledWith(
+        "Budget or category ID is missing",
+        {
+          variant: "error",
+        },
+      );
+    });
+  });
 });
