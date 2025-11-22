@@ -8,143 +8,126 @@ import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { useToggle } from "usehooks-ts";
-import { useSWRConfig } from "swr";
-import { useSnackbar } from "notistack";
-import { useFormik } from "formik";
-import { budgetItemValidationSchema } from "@/types/validations";
-import { deleteBudgetItem, updateBudgetItem } from "@/lib/budgets";
 import TextField from "@mui/material/TextField";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Transactions from "@/components/Transactions";
 import InputAdornment from "@mui/material/InputAdornment";
+import { useBudgetItemSummary } from "@/hooks/useBudgetItemSummary";
+import { FormikProps } from "formik";
 
 interface BudgetItemProps {
   budgetItem: BudgetItem;
   categoryName: string;
 }
 
-export default function BudgetItemSummary({
-  budgetItem,
-  categoryName,
-}: BudgetItemProps) {
-  const [value, toggle] = useToggle(false);
-  const { mutate } = useSWRConfig();
-  const { enqueueSnackbar } = useSnackbar();
+interface EditViewProps {
+  formik: FormikProps<{
+    plannedAmount: number;
+    name: string;
+  }>;
+  handleCancel: () => void;
+}
 
-  const formik = useFormik({
-    initialValues: {
-      plannedAmount: budgetItem.plannedAmount,
-      name: budgetItem.name,
-    },
-    validationSchema: budgetItemValidationSchema,
-    onSubmit: async (values, { setSubmitting, resetForm }) => {
-      try {
-        const updatedBudgetItem: Partial<BudgetItem> = {
-          plannedAmount: values.plannedAmount,
-          name: values.name,
-          categoryId: budgetItem.categoryId,
-        };
-        await updateBudgetItem(
-          `/budgets/${budgetItem.budgetId}/items/${budgetItem.id}`,
-          updatedBudgetItem,
-        );
-        await mutate(`/budgets/${budgetItem.budgetId}`);
-        enqueueSnackbar("Budget item updated", { variant: "success" });
-        toggle();
-        resetForm();
-      } catch (error) {
-        console.log(error);
-        enqueueSnackbar("Failed to update budget item", { variant: "error" });
-      } finally {
-        setSubmitting(false);
-      }
-    },
-  });
+interface ReadOnlyViewProps {
+  budgetItem: BudgetItem;
+  categoryName: string;
+  onEdit: () => void;
+  onDelete: () => void;
+}
 
-  const handleCancel = () => {
-    toggle();
-    formik.resetForm();
-  };
-
-  const handleSave = () => {
-    formik.handleSubmit();
-  };
-
-  const handleDelete = async () => {
-    try {
-      await deleteBudgetItem(
-        `/budgets/${budgetItem.budgetId}/items/${budgetItem.id}`,
-      );
-      await mutate(`/budgets/${budgetItem.budgetId}`);
-      enqueueSnackbar("Budget item deleted", { variant: "success" });
-    } catch (error) {
-      console.log(error);
-      enqueueSnackbar("Failed to delete budget item", { variant: "error" });
-    }
-  };
-
+function EditView({ formik, handleCancel }: EditViewProps) {
   return (
-    <Stack direction="row" alignItems="center">
+    <>
       <ListItem>
-        {value ? (
-          <TextField
-            required
-            label="Name"
-            name="name"
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.name && Boolean(formik.errors.name)}
-            helperText={formik.touched.name && formik.errors.name}
-            sx={{ m: 2 }}
-          />
-        ) : (
-          <Typography>{budgetItem.name}</Typography>
-        )}
+        <TextField
+          required
+          label="Name"
+          name="name"
+          value={formik.values.name}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.name && Boolean(formik.errors.name)}
+          helperText={formik.touched.name && formik.errors.name}
+          sx={{ m: 2 }}
+        />
         <Stack
           direction={"row"}
           spacing={2}
           sx={{ flexGrow: 1 }}
           justifyContent="flex-end"
         >
-          {value ? (
-            <TextField
-              required
-              label="Planned Amount"
-              name="plannedAmount"
-              value={formik.values.plannedAmount}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={
-                formik.touched.plannedAmount &&
-                Boolean(formik.errors.plannedAmount)
-              }
-              helperText={
-                formik.touched.plannedAmount && formik.errors.plannedAmount
-              }
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">$</InputAdornment>
-                  ),
-                },
-              }}
-              sx={{ m: 2 }}
-            />
-          ) : (
-            <Stack>
-              <Typography align={"center"}>Planned</Typography>
-              <Typography color={"success"} align={"center"}>
-                {formatToCurrency(budgetItem.plannedAmount)}
-              </Typography>
-            </Stack>
-          )}
+          <TextField
+            required
+            label="Planned Amount"
+            name="plannedAmount"
+            type="number"
+            value={formik.values.plannedAmount}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.plannedAmount &&
+              Boolean(formik.errors.plannedAmount)
+            }
+            helperText={
+              formik.touched.plannedAmount && formik.errors.plannedAmount
+            }
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">$</InputAdornment>
+              ),
+            }}
+            sx={{ m: 2 }}
+          />
+        </Stack>
+      </ListItem>
+      <Tooltip title="Save Budget Item">
+        <IconButton onClick={() => formik.handleSubmit()}>
+          <SaveIcon />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Cancel Edit">
+        <IconButton onClick={handleCancel}>
+          <CancelIcon />
+        </IconButton>
+      </Tooltip>
+    </>
+  );
+}
+
+function ReadOnlyView({
+  budgetItem,
+  categoryName,
+  onEdit,
+  onDelete,
+}: ReadOnlyViewProps) {
+  const remainingAmount = budgetItem.plannedAmount - budgetItem.actualAmount!;
+
+  return (
+    <>
+      <ListItem>
+        <Typography>{budgetItem.name}</Typography>
+        <Stack
+          direction={"row"}
+          spacing={2}
+          sx={{ flexGrow: 1 }}
+          justifyContent="flex-end"
+        >
+          <Stack>
+            <Typography align={"center"}>Planned</Typography>
+            <Typography
+              data-testid="planned-amount"
+              color={"success.main"}
+              align={"center"}
+            >
+              {formatToCurrency(budgetItem.plannedAmount)}
+            </Typography>
+          </Stack>
 
           <Stack>
             <Typography align={"center"}>Actual</Typography>
             <Typography
-              color={categoryName === "Income" ? "success" : "error"}
+              data-testid="actual-amount"
+              color={categoryName === "Income" ? "success.main" : "error.main"}
               align={"center"}
             >
               {formatToCurrency(budgetItem.actualAmount!)}
@@ -152,52 +135,53 @@ export default function BudgetItemSummary({
           </Stack>
 
           <Stack>
-            <Typography>Remaining</Typography>
+            <Typography align={"center"}>Remaining</Typography>
             <Typography
-              color={
-                budgetItem.plannedAmount - budgetItem.actualAmount! >= 0
-                  ? "success"
-                  : "error"
-              }
+              data-testid="remaining-amount"
+              color={remainingAmount >= 0 ? "success.main" : "error.main"}
               align={"center"}
             >
-              {formatToCurrency(
-                budgetItem.plannedAmount - budgetItem.actualAmount!,
-              )}
+              {formatToCurrency(remainingAmount)}
             </Typography>
           </Stack>
         </Stack>
       </ListItem>
-      {value ? (
-        <>
-          <Tooltip title="Save Budget Item">
-            <IconButton>
-              <SaveIcon onClick={handleSave} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Cancel Edit">
-            <IconButton>
-              <CancelIcon onClick={handleCancel} />
-            </IconButton>
-          </Tooltip>
-        </>
+      <Transactions
+        budgetId={budgetItem.budgetId!}
+        budgetItemId={budgetItem.id!}
+      />
+      <Tooltip title="Edit Budget Item">
+        <IconButton onClick={onEdit}>
+          <EditIcon />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Delete Budget Item">
+        <IconButton onClick={onDelete}>
+          <DeleteIcon />
+        </IconButton>
+      </Tooltip>
+    </>
+  );
+}
+
+export default function BudgetItemSummary({
+  budgetItem,
+  categoryName,
+}: BudgetItemProps) {
+  const { isEditing, formik, toggle, handleCancel, handleDelete } =
+    useBudgetItemSummary(budgetItem);
+
+  return (
+    <Stack direction="row" alignItems="center">
+      {isEditing ? (
+        <EditView formik={formik} handleCancel={handleCancel} />
       ) : (
-        <>
-          <Transactions
-            budgetId={budgetItem.budgetId!}
-            budgetItemId={budgetItem.id!}
-          />
-          <Tooltip title="Edit Budget Item">
-            <IconButton>
-              <EditIcon onClick={toggle} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Delete Budget Item">
-            <IconButton>
-              <DeleteIcon onClick={handleDelete} />
-            </IconButton>
-          </Tooltip>
-        </>
+        <ReadOnlyView
+          budgetItem={budgetItem}
+          categoryName={categoryName}
+          onEdit={toggle}
+          onDelete={handleDelete}
+        />
       )}
     </Stack>
   );
