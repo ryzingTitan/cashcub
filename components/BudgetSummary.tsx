@@ -1,20 +1,36 @@
 "use client";
 
+import Alert from "@mui/material/Alert";
+import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
-import BudgetSummaryTotals from "@/components/BudgetSummaryTotals";
 import BudgetCategories from "@/components/BudgetCategories";
-import { useParams } from "next/navigation";
-import useSWR from "swr";
-import { getBudgetSummary } from "@/lib/budgets";
+import BudgetSummaryTotals from "@/components/BudgetSummaryTotals";
+import { useBudgetSummary } from "@/hooks/useBudgetSummary";
 
 export default function BudgetSummary() {
-  const params = useParams();
-  const { data } = useSWR(`/budgets/${params.slug}`, getBudgetSummary);
+  const { budget, isLoading, error } = useBudgetSummary();
+
+  if (isLoading) {
+    return (
+      <Stack spacing={2} data-testid="loading-skeleton">
+        <Skeleton variant="rectangular" height={80} />
+        <Skeleton variant="rectangular" height={120} />
+      </Stack>
+    );
+  }
+
+  if (error) {
+    return (
+      <Alert severity="error" data-testid="error-alert">
+        There was an error loading the budget summary.
+      </Alert>
+    );
+  }
 
   return (
-    <Stack sx={{ pb: 7 }}>
-      <BudgetSummaryTotals budget={data} />
-      <BudgetCategories budget={data} />
+    <Stack sx={{ pb: 7 }} data-testid="budget-summary">
+      <BudgetSummaryTotals budget={budget} />
+      <BudgetCategories budget={budget} />
     </Stack>
   );
 }
