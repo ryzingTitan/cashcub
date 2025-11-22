@@ -1,55 +1,23 @@
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
-import { useToggle } from "usehooks-ts";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import DialogContent from "@mui/material/DialogContent";
 import { DatePicker } from "@mui/x-date-pickers";
-import { useState } from "react";
-import dayjs, { Dayjs } from "dayjs";
-import { useSWRConfig } from "swr";
-import { createBudget } from "@/lib/budgets";
-import { Budget } from "@/types/api";
-import { useSnackbar } from "notistack";
-import { useRouter } from "next/navigation";
+import { useAddBudget } from "@/hooks/useAddBudget";
 
 export default function AddBudgetModal() {
-  const [value, toggle] = useToggle(false);
-  const [budgetMonthAndYear, setBudgetMonthAndYear] = useState<Dayjs | null>(
-    dayjs(),
-  );
-  const { mutate } = useSWRConfig();
-  const { enqueueSnackbar } = useSnackbar();
-  const router = useRouter();
-
-  const handleSave = async () => {
-    if (!budgetMonthAndYear) {
-      return;
-    }
-
-    try {
-      const newBudget: Partial<Budget> = {
-        month: budgetMonthAndYear.month() + 1,
-        year: budgetMonthAndYear.year(),
-      };
-      const createdBudget = await createBudget("/budgets", newBudget);
-      await mutate("/budgets");
-      enqueueSnackbar("Budget created", { variant: "success" });
-      router.push(`/budgets/${createdBudget.id}`);
-      toggle();
-    } catch (error) {
-      console.log(error);
-      enqueueSnackbar("Failed to create budget", { variant: "error" });
-    }
-  };
-
-  const handleClose = () => {
-    toggle();
-    setBudgetMonthAndYear(dayjs());
-  };
+  const {
+    isOpen,
+    toggle,
+    budgetMonthAndYear,
+    setBudgetMonthAndYear,
+    handleSave,
+    handleClose,
+  } = useAddBudget();
 
   return (
     <>
@@ -58,7 +26,7 @@ export default function AddBudgetModal() {
           <AddIcon />
         </IconButton>
       </Tooltip>
-      <Dialog open={value} onClose={handleClose}>
+      <Dialog open={isOpen} onClose={handleClose}>
         <DialogTitle>Add Budget</DialogTitle>
         <DialogContent>
           <DatePicker
