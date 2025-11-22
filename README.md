@@ -25,6 +25,7 @@ Follow these instructions to get a copy of the project up and running on your lo
    ```bash
    git clone https://github.com/your-username/cashcub.git
    ```
+
 2. **Navigate to the project directory:**
    ```bash
    cd cashcub
@@ -36,9 +37,11 @@ Follow these instructions to get a copy of the project up and running on your lo
 4. **Create a `.env.local` file in the root of the project and add the necessary environment variables (see the "Environment Variables" section below).**
 
 ### Running the Application
-   ```bash
-   npm run dev
-   ```
+
+```bash
+npm run dev
+```
+
 Open http://localhost:3000 in your browser to see the application.
 
 ## Environment Variables

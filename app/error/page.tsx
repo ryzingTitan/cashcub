@@ -23,7 +23,11 @@ export default function ErrorPage() {
       <Typography variant="body1" color="textSecondary" sx={{ mb: 4 }}>
         We&apos;re sorry, but an unexpected error has occurred.
       </Typography>
-      <Button variant="contained" color="primary" onClick={() => router.push("/")}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => router.push("/")}
+      >
         HOME
       </Button>
     </Box>

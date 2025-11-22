@@ -48,7 +48,10 @@ export default function AddTransactionModal() {
     },
     validationSchema: transactionValidationSchema.concat(
       yup.object({
-        budgetItemId: yup.string().uuid().required("Budget item id is required"),
+        budgetItemId: yup
+          .string()
+          .uuid()
+          .required("Budget item id is required"),
       }),
     ),
     onSubmit: async (values, { setSubmitting, resetForm }) => {
