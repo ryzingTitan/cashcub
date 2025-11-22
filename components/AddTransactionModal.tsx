@@ -3,11 +3,7 @@
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import Tooltip from "@mui/material/Tooltip";
-import useSWR, { useSWRConfig } from "swr";
-import { useSnackbar } from "notistack";
-import { useFormik } from "formik";
-import { Transaction, TransactionType } from "@/types/api";
-import { useToggle } from "usehooks-ts";
+import useSWR from "swr";
 import Dialog from "@mui/material/Dialog";
 import Box from "@mui/material/Box";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -16,11 +12,7 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-import dayjs, { Dayjs } from "dayjs";
-import * as yup from "yup";
 import { useParams } from "next/navigation";
-import { transactionValidationSchema } from "@/types/validations";
-import { createTransaction } from "@/lib/transactions";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
@@ -29,62 +21,27 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { getBudgetSummary } from "@/lib/budgets";
 import { useState } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
+import { useAddTransactionForm } from "@/hooks/useAddTransactionForm";
 
 export default function AddTransactionModal() {
-  const [value, toggle] = useToggle(false);
-  const [transactionDate, setTransactionDate] = useState<Dayjs | null>(dayjs());
-  const { mutate } = useSWRConfig();
-  const { enqueueSnackbar } = useSnackbar();
+  const [isOpen, setIsOpen] = useState(false);
   const params = useParams();
   const { data } = useSWR(`/budgets/${params.slug}`, getBudgetSummary);
+  const { formik, transactionDate, setTransactionDate } =
+    useAddTransactionForm();
 
-  const formik = useFormik({
-    initialValues: {
-      amount: 0,
-      transactionType: "",
-      merchant: "",
-      notes: "",
-      budgetItemId: "",
-    },
-    validationSchema: transactionValidationSchema.concat(
-      yup.object({
-        budgetItemId: yup
-          .string()
-          .uuid()
-          .required("Budget item id is required"),
-      }),
-    ),
-    onSubmit: async (values, { setSubmitting, resetForm }) => {
-      try {
-        const newTransaction: Partial<Transaction> = {
-          date: transactionDate!.toISOString(),
-          amount: Number(values.amount),
-          transactionType: values.transactionType as TransactionType,
-          merchant: values.merchant.trim() === "" ? null : values.merchant,
-          notes: values.notes.trim() === "" ? null : values.notes,
-        };
-        await createTransaction(
-          `/budgets/${params.slug}/items/${values.budgetItemId}/transactions`,
-          newTransaction,
-        );
-        await mutate(
-          `/budgets/${params.slug}/items/${values.budgetItemId}/transactions`,
-        );
-        enqueueSnackbar("Transaction created", { variant: "success" });
-        toggle();
-        resetForm();
-      } catch (error) {
-        console.log(error);
-        enqueueSnackbar("Failed to create transaction", { variant: "error" });
-      } finally {
-        setSubmitting(false);
-      }
-    },
-  });
-
+  const handleOpen = () => setIsOpen(true);
   const handleClose = () => {
-    toggle();
+    setIsOpen(false);
     formik.resetForm();
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await formik.handleSubmit();
+    if (formik.isValid) {
+      handleClose();
+    }
   };
 
   return (
@@ -93,13 +50,13 @@ export default function AddTransactionModal() {
         <Fab
           color="primary"
           sx={{ position: "fixed", bottom: 16, right: 16 }}
-          onClick={toggle}
+          onClick={handleOpen}
         >
           <AddIcon />
         </Fab>
       </Tooltip>
-      <Dialog open={value} onClose={handleClose}>
-        <Box component="form" onSubmit={formik.handleSubmit}>
+      <Dialog open={isOpen} onClose={handleClose}>
+        <Box component="form" onSubmit={handleSubmit}>
           <DialogTitle>Add Transaction</DialogTitle>
           <DialogContent>
             <Stack spacing={2} sx={{ m: 2 }}>
@@ -141,8 +98,8 @@ export default function AddTransactionModal() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={
-                    formik.touched.budgetItemId &&
-                    Boolean(formik.errors.budgetItemId)
+                    formik.touched.transactionType &&
+                    Boolean(formik.errors.transactionType)
                   }
                 >
                   <MenuItem value="EXPENSE">EXPENSE</MenuItem>
@@ -158,12 +115,10 @@ export default function AddTransactionModal() {
                 onBlur={formik.handleBlur}
                 error={formik.touched.amount && Boolean(formik.errors.amount)}
                 helperText={formik.touched.amount && formik.errors.amount}
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">$</InputAdornment>
-                    ),
-                  },
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">$</InputAdornment>
+                  ),
                 }}
               />
               <TextField
