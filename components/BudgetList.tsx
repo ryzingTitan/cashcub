@@ -1,54 +1,41 @@
-import useSWR from "swr";
-import { getAllBudgets } from "@/lib/budgets";
+"use client";
+
 import Autocomplete from "@mui/material/Autocomplete";
+import Skeleton from "@mui/material/Skeleton";
 import TextField from "@mui/material/TextField";
 
-import dayjs from "dayjs";
-import { useParams, useRouter } from "next/navigation";
-import { Budget } from "@/types/api";
-import { useEffect, useState } from "react";
+import { useBudgetList } from "@/hooks/useBudgetList";
 
 export default function BudgetList() {
-  const { data, isLoading } = useSWR(`/budgets`, getAllBudgets);
-  const params = useParams();
-  const router = useRouter();
-  const [value, setValue] = useState<Budget | null>(
-    data?.find((budget) => budget.id === params.slug) ?? null,
-  );
+  const {
+    budgets,
+    isLoading,
+    selectedBudget,
+    handleBudgetChange,
+    getOptionLabel,
+  } = useBudgetList();
 
-  useEffect(() => {
-    setValue(data?.find((budget) => budget.id === params.slug) ?? null);
-  }, [params.slug, data]);
+  if (isLoading) {
+    return (
+      <Skeleton
+        variant="rectangular"
+        width={300}
+        height={56}
+        data-testid="budget-list-skeleton"
+      />
+    );
+  }
 
   return (
     <Autocomplete
       disablePortal
-      value={value}
-      options={
-        data?.sort((a, b) => {
-          if (a.year !== b.year) {
-            return a.year - b.year;
-          }
-
-          return a.month - b.month;
-        }) ?? []
-      }
+      value={selectedBudget}
+      options={budgets}
       loading={isLoading}
       sx={{ width: 300 }}
-      getOptionLabel={(option) =>
-        `${dayjs()
-          .month(option.month - 1)
-          .format("MMMM")} ${option.year}`
-      }
+      getOptionLabel={getOptionLabel}
       renderInput={(params) => <TextField {...params} label="Budget" />}
-      onChange={(_event, value) => {
-        setValue(value);
-        if (!value) {
-          router.push("/budgets");
-        } else {
-          router.push(`/budgets/${value?.id}`);
-        }
-      }}
+      onChange={handleBudgetChange}
     />
   );
 }
