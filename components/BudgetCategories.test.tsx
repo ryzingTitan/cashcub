@@ -51,7 +51,7 @@ describe("BudgetCategories", () => {
     render(
       <SWRConfig value={{ provider: () => new Map() }}>
         <BudgetCategories budget={mockBudget} />
-      </SWRConfig>
+      </SWRConfig>,
     );
     expect(screen.getByTestId("loading-skeleton")).toBeInTheDocument();
   });
@@ -64,16 +64,14 @@ describe("BudgetCategories", () => {
         }}
       >
         <BudgetCategories budget={mockBudget} />
-      </SWRConfig>
+      </SWRConfig>,
     );
 
     expect(await screen.findByText("Groceries")).toBeInTheDocument();
     expect(screen.getByText("Utilities")).toBeInTheDocument();
     expect(screen.getByText("Milk")).toBeInTheDocument();
     expect(screen.getByText("Electricity")).toBeInTheDocument();
-    expect(
-      screen.getAllByTestId("add-budget-item-modal-mock")
-    ).toHaveLength(2);
+    expect(screen.getAllByTestId("add-budget-item-modal-mock")).toHaveLength(2);
   });
 
   it("should render no categories when data is empty", async () => {
@@ -84,7 +82,7 @@ describe("BudgetCategories", () => {
         }}
       >
         <BudgetCategories budget={mockBudget} />
-      </SWRConfig>
+      </SWRConfig>,
     );
 
     expect(await screen.queryByTestId(/category-card-/)).toBeNull();
