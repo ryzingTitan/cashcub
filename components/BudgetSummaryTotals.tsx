@@ -2,29 +2,27 @@ import Stack from "@mui/material/Stack";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import { formatToCurrency } from "@/lib/utils";
-import { useParams } from "next/navigation";
-import useSWR from "swr";
+import { useMemo } from "react";
 import { BudgetSummary } from "@/types/api";
 
 interface BudgetSummaryTotalsProps {
   budget?: BudgetSummary | undefined;
+  isLoading: boolean;
 }
 
 export default function BudgetSummaryTotals({
   budget,
+  isLoading,
 }: BudgetSummaryTotalsProps) {
-  const params = useParams();
-  const { isLoading } = useSWR(`/budgets/${params.slug}`);
-
-  const calculateGainOrLoss = (
-    actualIncome: number | undefined,
-    actualExpenses: number | undefined,
-  ): number => {
-    if (actualIncome === undefined || actualExpenses === undefined) {
+  const gainOrLoss = useMemo(() => {
+    if (
+      budget?.actualIncome === undefined ||
+      budget?.actualExpenses === undefined
+    ) {
       return 0;
     }
-    return actualIncome - actualExpenses;
-  };
+    return budget.actualIncome - budget.actualExpenses;
+  }, [budget?.actualIncome, budget?.actualExpenses]);
 
   return (
     <Stack direction={"row"} sx={{ m: 2 }} justifyContent={"space-around"}>
@@ -32,26 +30,48 @@ export default function BudgetSummaryTotals({
         <Typography align={"center"} variant={"h5"}>
           Expected Income
         </Typography>
-        <Typography color={"success"} align={"center"} variant={"h6"}>
-          {isLoading ? <Skeleton /> : formatToCurrency(budget?.expectedIncome)}
+        <Typography
+          color={"success.main"}
+          align={"center"}
+          variant={"h6"}
+          data-testid={"expected-income"}
+        >
+          {isLoading ? (
+            <Skeleton width={100} data-testid="skeleton" />
+          ) : (
+            formatToCurrency(budget?.expectedIncome)
+          )}
         </Typography>
       </Stack>
-
       <Stack>
         <Typography align={"center"} variant={"h5"}>
           Actual Income
         </Typography>
-        <Typography color={"success"} align={"center"} variant={"h6"}>
-          {isLoading ? <Skeleton /> : formatToCurrency(budget?.actualIncome)}
+        <Typography
+          color={"success.main"}
+          align={"center"}
+          variant={"h6"}
+          data-testid={"actual-income"}
+        >
+          {isLoading ? (
+            <Skeleton width={100} data-testid="skeleton" />
+          ) : (
+            formatToCurrency(budget?.actualIncome)
+          )}
         </Typography>
       </Stack>
       <Stack>
         <Typography align={"center"} variant={"h5"}>
           Expected Expenses
         </Typography>
-        <Typography color={"error"} align={"center"} variant={"h6"}>
+        <Typography
+          color={"error"}
+          align={"center"}
+          variant={"h6"}
+          data-testid={"expected-expenses"}
+        >
           {isLoading ? (
-            <Skeleton />
+            <Skeleton width={100} data-testid="skeleton" />
           ) : (
             formatToCurrency(budget?.expectedExpenses)
           )}
@@ -61,8 +81,17 @@ export default function BudgetSummaryTotals({
         <Typography align={"center"} variant={"h5"}>
           Actual Expenses
         </Typography>
-        <Typography color={"error"} align={"center"} variant={"h6"}>
-          {isLoading ? <Skeleton /> : formatToCurrency(budget?.actualExpenses)}
+        <Typography
+          color={"error"}
+          align={"center"}
+          variant={"h6"}
+          data-testid={"actual-expenses"}
+        >
+          {isLoading ? (
+            <Skeleton width={100} data-testid="skeleton" />
+          ) : (
+            formatToCurrency(budget?.actualExpenses)
+          )}
         </Typography>
       </Stack>
       <Stack>
@@ -70,21 +99,15 @@ export default function BudgetSummaryTotals({
           Gain/Loss
         </Typography>
         <Typography
-          color={
-            calculateGainOrLoss(budget?.actualIncome, budget?.actualExpenses) >=
-            0
-              ? "success"
-              : "error"
-          }
+          color={gainOrLoss >= 0 ? "success.main" : "error"}
           align={"center"}
           variant={"h6"}
+          data-testid={"gain-loss"}
         >
           {isLoading ? (
-            <Skeleton />
+            <Skeleton width={100} data-testid="skeleton" />
           ) : (
-            formatToCurrency(
-              calculateGainOrLoss(budget?.actualIncome, budget?.actualExpenses),
-            )
+            formatToCurrency(gainOrLoss)
           )}
         </Typography>
       </Stack>
