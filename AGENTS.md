@@ -70,10 +70,10 @@ This project is a **Next.js** application built with **TypeScript**.
 ## 7. Component Structure Example
 
 ```tsx
-'use client'; // Only if interactive
+"use client"; // Only if interactive
 
-import { Box, Typography, Button } from '@mui/material';
-import { useState } from 'react';
+import { Box, Typography, Button } from "@mui/material";
+import { useState } from "react";
 
 interface CounterProps {
   initialCount?: number;
@@ -83,25 +83,24 @@ export const Counter = ({ initialCount = 0 }: CounterProps) => {
   const [count, setCount] = useState(initialCount);
 
   return (
-    <Box sx={{ p: 2, border: '1px solid', borderColor: 'divider' }}>
+    <Box sx={{ p: 2, border: "1px solid", borderColor: "divider" }}>
       <Typography variant="h4" gutterBottom>
         Count: {count}
       </Typography>
-      <Button
-        variant="contained"
-        onClick={() => setCount((c) => c + 1)}
-      >
+      <Button variant="contained" onClick={() => setCount((c) => c + 1)}>
         Increment
       </Button>
     </Box>
   );
 };
+```
 
 ## Verification Checklist
+
 Before marking a task as complete, verify:
+
 - [ ] `npm run type-check` (or `tsc --noEmit`) passes.
 - [ ] `npm run lint` passes with no errors.
 - [ ] `npm run format` runs and formats any files that have been changed.
 - [ ] `npm run test` passes (all suites green).
 - [ ] `npm run build` completes successfully.
-```
