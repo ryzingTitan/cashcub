@@ -29,7 +29,7 @@ export default function BudgetSummary() {
 
   return (
     <Stack sx={{ pb: 7 }} data-testid="budget-summary">
-      <BudgetSummaryTotals budget={budget} isLoading={isLoading}/>
+      <BudgetSummaryTotals budget={budget} isLoading={isLoading} />
       <BudgetCategories budget={budget} />
     </Stack>
   );
