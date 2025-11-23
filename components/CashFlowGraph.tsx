@@ -79,23 +79,20 @@ export default function CashFlowGraph({
           yAxis={[
             {
               width: 75,
-              valueFormatter: (value: number | null) =>
-                formatToCurrency(value),
+              valueFormatter: (value: number | null) => formatToCurrency(value),
             },
           ]}
           series={[
             {
               dataKey: "actualIncome",
               label: "Income",
-              valueFormatter: (value: number | null) =>
-                formatToCurrency(value),
+              valueFormatter: (value: number | null) => formatToCurrency(value),
               area: true,
             },
             {
               dataKey: "actualExpenses",
               label: "Expenses",
-              valueFormatter: (value: number | null) =>
-                formatToCurrency(value),
+              valueFormatter: (value: number | null) => formatToCurrency(value),
               area: true,
             },
           ]}
