@@ -4,14 +4,13 @@ import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
-import { useState } from "react";
 import Paper from "@mui/material/Paper";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function Footer() {
   const pathname = usePathname();
-  const [value, setValue] = useState(pathname.includes("analytics") ? 1 : 0);
   const router = useRouter();
+  const value = pathname.includes("analytics") ? 1 : 0;
 
   return (
     <Paper
@@ -22,8 +21,6 @@ export default function Footer() {
         showLabels
         value={value}
         onChange={(_event, newValue) => {
-          setValue(newValue);
-
           switch (newValue) {
             case 0:
               router.push("/budgets");
