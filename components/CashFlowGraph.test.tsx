@@ -62,7 +62,9 @@ describe("CashFlowGraph", () => {
 
   it("renders empty state", () => {
     render(<CashFlowGraph budgets={[]} loading={false} />);
-    expect(screen.getByText("No cash flow data to display.")).toBeInTheDocument();
+    expect(
+      screen.getByText("No cash flow data to display."),
+    ).toBeInTheDocument();
   });
 
   it("renders the chart with correct data", () => {
