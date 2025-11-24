@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import AppBar from "@mui/material/AppBar";
 import Avatar from "@mui/material/Avatar";
 import Toolbar from "@mui/material/Toolbar";
@@ -10,17 +12,20 @@ import Image from "next/image";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { logoutUrl } from "@/lib/auth0";
-import { Alert, Skeleton, Typography } from "@mui/material";
+import { Skeleton, Typography } from "@mui/material";
 
 export default function Header() {
   const { user, isLoading, error } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (error) {
+      router.push("/error");
+    }
+  }, [error, router]);
 
   if (error) {
-    return (
-      <Alert severity="error">
-        Something went wrong. Please try again later.
-      </Alert>
-    );
+    return null;
   }
 
   return (

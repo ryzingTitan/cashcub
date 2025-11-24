@@ -5,12 +5,14 @@ import Stack from "@mui/material/Stack";
 import AddBudgetModal from "@/components/AddBudgetModal";
 import CloneBudgetModal from "@/components/CloneBudgetModal";
 import BudgetsLayout from "@/components/budgets/BudgetsLayout";
+import { useBudgetList } from "@/hooks/useBudgetList";
 
 export default function BudgetLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { selectedBudget } = useBudgetList();
   return (
     <BudgetsLayout>
       <Stack
@@ -22,7 +24,7 @@ export default function BudgetLayout({
       >
         <BudgetList />
         <AddBudgetModal />
-        <CloneBudgetModal />
+        <CloneBudgetModal budgetId={selectedBudget?.id} />
       </Stack>
       {children}
     </BudgetsLayout>

@@ -1,6 +1,7 @@
 "use client";
 
-import Alert from "@mui/material/Alert";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import BudgetCategories from "@/components/BudgetCategories";
@@ -9,6 +10,13 @@ import { useBudgetSummary } from "@/hooks/useBudgetSummary";
 
 export default function BudgetSummary() {
   const { budget, isLoading, error } = useBudgetSummary();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (error) {
+      router.push("/error");
+    }
+  }, [error, router]);
 
   if (isLoading) {
     return (
@@ -20,11 +28,7 @@ export default function BudgetSummary() {
   }
 
   if (error) {
-    return (
-      <Alert severity="error" data-testid="error-alert">
-        There was an error loading the budget summary.
-      </Alert>
-    );
+    return null;
   }
 
   return (

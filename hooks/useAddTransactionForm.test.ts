@@ -48,7 +48,7 @@ describe("useAddTransactionForm", () => {
     }: {
       setSubmitting: (isSubmitting: boolean) => void;
       resetForm: () => void;
-    }
+    },
   ) => Promise<void>;
 
   beforeEach(() => {
@@ -96,10 +96,10 @@ describe("useAddTransactionForm", () => {
         transactionType: "EXPENSE",
         merchant: "Test Merchant",
         notes: "Test Note",
-      }
+      },
     );
     expect(mutate).toHaveBeenCalledWith(
-      `/budgets/budget123/items/item123/transactions`
+      `/budgets/budget123/items/item123/transactions`,
     );
     expect(enqueueSnackbar).toHaveBeenCalledWith("Transaction created", {
       variant: "success",
@@ -109,7 +109,7 @@ describe("useAddTransactionForm", () => {
 
   it("should handle API error on submission", async () => {
     vi.spyOn(transactions, "createTransaction").mockRejectedValue(
-      new Error("API Error")
+      new Error("API Error"),
     );
     renderHook(() => useAddTransactionForm());
     const values = {
@@ -124,8 +124,11 @@ describe("useAddTransactionForm", () => {
       await onSubmit(values, { setSubmitting, resetForm });
     });
 
-    expect(enqueueSnackbar).toHaveBeenCalledWith("Failed to create transaction", {
-      variant: "error",
-    });
+    expect(enqueueSnackbar).toHaveBeenCalledWith(
+      "Failed to create transaction",
+      {
+        variant: "error",
+      },
+    );
   });
 });

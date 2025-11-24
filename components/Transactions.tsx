@@ -52,21 +52,7 @@ const AmountEditCell = (props: GridRenderEditCellParams) => {
   );
 };
 
-interface EditToolbarProps {
-  onAddNew: () => void;
-}
-
-function EditToolbar({ onAddNew }: EditToolbarProps) {
-  return (
-    <Toolbar>
-      <Tooltip title="Add transaction">
-        <IconButton onClick={onAddNew} size="small">
-          <AddIcon />
-        </IconButton>
-      </Tooltip>
-    </Toolbar>
-  );
-}
+import { GridToolbarContainer } from "@mui/x-data-grid";
 interface TransactionsProps {
   budgetId: string;
   budgetItemId: string;
@@ -224,11 +210,16 @@ export default function Transactions({
             onRowModesModelChange={handleRowModesModelChange}
             onRowEditStop={handleRowEditStop}
             processRowUpdate={processRowUpdate}
-            slots={{ toolbar: EditToolbar }}
-            slotProps={{
-              toolbar: {
-                onAddNew: handleAddNew,
-              },
+            slots={{
+              toolbar: () => (
+                <GridToolbarContainer>
+                  <Tooltip title="Add transaction">
+                    <IconButton onClick={handleAddNew} size="small">
+                      <AddIcon />
+                    </IconButton>
+                  </Tooltip>
+                </GridToolbarContainer>
+              ),
             }}
             showToolbar
           />

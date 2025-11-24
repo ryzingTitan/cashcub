@@ -9,7 +9,9 @@ import { useSnackbar } from "notistack";
 import { useRouter } from "next/navigation";
 import { useToggle } from "usehooks-ts";
 
-export function useCloneBudget(budgetId: string | string[] | undefined) {
+export function useCloneBudget(
+  budgetId: string | string[] | undefined | null,
+) {
   const [isModalOpen, toggleModal] = useToggle(false);
   const [budgetMonthAndYear, setBudgetMonthAndYear] = useState<Dayjs | null>(
     dayjs(),

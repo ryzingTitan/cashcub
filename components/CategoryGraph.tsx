@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { PieChart } from "@mui/x-charts";
@@ -21,9 +21,11 @@ export default function CategoryGraph({ budgets }: CategoryGraphProps) {
     error,
   } = useSWR("/categories", getAllCategories);
 
-  if (error) {
-    router.push("/error");
-  }
+  useEffect(() => {
+    if (error) {
+      router.push("/error");
+    }
+  }, [error, router]);
 
   const pieData = useMemo(() => {
     if (!budgets || !categories) {

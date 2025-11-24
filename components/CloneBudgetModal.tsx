@@ -14,7 +14,7 @@ import { useCloneBudget } from "@/hooks/useCloneBudget";
 export default function CloneBudgetModal({
   budgetId,
 }: {
-  budgetId: string | string[] | undefined;
+  budgetId: string | string[] | undefined | null;
 }) {
   const {
     isModalOpen,
