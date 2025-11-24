@@ -16,7 +16,6 @@ import {
   GridRowModes,
   GridEventListener,
   GridRowEditStopReasons,
-  Toolbar,
   useGridApiContext,
   GridRenderEditCellParams,
 } from "@mui/x-data-grid";
@@ -222,6 +221,7 @@ export default function Transactions({
               ),
             }}
             showToolbar
+            autosizeOnMount
           />
         </DialogContent>
       </Dialog>
