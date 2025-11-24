@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import BudgetList from "./BudgetList";
 import { useBudgetList } from "@/hooks/useBudgetList";
+import { Budget } from "@/types/api";
 
 // Mock the hook
 vi.mock("@/hooks/useBudgetList");
@@ -33,7 +34,7 @@ describe("BudgetList", () => {
       { id: "1", year: 2024, month: 1, name: "January 2024" },
       { id: "2", year: 2024, month: 2, name: "February 2024" },
     ];
-    const getOptionLabel = (option: any) => `${option.name}`;
+    const getOptionLabel = (option: Budget) => `${option.name}`;
 
     mockedUseBudgetList.mockReturnValue({
       budgets: mockBudgets,

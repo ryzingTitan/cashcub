@@ -8,7 +8,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import AddBudgetItemModal from "@/components/AddBudgetItemModal";
 import Divider from "@mui/material/Divider";
-import { BudgetSummary } from "@/types/api";
+import { BudgetItem, BudgetSummary } from "@/types/api";
 import List from "@mui/material/List";
 import BudgetItemSummary from "@/components/BudgetItemSummary";
 
@@ -66,7 +66,7 @@ export default function BudgetCategories({ budget }: BudgetCategoriesProps) {
                 </Stack>
                 <Divider sx={{ m: 2 }} />
                 <List>
-                  {itemsForCategory.map((budgetItem) => (
+                  {itemsForCategory.map((budgetItem: BudgetItem) => (
                     <BudgetItemSummary
                       budgetItem={budgetItem}
                       categoryName={item.name}

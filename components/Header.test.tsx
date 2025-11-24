@@ -3,6 +3,12 @@ import { render, screen } from "@testing-library/react";
 import Header from "./Header";
 import { useUser } from "@auth0/nextjs-auth0/client";
 
+const mockPush = vi.fn();
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: mockPush,
+  }),
+}));
 vi.mock("@auth0/nextjs-auth0/client", () => ({
   useUser: vi.fn(),
 }));
@@ -49,7 +55,7 @@ describe("Header", () => {
     expect(screen.queryByText("Welcome,")).not.toBeInTheDocument();
   });
 
-  it("renders an error message when there is an error", () => {
+  it("redirects to the error page when there is an error", () => {
     vi.mocked(useUser).mockReturnValue({
       user: undefined,
       isLoading: false,
@@ -58,8 +64,6 @@ describe("Header", () => {
 
     render(<Header />);
 
-    expect(
-      screen.getByText("Something went wrong. Please try again later."),
-    ).toBeInTheDocument();
+    expect(mockPush).toHaveBeenCalledWith("/error");
   });
 });

@@ -68,10 +68,8 @@ export const useTransactions = (budgetId: string, budgetItemId: string) => {
 
       try {
         if (toRemove && !String(toRemove.id).startsWith("new-")) {
-          await mutate(deleteTransaction(swrKey, String(toRemove.id)), {
-            optimisticData,
-            revalidate: false,
-          });
+          mutate(optimisticData, false);
+          deleteTransaction(swrKey, String(toRemove.id));
           enqueueSnackbar("Transaction deleted", { variant: "success" });
         }
       } catch (e) {
@@ -96,24 +94,24 @@ export const useTransactions = (budgetId: string, budgetItemId: string) => {
       try {
         if (String(newRow.id).startsWith("new-")) {
           // Create
-          await mutate(createTransaction(swrKey, payload), {
-            optimisticData: [newRow as Transaction, ...(data || [])],
-            revalidate: false,
-            populateCache: (created, current) => {
-              return [created, ...current!];
-            },
-          });
+          const created = await createTransaction(swrKey, payload);
+          mutate(
+            (currentData) => [created, ...(currentData || [])],
+            false,
+          );
           enqueueSnackbar("Transaction created", { variant: "success" });
         } else {
           // Update
-          await mutate(updateTransaction(swrKey, String(oldRow.id), payload), {
-            optimisticData: (data || []).map((r) =>
-              r.id === newRow.id ? (newRow as Transaction) : r,
-            ),
-            revalidate: false,
-            populateCache: (updated, current) =>
-              current!.map((r) => (r.id === updated.id ? updated : r)),
-          });
+          const updated = await updateTransaction(
+            swrKey,
+            String(oldRow.id),
+            payload,
+          );
+          mutate(
+            (currentData) =>
+              currentData?.map((r) => (r.id === updated.id ? updated : r)),
+            false,
+          );
           enqueueSnackbar("Transaction updated", { variant: "success" });
         }
         return newRow;
@@ -140,7 +138,7 @@ export const useTransactions = (budgetId: string, budgetItemId: string) => {
     };
 
     // Use mutate to add to the local cache without revalidating
-    mutate([newRow, ...(data || [])], false);
+    mutate([newRow as Transaction, ...(data || [])], false);
 
     setRowModesModel((prev) => ({
       ...prev,

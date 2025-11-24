@@ -18,7 +18,9 @@ vi.mock("next/navigation", () => ({
 
 // Mock the Material-UI component path.
 vi.mock("@mui/material/BottomNavigation", () => ({
-  default: vi.fn((props) => <div data-testid="bottom-nav">{props.children}</div>),
+  default: vi.fn((props) => (
+    <div data-testid="bottom-nav">{props.children}</div>
+  )),
 }));
 
 // Provide a simple mock for the child component

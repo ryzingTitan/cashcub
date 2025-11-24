@@ -5,6 +5,12 @@ import { useBudgetSummary } from "@/hooks/useBudgetSummary";
 import { BudgetSummary as BudgetSummaryType } from "@/types/api";
 
 vi.mock("@/hooks/useBudgetSummary");
+const mockPush = vi.fn();
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: mockPush,
+  }),
+}));
 vi.mock("@/components/BudgetSummaryTotals", () => ({
   default: ({ budget }: { budget: BudgetSummaryType | undefined }) => (
     <div data-testid="budget-summary-totals">{JSON.stringify(budget)}</div>
@@ -33,7 +39,7 @@ describe("BudgetSummary", () => {
     expect(screen.getByTestId("loading-skeleton")).toBeInTheDocument();
   });
 
-  it("should render the error alert when there is an error", () => {
+  it("should redirect to the error page when there is an error", () => {
     vi.mocked(useBudgetSummary).mockReturnValue({
       budget: undefined,
       isLoading: false,
@@ -42,7 +48,7 @@ describe("BudgetSummary", () => {
 
     render(<BudgetSummary />);
 
-    expect(screen.getByTestId("error-alert")).toBeInTheDocument();
+    expect(mockPush).toHaveBeenCalledWith("/error");
   });
 
   it("should render the budget summary when data is loaded", () => {

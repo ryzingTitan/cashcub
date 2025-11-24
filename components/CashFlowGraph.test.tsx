@@ -2,10 +2,11 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import CashFlowGraph from "./CashFlowGraph";
 import { BudgetSummary } from "@/types/api";
+import { LineChartProps } from "@mui/x-charts";
 
 // Mock the LineChart component
 vi.mock("@mui/x-charts", () => ({
-  LineChart: (props: any) => {
+  LineChart: (props: LineChartProps) => {
     if (props.loading) {
       return <div data-testid="loading-chart">Loading...</div>;
     }
