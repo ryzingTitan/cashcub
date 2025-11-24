@@ -56,7 +56,6 @@ export default function Header() {
             </>
           ) : user ? (
             <>
-              <Typography>Welcome, {user.name}</Typography>
               <Tooltip title={user?.name ?? ""}>
                 <Avatar
                   src={user?.picture ?? undefined}
