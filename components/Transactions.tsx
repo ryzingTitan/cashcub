@@ -112,10 +112,14 @@ export default function Transactions({
         },
         editable: true,
         type: "date",
+        headerAlign: "center",
+        align: "center",
       },
       {
         field: "amount",
         headerName: "Amount",
+        headerAlign: "center",
+        align: "center",
         valueFormatter: (value?: number) => {
           if (value == null) {
             return "";
@@ -128,16 +132,32 @@ export default function Transactions({
       {
         field: "transactionType",
         headerName: "Type",
+        headerAlign: "center",
+        align: "center",
         editable: true,
         type: "singleSelect",
         valueOptions: ["EXPENSE", "INCOME"],
       },
-      { field: "merchant", headerName: "Merchant", editable: true },
-      { field: "notes", headerName: "Notes", editable: true },
+      {
+        field: "merchant",
+        headerName: "Merchant",
+        headerAlign: "center",
+        align: "center",
+        editable: true,
+      },
+      {
+        field: "notes",
+        headerName: "Notes",
+        headerAlign: "center",
+        align: "center",
+        editable: true,
+      },
       {
         field: "actions",
         type: "actions",
         headerName: "Actions",
+        headerAlign: "center",
+        align: "center",
         getActions: ({ id }) => {
           const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
           if (isInEditMode) {
