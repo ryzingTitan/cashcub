@@ -159,4 +159,48 @@ describe("BudgetItemSummary", () => {
       });
     });
   });
+
+  it("should display updated values in edit mode after a save", async () => {
+    const { rerender } = render(
+      <SWRConfig value={{ provider: () => new Map() }}>
+        <BudgetItemSummary budgetItem={mockBudgetItem} categoryName="Expense" />
+      </SWRConfig>,
+    );
+
+    // First edit
+    await userEvent.click(
+      screen.getByRole("button", { name: /edit budget item/i }),
+    );
+    const plannedAmountInput = screen.getByLabelText(/planned amount/i);
+    await userEvent.clear(plannedAmountInput);
+    await userEvent.type(plannedAmountInput, "600");
+    await userEvent.click(
+      screen.getByRole("button", { name: /save budget item/i }),
+    );
+
+    await waitFor(() => {
+      expect(mockEnqueueSnackbar).toHaveBeenCalledWith("Budget item updated", {
+        variant: "success",
+      });
+    });
+
+    // Rerender with updated prop
+    const updatedBudgetItem = { ...mockBudgetItem, plannedAmount: 600 };
+    rerender(
+      <SWRConfig value={{ provider: () => new Map() }}>
+        <BudgetItemSummary
+          budgetItem={updatedBudgetItem}
+          categoryName="Expense"
+        />
+      </SWRConfig>,
+    );
+
+    // Second edit
+    await userEvent.click(
+      screen.getByRole("button", { name: /edit budget item/i }),
+    );
+
+    // Assert the new value is in the form
+    expect(screen.getByLabelText(/planned amount/i)).toHaveValue(600);
+  });
 });
