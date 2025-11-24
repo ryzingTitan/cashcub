@@ -1,8 +1,10 @@
+"use client";
+
 import { useFormik } from "formik";
 import { useSnackbar } from "notistack";
 import { useSWRConfig } from "swr";
 import { useToggle } from "usehooks-ts";
-import { createBudgetItem } from "@/lib/budgets";
+import { fetchWithAuth } from "@/lib/api";
 import { BudgetItem } from "@/types/api";
 import { budgetItemValidationSchema } from "@/types/validations";
 
@@ -40,8 +42,11 @@ export function useAddBudgetItem({
           name: values.name,
           categoryId: categoryId,
         };
-        await createBudgetItem(`/budgets/${budgetId}/items`, newBudgetItem);
-        await mutate(`/budgets/${budgetId}`);
+        await fetchWithAuth(`/api/budgets/${budgetId}/items`, {
+          method: "POST",
+          body: newBudgetItem,
+        });
+        await mutate(`/api/budgets/${budgetId}`);
         enqueueSnackbar("Budget item created", { variant: "success" });
         toggle();
         resetForm();

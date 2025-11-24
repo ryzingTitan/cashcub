@@ -8,7 +8,7 @@ import { useSWRConfig } from "swr";
 import { useSnackbar } from "notistack";
 import dayjs, { Dayjs } from "dayjs";
 import { Transaction, TransactionType } from "@/types/api";
-import { createTransaction } from "@/lib/transactions";
+import { fetchWithAuth } from "@/lib/api";
 import { useState } from "react";
 
 export const useAddTransactionForm = () => {
@@ -42,12 +42,15 @@ export const useAddTransactionForm = () => {
           merchant: values.merchant.trim() === "" ? null : values.merchant,
           notes: values.notes.trim() === "" ? null : values.notes,
         };
-        await createTransaction(
-          `/budgets/${params.slug}/items/${values.budgetItemId}/transactions`,
-          newTransaction,
+        await fetchWithAuth(
+          `/api/budgets/${params.slug}/items/${values.budgetItemId}/transactions`,
+          {
+            method: "POST",
+            body: newTransaction,
+          },
         );
         await mutate(
-          `/budgets/${params.slug}/items/${values.budgetItemId}/transactions`,
+          `/api/budgets/${params.slug}/items/${values.budgetItemId}/transactions`,
         );
         enqueueSnackbar("Transaction created", { variant: "success" });
         resetForm();

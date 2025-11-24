@@ -1,13 +1,13 @@
+"use client";
+
 import { useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
-import useSWR from "swr";
 import dayjs from "dayjs";
-
-import { getAllBudgets } from "@/lib/budgets";
 import { Budget } from "@/types/api";
+import { useApi } from "@/hooks/useApi";
 
 export function useBudgetList() {
-  const { data, isLoading, error } = useSWR(`/budgets`, getAllBudgets);
+  const { data, isLoading, error } = useApi<Budget[]>(`/api/budgets`);
   const params = useParams();
   const router = useRouter();
 

@@ -1,17 +1,13 @@
 "use client";
 
-import { getBudgetSummary } from "@/lib/budgets";
 import { BudgetSummary as BudgetSummaryType } from "@/types/api";
 import { useParams } from "next/navigation";
-import useSWR from "swr";
+import { useApi } from "./useApi";
 
 export const useBudgetSummary = () => {
   const params = useParams();
-  const key = params.slug ? `/budgets/${params.slug}` : null;
-  const { data, isLoading, error } = useSWR<BudgetSummaryType>(
-    key,
-    getBudgetSummary,
-  );
+  const key = params.slug ? `/api/budgets/${params.slug}` : null;
+  const { data, isLoading, error } = useApi<BudgetSummaryType>(key);
 
   return {
     budget: data,

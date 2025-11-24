@@ -1,3 +1,5 @@
+"use client";
+
 import {
   GridRowId,
   GridRowModes,
@@ -6,21 +8,19 @@ import {
 } from "@mui/x-data-grid";
 import { useSnackbar } from "notistack";
 import { useCallback, useState } from "react";
-import useSWR from "swr";
-import {
-  createTransaction,
-  deleteTransaction,
-  getAllTransactions,
-  updateTransaction,
-} from "@/lib/transactions";
+import { useSWRConfig } from "swr";
 import { Transaction } from "@/types/api";
+import { fetchWithAuth } from "@/lib/api";
+import { useApi } from "./useApi";
 
 export const useTransactions = (budgetId: string, budgetItemId: string) => {
-  const swrKey = `/budgets/${budgetId}/items/${budgetItemId}/transactions`;
-  const { data, isLoading, mutate } = useSWR<Transaction[]>(
-    swrKey,
-    getAllTransactions,
-  );
+  const swrKey = `/api/budgets/${budgetId}/items/${budgetItemId}/transactions`;
+  const {
+    data = [],
+    isLoading,
+    mutate: revalidate,
+  } = useApi<Transaction[]>(swrKey);
+  const { mutate } = useSWRConfig();
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const { enqueueSnackbar } = useSnackbar();
 
@@ -49,31 +49,31 @@ export const useTransactions = (budgetId: string, budgetItemId: string) => {
         [id]: { mode: GridRowModes.View, ignoreModifications: true },
       });
 
-      // If the row is a new row, remove it from the cache
       if (String(id).startsWith("new-")) {
         mutate(
-          (currentData) => currentData?.filter((row) => row.id !== id),
+          swrKey,
+          (currentData: Transaction[] | undefined) =>
+            currentData?.filter((row) => row.id !== id),
           false,
         );
       }
     },
-    [rowModesModel, mutate],
+    [rowModesModel, mutate, swrKey],
   );
 
   const handleDeleteClick = useCallback(
     (id: GridRowId) => async () => {
-      if (!data) return;
-      const toRemove = data.find((r) => r.id === id);
       const optimisticData = data.filter((r) => r.id !== id);
-
       try {
-        if (toRemove && !String(toRemove.id).startsWith("new-")) {
-          await mutate(deleteTransaction(swrKey, String(toRemove.id)), {
+        await mutate(
+          swrKey,
+          fetchWithAuth(`${swrKey}/${id}`, { method: "DELETE" }),
+          {
             optimisticData,
             revalidate: false,
-          });
-          enqueueSnackbar("Transaction deleted", { variant: "success" });
-        }
+          },
+        );
+        enqueueSnackbar("Transaction deleted", { variant: "success" });
       } catch (e) {
         console.error(e);
         enqueueSnackbar("Failed to delete transaction", { variant: "error" });
@@ -85,7 +85,7 @@ export const useTransactions = (budgetId: string, budgetItemId: string) => {
   const processRowUpdate = useCallback(
     async (
       newRow: GridValidRowModel,
-      oldRow: GridValidRowModel,
+      _oldRow: GridValidRowModel,
     ): Promise<GridValidRowModel> => {
       const payload: Partial<Transaction> = {
         ...newRow,
@@ -95,27 +95,19 @@ export const useTransactions = (budgetId: string, budgetItemId: string) => {
 
       try {
         if (String(newRow.id).startsWith("new-")) {
-          // Create
-          await mutate(createTransaction(swrKey, payload), {
-            optimisticData: [newRow as Transaction, ...(data || [])],
-            revalidate: false,
-            populateCache: (created, current) => {
-              return [created, ...current!];
-            },
+          await fetchWithAuth(swrKey, {
+            method: "POST",
+            body: payload,
           });
           enqueueSnackbar("Transaction created", { variant: "success" });
         } else {
-          // Update
-          await mutate(updateTransaction(swrKey, String(oldRow.id), payload), {
-            optimisticData: (data || []).map((r) =>
-              r.id === newRow.id ? (newRow as Transaction) : r,
-            ),
-            revalidate: false,
-            populateCache: (updated, current) =>
-              current!.map((r) => (r.id === updated.id ? updated : r)),
+          await fetchWithAuth(`${swrKey}/${newRow.id}`, {
+            method: "PUT",
+            body: payload,
           });
           enqueueSnackbar("Transaction updated", { variant: "success" });
         }
+        revalidate();
         return newRow;
       } catch (e) {
         console.error(e);
@@ -123,12 +115,12 @@ export const useTransactions = (budgetId: string, budgetItemId: string) => {
         throw e;
       }
     },
-    [data, swrKey, mutate, enqueueSnackbar, budgetId, budgetItemId],
+    [swrKey, revalidate, enqueueSnackbar, budgetId, budgetItemId],
   );
 
   const handleAddNew = useCallback(() => {
     const id = `new-${Date.now()}`;
-    const newRow = {
+    const newRow: Transaction = {
       id,
       date: new Date().toISOString(),
       amount: 0,
@@ -137,16 +129,15 @@ export const useTransactions = (budgetId: string, budgetItemId: string) => {
       notes: "",
       budgetId,
       budgetItemId,
+      isNew: true,
     };
 
-    // Use mutate to add to the local cache without revalidating
-    mutate([newRow, ...(data || [])], false);
-
+    mutate(swrKey, (currentData: any) => [newRow, ...currentData], false);
     setRowModesModel((prev) => ({
       ...prev,
       [id]: { mode: GridRowModes.Edit, fieldToFocus: "date" },
     }));
-  }, [data, mutate, budgetId, budgetItemId]);
+  }, [mutate, swrKey, budgetId, budgetItemId]);
 
   return {
     rows: data,

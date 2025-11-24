@@ -3,7 +3,7 @@
 import { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { useSWRConfig } from "swr";
-import { cloneBudget } from "@/lib/budgets";
+import { fetchWithAuth } from "@/lib/api";
 import { Budget } from "@/types/api";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/navigation";
@@ -28,11 +28,14 @@ export function useCloneBudget(budgetId: string | string[] | undefined) {
         month: budgetMonthAndYear.month() + 1,
         year: budgetMonthAndYear.year(),
       };
-      const clonedBudget = await cloneBudget(
-        `/budgets/${budgetId}/clone`,
-        newBudget,
+      const clonedBudget = await fetchWithAuth<Budget>(
+        `/api/budgets/${budgetId}/clone`,
+        {
+          method: "POST",
+          body: newBudget,
+        },
       );
-      await mutate("/budgets");
+      await mutate("/api/budgets");
       enqueueSnackbar("Budget cloned", { variant: "success" });
       router.push(`/budgets/${clonedBudget.id}`);
       toggleModal();

@@ -1,60 +1,89 @@
-import { fetchWithAuth } from "./api";
+import { fetchWithAuth, fetcher } from "./api";
 import {
   describe,
   it,
   expect,
   vi,
-  beforeAll,
-  afterAll,
   afterEach,
   beforeEach,
 } from "vitest";
-import { auth0 } from "./auth0";
-import { http, HttpResponse } from "msw";
-import { setupServer } from "msw/node";
+import { ApiError } from "./api-error";
 
-process.env.API_BASE_URL = "http://localhost:3001/api";
+describe("fetcher", () => {
+  beforeEach(() => {
+    vi.stubGlobal("fetch", vi.fn());
+  });
 
-const server = setupServer(
-  http.get("http://localhost:3001/api/test", () => {
-    return HttpResponse.json({ success: true });
-  }),
-  http.post("http://localhost:3001/api/test", () => {
-    return HttpResponse.json({ success: true });
-  }),
-  http.put("http://localhost:3001/api/test", () => {
-    return HttpResponse.json({ success: true });
-  }),
-  http.delete("http://localhost:3001/api/test", () => {
-    return new HttpResponse(null, { status: 204 });
-  }),
-);
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
 
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
+  it("should return data on successful fetch", async () => {
+    const mockData = { message: "success" };
+    const mockResponse = {
+      ok: true,
+      status: 200,
+      json: async () => mockData,
+    };
+    vi.mocked(fetch).mockResolvedValue(mockResponse as any);
 
-vi.mock("./auth0", () => ({
-  auth0: {
-    getSession: vi.fn(),
-  },
-  ensureValidSession: vi.fn(),
-}));
+    const data = await fetcher("/test");
+    expect(data).toEqual(mockData);
+  });
+
+  it("should throw ApiError on failed fetch", async () => {
+    const mockResponse = {
+      ok: false,
+      status: 500,
+      statusText: "Internal Server Error",
+      text: async () => "Error",
+    };
+    vi.mocked(fetch).mockResolvedValue(mockResponse as any);
+
+    await expect(fetcher("/test")).rejects.toThrow(ApiError);
+  });
+
+  it("should return undefined for 204 status", async () => {
+    const mockResponse = {
+      ok: true,
+      status: 204,
+    };
+    vi.mocked(fetch).mockResolvedValue(mockResponse as any);
+
+    const data = await fetcher("/test");
+    expect(data).toBeUndefined();
+  });
+});
 
 describe("fetchWithAuth", () => {
   beforeEach(() => {
-    vi.mocked(auth0.getSession).mockResolvedValue({
-      user: {},
-      tokenSet: { idToken: "test" },
-    });
+    vi.stubGlobal("fetch", vi.fn());
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it("should make a GET request successfully", async () => {
+    const mockData = { success: true };
+    const mockResponse = {
+      ok: true,
+      status: 200,
+      json: async () => mockData,
+    };
+    vi.mocked(fetch).mockResolvedValue(mockResponse as any);
     const data = await fetchWithAuth("/test");
     expect(data).toEqual({ success: true });
   });
 
   it("should make a POST request with a body successfully", async () => {
+    const mockData = { success: true };
+    const mockResponse = {
+      ok: true,
+      status: 200,
+      json: async () => mockData,
+    };
+    vi.mocked(fetch).mockResolvedValue(mockResponse as any);
     const data = await fetchWithAuth("/test", {
       method: "POST",
       body: { message: "hello" },
@@ -63,6 +92,13 @@ describe("fetchWithAuth", () => {
   });
 
   it("should make a PUT request with a body successfully", async () => {
+    const mockData = { success: true };
+    const mockResponse = {
+      ok: true,
+      status: 200,
+      json: async () => mockData,
+    };
+    vi.mocked(fetch).mockResolvedValue(mockResponse as any);
     const data = await fetchWithAuth("/test", {
       method: "PUT",
       body: { message: "hello" },
@@ -71,33 +107,35 @@ describe("fetchWithAuth", () => {
   });
 
   it("should make a DELETE request successfully", async () => {
+    const mockResponse = {
+      ok: true,
+      status: 204,
+    };
+    vi.mocked(fetch).mockResolvedValue(mockResponse as any);
     const data = await fetchWithAuth("/test", { method: "DELETE" });
     expect(data).toBeUndefined();
   });
 
   it("should handle query parameters", async () => {
-    server.use(
-      http.get("http://localhost:3001/api/test", ({ request }) => {
-        const url = new URL(request.url);
-        if (url.searchParams.get("foo") === "bar") {
-          return HttpResponse.json({ success: true });
-        }
-        return new HttpResponse(null, { status: 500 });
-      }),
-    );
+    const mockData = { success: true };
+    const mockResponse = {
+      ok: true,
+      status: 200,
+      json: async () => mockData,
+    };
+    vi.mocked(fetch).mockResolvedValue(mockResponse as any);
     const data = await fetchWithAuth("/test", { params: { foo: "bar" } });
+    expect(fetch).toHaveBeenCalledWith("/test?foo=bar", expect.any(Object));
     expect(data).toEqual({ success: true });
   });
 
   it("should reject with an error if the fetch fails", async () => {
-    server.use(
-      http.get("http://localhost:3001/api/test", () => {
-        return new HttpResponse(null, {
-          status: 500,
-          statusText: "Internal Server Error",
-        });
-      }),
-    );
+    const mockResponse = {
+      ok: false,
+      status: 500,
+      statusText: "Internal Server Error",
+    };
+    vi.mocked(fetch).mockResolvedValue(mockResponse as any);
     await expect(fetchWithAuth("/test")).rejects.toThrow(
       "Request failed with status 500",
     );

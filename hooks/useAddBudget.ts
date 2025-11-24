@@ -1,8 +1,10 @@
+"use client";
+
 import { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { useToggle } from "usehooks-ts";
 import { useSWRConfig } from "swr";
-import { createBudget } from "@/lib/budgets";
+import { fetchWithAuth } from "@/lib/api";
 import { Budget } from "@/types/api";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/navigation";
@@ -12,7 +14,7 @@ async function createBudgetFetcher(
   url: string,
   { arg }: { arg: Partial<Budget> },
 ) {
-  return createBudget(url, arg);
+  return fetchWithAuth(url, { method: "POST", body: arg });
 }
 
 export function useAddBudget() {
@@ -25,11 +27,11 @@ export function useAddBudget() {
   const router = useRouter();
 
   const { trigger, isMutating } = useSWRMutation(
-    "/budgets",
+    "/api/budgets",
     createBudgetFetcher,
     {
       onSuccess: async (data) => {
-        await mutate("/budgets");
+        await mutate("/api/budgets");
         enqueueSnackbar("Budget created", { variant: "success" });
         router.push(`/budgets/${data.id}`);
         setIsOpen(false);

@@ -1,17 +1,20 @@
 "use client";
 
-import useSWR from "swr";
-import { getAnalyticsData } from "@/lib/analytics";
+import { useApi } from "@/hooks/useApi";
+import { BudgetSummary } from "@/types/api";
 import { Dayjs } from "dayjs";
 
 export function useAnalyticsData(
   startDate: Dayjs | null,
   endDate: Dayjs | null,
 ) {
-  const { data, isLoading, error } = useSWR(
-    ["/analytics", startDate?.format("MM-YYYY"), endDate?.format("MM-YYYY")],
-    getAnalyticsData,
-  );
+  const url =
+    startDate && endDate
+      ? `/api/analytics?startDate=${startDate.format(
+          "YYYY-MM-DD",
+        )}&endDate=${endDate.format("YYYY-MM-DD")}`
+      : null;
+  const { data, isLoading, error } = useApi<BudgetSummary[]>(url);
 
   return {
     data,

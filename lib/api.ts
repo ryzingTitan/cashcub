@@ -1,7 +1,24 @@
-"use server";
-
-import { auth0, ensureValidSession } from "@/lib/auth0";
 import { ApiError } from "./api-error";
+
+export const fetcher = async <T>(url: string): Promise<T> => {
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    const errorBody = await res.text();
+    console.error("API Error:", errorBody);
+    throw new ApiError(
+      `Request failed with status ${res.status}`,
+      res.status,
+      res.statusText,
+    );
+  }
+
+  if (res.status === 204) {
+    return undefined as T;
+  }
+
+  return res.json();
+};
 
 type FetchOptions = {
   method?: "GET" | "POST" | "PUT" | "DELETE";
@@ -13,21 +30,18 @@ export async function fetchWithAuth<T>(
   url: string,
   options: FetchOptions = {},
 ): Promise<T> {
-  const session = await auth0.getSession();
-  ensureValidSession(session);
-
-  const baseUrl = process.env.API_BASE_URL;
-  const fullUrl = new URL(baseUrl + url);
+  const fullUrl = new URL(url, window.location.origin);
 
   if (options.params) {
-    fullUrl.search = new URLSearchParams(options.params).toString();
+    for (const [key, value] of Object.entries(options.params)) {
+      fullUrl.searchParams.set(key, value);
+    }
   }
 
-  const response = await fetch(fullUrl, {
+  const response = await fetch(fullUrl.pathname + fullUrl.search, {
     method: options.method || "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session?.tokenSet.idToken}`,
     },
     body: options.body ? JSON.stringify(options.body) : undefined,
   });

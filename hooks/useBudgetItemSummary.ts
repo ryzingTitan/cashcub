@@ -1,9 +1,11 @@
+"use client";
+
 import { useToggle } from "usehooks-ts";
 import { useSWRConfig } from "swr";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
 import { budgetItemValidationSchema } from "@/types/validations";
-import { deleteBudgetItem, updateBudgetItem } from "@/lib/budgets";
+import { fetchWithAuth } from "@/lib/api";
 import { BudgetItem } from "@/types/api";
 
 export function useBudgetItemSummary(budgetItem: BudgetItem) {
@@ -24,11 +26,14 @@ export function useBudgetItemSummary(budgetItem: BudgetItem) {
           name: values.name,
           categoryId: budgetItem.categoryId,
         };
-        await updateBudgetItem(
-          `/budgets/${budgetItem.budgetId}/items/${budgetItem.id}`,
-          updatedBudgetItem,
+        await fetchWithAuth(
+          `/api/budgets/${budgetItem.budgetId}/items/${budgetItem.id}`,
+          {
+            method: "PUT",
+            body: updatedBudgetItem,
+          },
         );
-        await mutate(`/budgets/${budgetItem.budgetId}`);
+        await mutate(`/api/budgets/${budgetItem.budgetId}`);
         enqueueSnackbar("Budget item updated", { variant: "success" });
         toggle();
         resetForm();
@@ -48,10 +53,13 @@ export function useBudgetItemSummary(budgetItem: BudgetItem) {
 
   const handleDelete = async () => {
     try {
-      await deleteBudgetItem(
-        `/budgets/${budgetItem.budgetId}/items/${budgetItem.id}`,
+      await fetchWithAuth(
+        `/api/budgets/${budgetItem.budgetId}/items/${budgetItem.id}`,
+        {
+          method: "DELETE",
+        },
       );
-      await mutate(`/budgets/${budgetItem.budgetId}`);
+      await mutate(`/api/budgets/${budgetItem.budgetId}`);
       enqueueSnackbar("Budget item deleted", { variant: "success" });
     } catch (error) {
       console.log(error);
