@@ -95,10 +95,11 @@ export const useTransactions = (budgetId: string, budgetItemId: string) => {
         if (String(newRow.id).startsWith("new-")) {
           // Create
           const created = await createTransaction(swrKey, payload);
-          mutate(
-            (currentData) => [created, ...(currentData || [])],
-            false,
-          );
+          mutate((currentData) => {
+            // Add the new transaction to the existing data
+            const newData = [created, ...(currentData || [])];
+            return newData;
+          }, false);
           enqueueSnackbar("Transaction created", { variant: "success" });
         } else {
           // Update
@@ -136,9 +137,6 @@ export const useTransactions = (budgetId: string, budgetItemId: string) => {
       budgetId,
       budgetItemId,
     };
-
-    // Use mutate to add to the local cache without revalidating
-    mutate([newRow as Transaction, ...(data || [])], false);
 
     setRowModesModel((prev) => ({
       ...prev,

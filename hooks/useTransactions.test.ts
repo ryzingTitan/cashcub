@@ -146,12 +146,7 @@ describe("useTransactions", () => {
     act(() => {
       result.current.handleAddNew();
     });
-    expect(mutate).toHaveBeenCalledWith(
-      expect.arrayContaining([
-        expect.objectContaining({ id: expect.stringContaining("new-") }),
-      ]),
-      false,
-    );
+    expect(mutate).not.toHaveBeenCalled();
     expect(Object.values(result.current.rowModesModel)[0]).toEqual({
       mode: GridRowModes.Edit,
       fieldToFocus: "date",
