@@ -21,43 +21,33 @@ vi.mock("usehooks-ts");
 vi.mock("@/lib/transactions");
 
 vi.mock("@mui/x-data-grid", () => ({
-  DataGrid: vi.fn(
-    ({
-      rows,
-      loading,
-      processRowUpdate,
-      onRowModesModelChange,
-      columns,
-      slots,
-      slotProps,
-    }) => {
-      if (loading) return <div role="progressbar">Loading...</div>;
-      return (
-        <div>
-          {slots.toolbar && <slots.toolbar {...slotProps.toolbar} />}
-          {!rows || rows.length === 0 ? (
-            <div data-testid="mock-datagrid">No rows</div>
-          ) : (
-            <div data-testid="mock-datagrid">
-              {rows.map((row) => (
-                <div key={row.id}>
-                  <span>{row.merchant}</span>
-                  <div>
-                    {columns
-                      .find((c) => c.field === "actions")
-                      .getActions({ id: row.id })
-                      .map((action) => (
-                        <div key={action.props.label}>{action}</div>
-                      ))}
-                  </div>
+  DataGrid: vi.fn(({ rows, loading, columns, slots = {}, slotProps = {} }) => {
+    if (loading) return <div role="progressbar">Loading...</div>;
+    return (
+      <div>
+        {slots.toolbar && <slots.toolbar {...slotProps.toolbar} />}
+        {!rows || rows.length === 0 ? (
+          <div data-testid="mock-datagrid">No rows</div>
+        ) : (
+          <div data-testid="mock-datagrid">
+            {rows.map((row) => (
+              <div key={row.id}>
+                <span>{row.merchant}</span>
+                <div>
+                  {columns
+                    .find((c) => c.field === "actions")
+                    .getActions({ id: row.id })
+                    .map((action) => (
+                      <div key={action.props.label}>{action}</div>
+                    ))}
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      );
-    },
-  ),
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }),
   GridActionsCellItem: vi.fn(({ label, icon, onClick }) => (
     <button onClick={onClick}>
       {icon}
@@ -71,7 +61,7 @@ vi.mock("@mui/x-data-grid", () => ({
     View: "view",
     Edit: "edit",
   },
-  Toolbar: vi.fn(({ children }) => (
+  GridToolbarContainer: vi.fn(({ children }) => (
     <div data-testid="mock-toolbar">{children}</div>
   )),
 }));
