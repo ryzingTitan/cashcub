@@ -16,6 +16,7 @@ export function useBudgetItemSummary(budgetItem: BudgetItem) {
       plannedAmount: budgetItem.plannedAmount,
       name: budgetItem.name,
     },
+    enableReinitialize: true,
     validationSchema: budgetItemValidationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {

@@ -2,7 +2,17 @@
 
 import { render, screen } from "@testing-library/react";
 import BudgetLayout from "./layout";
-import { vi, describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
+
+// Mock the router to prevent errors in a testing environment
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+  }),
+  useParams: () => ({
+    slug: "1",
+  }),
+}));
 import BudgetList from "@/components/BudgetList";
 
 // Automatically mock the child component that's causing issues
