@@ -42,7 +42,7 @@ describe("useAddBudgetItem", () => {
     }: {
       setSubmitting: (isSubmitting: boolean) => void;
       resetForm: () => void;
-    }
+    },
   ) => Promise<void>;
 
   beforeEach(() => {
@@ -64,7 +64,7 @@ describe("useAddBudgetItem", () => {
 
   it("should handle successful form submission", async () => {
     renderHook(() =>
-      useAddBudgetItem({ budgetId: "budget1", categoryId: "cat1" })
+      useAddBudgetItem({ budgetId: "budget1", categoryId: "cat1" }),
     );
     const values = { name: "Test Item", plannedAmount: 100 };
 
@@ -78,7 +78,7 @@ describe("useAddBudgetItem", () => {
         name: "Test Item",
         plannedAmount: 100,
         categoryId: "cat1",
-      }
+      },
     );
     expect(mutate).toHaveBeenCalledWith("/budgets/budget1");
     expect(enqueueSnackbar).toHaveBeenCalledWith("Budget item created", {
@@ -100,17 +100,17 @@ describe("useAddBudgetItem", () => {
       "Budget or category ID is missing",
       {
         variant: "error",
-      }
+      },
     );
     expect(budgets.createBudgetItem).not.toHaveBeenCalled();
   });
 
   it("should handle API error on submission", async () => {
     vi.spyOn(budgets, "createBudgetItem").mockRejectedValue(
-      new Error("API Error")
+      new Error("API Error"),
     );
     renderHook(() =>
-      useAddBudgetItem({ budgetId: "budget1", categoryId: "cat1" })
+      useAddBudgetItem({ budgetId: "budget1", categoryId: "cat1" }),
     );
     const values = { name: "Test Item", plannedAmount: 100 };
 
@@ -118,9 +118,12 @@ describe("useAddBudgetItem", () => {
       await onSubmit(values, { setSubmitting, resetForm });
     });
 
-    expect(enqueueSnackbar).toHaveBeenCalledWith("Failed to create budget item", {
-      variant: "error",
-    });
+    expect(enqueueSnackbar).toHaveBeenCalledWith(
+      "Failed to create budget item",
+      {
+        variant: "error",
+      },
+    );
   });
 
   it("should handle close", () => {

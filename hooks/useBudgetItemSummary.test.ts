@@ -55,7 +55,7 @@ describe("useBudgetItemSummary", () => {
     }: {
       setSubmitting: (isSubmitting: boolean) => void;
       resetForm: () => void;
-    }
+    },
   ) => Promise<void>;
 
   beforeEach(() => {
@@ -90,7 +90,7 @@ describe("useBudgetItemSummary", () => {
         name: "Updated Groceries",
         plannedAmount: 600,
         categoryId: "cat1",
-      }
+      },
     );
     expect(mutate).toHaveBeenCalledWith(`/budgets/budget1`);
     expect(enqueueSnackbar).toHaveBeenCalledWith("Budget item updated", {
@@ -101,7 +101,9 @@ describe("useBudgetItemSummary", () => {
   });
 
   it("should handle API error on update", async () => {
-    vi.spyOn(budgets, "updateBudgetItem").mockRejectedValue(new Error("API Error"));
+    vi.spyOn(budgets, "updateBudgetItem").mockRejectedValue(
+      new Error("API Error"),
+    );
     renderHook(() => useBudgetItemSummary(mockBudgetItem));
     const values = { name: "Updated Groceries", plannedAmount: 600 };
 
@@ -109,9 +111,12 @@ describe("useBudgetItemSummary", () => {
       await onSubmit(values, { setSubmitting, resetForm });
     });
 
-    expect(enqueueSnackbar).toHaveBeenCalledWith("Failed to update budget item", {
-      variant: "error",
-    });
+    expect(enqueueSnackbar).toHaveBeenCalledWith(
+      "Failed to update budget item",
+      {
+        variant: "error",
+      },
+    );
   });
 
   it("should handle successful deletion", async () => {
@@ -122,7 +127,7 @@ describe("useBudgetItemSummary", () => {
     });
 
     expect(budgets.deleteBudgetItem).toHaveBeenCalledWith(
-      `/budgets/budget1/items/item1`
+      `/budgets/budget1/items/item1`,
     );
     expect(mutate).toHaveBeenCalledWith(`/budgets/budget1`);
     expect(enqueueSnackbar).toHaveBeenCalledWith("Budget item deleted", {
@@ -131,16 +136,21 @@ describe("useBudgetItemSummary", () => {
   });
 
   it("should handle API error on deletion", async () => {
-    vi.spyOn(budgets, "deleteBudgetItem").mockRejectedValue(new Error("API Error"));
+    vi.spyOn(budgets, "deleteBudgetItem").mockRejectedValue(
+      new Error("API Error"),
+    );
     const { result } = renderHook(() => useBudgetItemSummary(mockBudgetItem));
 
     await act(async () => {
       await result.current.handleDelete();
     });
 
-    expect(enqueueSnackbar).toHaveBeenCalledWith("Failed to delete budget item", {
-      variant: "error",
-    });
+    expect(enqueueSnackbar).toHaveBeenCalledWith(
+      "Failed to delete budget item",
+      {
+        variant: "error",
+      },
+    );
   });
 
   it("should handle cancel", () => {

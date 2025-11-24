@@ -55,7 +55,9 @@ describe("useTransactions", () => {
       mutate,
     });
     (useSnackbar as vi.Mock).mockReturnValue({ enqueueSnackbar });
-    (transactions.createTransaction as vi.Mock).mockResolvedValue({ id: "new-id" });
+    (transactions.createTransaction as vi.Mock).mockResolvedValue({
+      id: "new-id",
+    });
     (transactions.updateTransaction as vi.Mock).mockResolvedValue({});
     (transactions.deleteTransaction as vi.Mock).mockResolvedValue({});
   });
@@ -117,7 +119,7 @@ describe("useTransactions", () => {
     const { result } = renderHook(() => useTransactions("budget1", "item1"));
     const newRow = { id: "new-123", amount: 200 };
     await act(async () => {
-      await result.current.processRowUpdate(newRow, {} as any);
+      await result.current.processRowUpdate(newRow, {} as Transaction);
     });
     expect(transactions.createTransaction).toHaveBeenCalled();
     expect(mutate).toHaveBeenCalled();
@@ -148,7 +150,7 @@ describe("useTransactions", () => {
       expect.arrayContaining([
         expect.objectContaining({ id: expect.stringContaining("new-") }),
       ]),
-      false
+      false,
     );
     expect(Object.values(result.current.rowModesModel)[0]).toEqual({
       mode: GridRowModes.Edit,
