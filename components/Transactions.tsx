@@ -63,7 +63,7 @@ export default function Transactions({
 }: TransactionsProps) {
   const [value, toggle] = useToggle(false);
   const {
-    rows: data,
+    rows,
     isLoading,
     rowModesModel,
     handleRowModesModelChange,
@@ -201,7 +201,7 @@ export default function Transactions({
         <DialogTitle>Transactions</DialogTitle>
         <DialogContent>
           <DataGrid
-            rows={data || []}
+            rows={rows || []}
             columns={columns}
             loading={isLoading}
             editMode="row"

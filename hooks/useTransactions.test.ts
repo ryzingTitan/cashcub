@@ -146,11 +146,11 @@ describe("useTransactions", () => {
     act(() => {
       result.current.handleAddNew();
     });
-    expect(mutate).toHaveBeenCalledWith(
+
+    expect(result.current.rows).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ id: expect.stringContaining("new-") }),
       ]),
-      false,
     );
     expect(Object.values(result.current.rowModesModel)[0]).toEqual({
       mode: GridRowModes.Edit,
