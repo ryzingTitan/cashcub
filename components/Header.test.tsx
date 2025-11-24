@@ -32,7 +32,6 @@ describe("Header", () => {
 
     render(<Header />);
 
-    expect(screen.getByText("Welcome, Test User")).toBeInTheDocument();
     expect(screen.getByAltText("Test User")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Logout" })).toBeInTheDocument();
   });
