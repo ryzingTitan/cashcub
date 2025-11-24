@@ -12,7 +12,7 @@ import Image from "next/image";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { logoutUrl } from "@/lib/auth0";
-import { Skeleton, Typography } from "@mui/material";
+import { Skeleton } from "@mui/material";
 
 export default function Header() {
   const { user, isLoading, error } = useUser();

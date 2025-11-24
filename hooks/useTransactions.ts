@@ -95,10 +95,7 @@ export const useTransactions = (budgetId: string, budgetItemId: string) => {
         if (String(newRow.id).startsWith("new-")) {
           // Create
           const created = await createTransaction(swrKey, payload);
-          mutate(
-            (currentData) => [created, ...(currentData || [])],
-            false,
-          );
+          mutate((currentData) => [created, ...(currentData || [])], false);
           enqueueSnackbar("Transaction created", { variant: "success" });
         } else {
           // Update
@@ -121,7 +118,7 @@ export const useTransactions = (budgetId: string, budgetItemId: string) => {
         throw e;
       }
     },
-    [data, swrKey, mutate, enqueueSnackbar, budgetId, budgetItemId],
+    [swrKey, mutate, enqueueSnackbar, budgetId, budgetItemId],
   );
 
   const handleAddNew = useCallback(() => {
