@@ -14,7 +14,7 @@ export default function BudgetLayout({
   return (
     <BudgetsLayout>
       <Stack
-        direction={"row"}
+        direction={{ xs: "column", sm: "row" }}
         justifyContent={"center"}
         alignItems={"center"}
         sx={{ m: 2 }}

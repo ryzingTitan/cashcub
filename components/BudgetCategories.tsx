@@ -49,7 +49,7 @@ export default function BudgetCategories({ budget }: BudgetCategoriesProps) {
           return (
             <Card
               key={item.id}
-              sx={{ minWidth: "75%" }}
+              sx={{ minWidth: { xs: "90%", sm: "75%" } }}
               data-testid={`category-card-${item.id}`}
             >
               <CardContent>

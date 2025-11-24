@@ -25,7 +25,12 @@ export default function BudgetSummaryTotals({
   }, [budget?.actualIncome, budget?.actualExpenses]);
 
   return (
-    <Stack direction={"row"} sx={{ m: 2 }} justifyContent={"space-around"}>
+    <Stack
+      direction={{ xs: "column", sm: "row" }}
+      sx={{ m: 2 }}
+      justifyContent={"space-around"}
+      spacing={2}
+    >
       <Stack>
         <Typography align={"center"} variant={"h5"}>
           Expected Income

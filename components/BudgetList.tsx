@@ -32,7 +32,7 @@ export default function BudgetList() {
       value={selectedBudget}
       options={budgets}
       loading={isLoading}
-      sx={{ width: 300 }}
+      sx={{ width: { xs: "100%", sm: 300 } }}
       getOptionLabel={getOptionLabel}
       renderInput={(params) => <TextField {...params} label="Budget" />}
       onChange={handleBudgetChange}

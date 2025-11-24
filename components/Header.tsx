@@ -1,16 +1,13 @@
 "use client";
 
 import AppBar from "@mui/material/AppBar";
-import Avatar from "@mui/material/Avatar";
 import Toolbar from "@mui/material/Toolbar";
-import Tooltip from "@mui/material/Tooltip";
-import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Image from "next/image";
-import LogoutIcon from "@mui/icons-material/Logout";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { logoutUrl } from "@/lib/auth0";
-import { Alert, Skeleton, Typography } from "@mui/material";
+import { Alert, Skeleton } from "@mui/material";
+import MobileNavigation from "./MobileNavigation";
+import DesktopNavigation from "./DesktopNavigation";
 
 export default function Header() {
   const { user, isLoading, error } = useUser();
@@ -56,18 +53,8 @@ export default function Header() {
             </>
           ) : user ? (
             <>
-              <Typography>Welcome, {user.name}</Typography>
-              <Tooltip title={user?.name ?? ""}>
-                <Avatar
-                  src={user?.picture ?? undefined}
-                  alt={user?.name ?? ""}
-                />
-              </Tooltip>
-              <Tooltip title="Logout">
-                <IconButton href={logoutUrl}>
-                  <LogoutIcon />
-                </IconButton>
-              </Tooltip>
+              <MobileNavigation />
+              <DesktopNavigation />
             </>
           ) : null}
         </Stack>

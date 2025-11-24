@@ -7,6 +7,14 @@ vi.mock("@auth0/nextjs-auth0/client", () => ({
   useUser: vi.fn(),
 }));
 
+vi.mock("./MobileNavigation", () => ({
+  default: () => <div>MobileNavigation</div>,
+}));
+
+vi.mock("./DesktopNavigation", () => ({
+  default: () => <div>DesktopNavigation</div>,
+}));
+
 describe("Header", () => {
   it("renders skeletons when loading", () => {
     vi.mocked(useUser).mockReturnValue({
@@ -32,9 +40,8 @@ describe("Header", () => {
 
     render(<Header />);
 
-    expect(screen.getByText("Welcome, Test User")).toBeInTheDocument();
-    expect(screen.getByAltText("Test User")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Logout" })).toBeInTheDocument();
+    expect(screen.getByText("MobileNavigation")).toBeInTheDocument();
+    expect(screen.getByText("DesktopNavigation")).toBeInTheDocument();
   });
 
   it("renders nothing when not authenticated", () => {
