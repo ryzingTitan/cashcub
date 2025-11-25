@@ -3,6 +3,7 @@
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import Tooltip from "@mui/material/Tooltip";
+import useSWR from "swr";
 import Dialog from "@mui/material/Dialog";
 import Box from "@mui/material/Box";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -11,29 +12,23 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
+import { useParams } from "next/navigation";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { DatePicker } from "@mui/x-date-pickers";
+import { getBudgetSummary } from "@/lib/budgets";
 import { useState } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import { useAddTransactionForm } from "@/hooks/useAddTransactionForm";
-import { BudgetItem } from "@/types/api";
 
-interface AddTransactionModalProps {
-  slug: string;
-  budgetItems: BudgetItem[];
-}
-
-export default function AddTransactionModal({
-  slug,
-  budgetItems,
-}: AddTransactionModalProps) {
+export default function AddTransactionModal() {
   const [isOpen, setIsOpen] = useState(false);
-  const { formik, transactionDate, setTransactionDate } = useAddTransactionForm(
-    { slug },
-  );
+  const params = useParams();
+  const { data } = useSWR(`/budgets/${params.slug}`, getBudgetSummary);
+  const { formik, transactionDate, setTransactionDate } =
+    useAddTransactionForm();
 
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => {
@@ -43,11 +38,9 @@ export default function AddTransactionModal({
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      await formik.submitForm();
+    await formik.handleSubmit();
+    if (formik.isValid) {
       handleClose();
-    } catch (error) {
-      console.error(error);
     }
   };
 
@@ -86,7 +79,7 @@ export default function AddTransactionModal({
                     Boolean(formik.errors.budgetItemId)
                   }
                 >
-                  {budgetItems.map((budgetItem) => (
+                  {data?.budgetItems.map((budgetItem) => (
                     <MenuItem key={budgetItem.id!} value={budgetItem.id!}>
                       {budgetItem.name}
                     </MenuItem>
@@ -122,12 +115,10 @@ export default function AddTransactionModal({
                 onBlur={formik.handleBlur}
                 error={formik.touched.amount && Boolean(formik.errors.amount)}
                 helperText={formik.touched.amount && formik.errors.amount}
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">$</InputAdornment>
-                    ),
-                  },
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">$</InputAdornment>
+                  ),
                 }}
               />
               <TextField

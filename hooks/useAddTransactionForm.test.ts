@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
-import { useFormik } from "formik";
+import { FormikProps, useFormik } from "formik";
 import { useSnackbar } from "notistack";
-import { useSWRConfig } from "swr";
+import { SWRConfiguration, useSWRConfig } from "swr";
 import {
   afterEach,
   beforeEach,
@@ -13,6 +13,7 @@ import {
 } from "vitest";
 import { useAddTransactionForm } from "@/hooks/useAddTransactionForm";
 import * as transactions from "@/lib/transactions";
+import { useParams } from "next/navigation";
 import dayjs from "dayjs";
 
 vi.mock("formik", () => ({
@@ -25,6 +26,10 @@ vi.mock("notistack", () => ({
 
 vi.mock("swr", () => ({
   useSWRConfig: vi.fn(),
+}));
+
+vi.mock("next/navigation", () => ({
+  useParams: vi.fn(),
 }));
 
 vi.mock("@/lib/transactions", () => ({
@@ -61,13 +66,45 @@ describe("useAddTransactionForm", () => {
     });
     (useSWRConfig as MockedFunction<typeof useSWRConfig>).mockReturnValue({
       mutate,
-    } as ReturnType<typeof useSWRConfig>);
+      cache: new Map(),
+      fallback: {},
+    } as unknown as SWRConfiguration);
+    (useParams as MockedFunction<typeof useParams>).mockReturnValue({
+      slug: "budget123",
+    });
     (useFormik as MockedFunction<typeof useFormik>).mockImplementation(
       (options) => {
         onSubmit = options.onSubmit as unknown as typeof onSubmit;
         return {
           resetForm,
-        } as ReturnType<typeof useFormik>;
+          values: {
+            amount: 0,
+            transactionType: "",
+            merchant: "",
+            notes: "",
+            budgetItemId: "",
+          },
+          handleSubmit: vi.fn(),
+          handleChange: vi.fn(),
+          handleBlur: vi.fn(),
+          touched: {},
+          errors: {},
+          isSubmitting: false,
+          isValid: true,
+          dirty: false,
+          setFieldValue: vi.fn(),
+          setSubmitting: vi.fn(),
+          initialValues: {
+            amount: 0,
+            transactionType: "",
+            merchant: "",
+            notes: "",
+            budgetItemId: "",
+          },
+          initialErrors: {},
+          initialTouched: {},
+          submitForm: vi.fn(),
+        } as unknown as FormikProps<any>;
       },
     );
     vi.spyOn(transactions, "createTransaction").mockResolvedValue({
@@ -87,9 +124,7 @@ describe("useAddTransactionForm", () => {
   });
 
   it("should handle successful form submission", async () => {
-    const { result } = renderHook(() =>
-      useAddTransactionForm({ slug: "budget123" }),
-    );
+    const { result } = renderHook(() => useAddTransactionForm());
     const date = dayjs("2023-01-01");
 
     act(() => {
@@ -131,7 +166,7 @@ describe("useAddTransactionForm", () => {
     vi.spyOn(transactions, "createTransaction").mockRejectedValue(
       new Error("API Error"),
     );
-    renderHook(() => useAddTransactionForm({ slug: "budget123" }));
+    renderHook(() => useAddTransactionForm());
     const values = {
       amount: 100,
       transactionType: "EXPENSE",
