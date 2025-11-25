@@ -44,8 +44,10 @@ const AmountEditCell = (props: GridRenderEditCellParams) => {
       size="small"
       value={value}
       onChange={handleValueChange}
-      InputProps={{
-        startAdornment: <InputAdornment position="start">$</InputAdornment>,
+      slotProps={{
+        input: {
+          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+        },
       }}
     />
   );
