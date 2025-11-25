@@ -66,9 +66,9 @@ vi.mock("@mui/x-data-grid", () => ({
     View: "view",
     Edit: "edit",
   },
-  GridToolbarContainer: vi.fn(({ children }) => (
-    <div data-testid="mock-toolbar">{children}</div>
-  )),
+  GridRowEditStopReasons: {
+    rowFocusOut: "rowFocusOut",
+  },
 }));
 
 const mockEnqueueSnackbar = vi.fn();
