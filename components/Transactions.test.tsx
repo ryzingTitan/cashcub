@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, MockedFunction } from "vitest";
 import Transactions from "./Transactions";
 import { SWRConfig } from "swr";
-import { SnackbarKey, useSnackbar } from "notistack";
+import { useSnackbar } from "notistack";
 import { Transaction } from "@/types/api";
 import { useState } from "react";
 import userEvent from "@testing-library/user-event";

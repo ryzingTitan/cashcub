@@ -9,7 +9,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
-import Box from "@mui/material/Box";
 import {
   DataGrid,
   GridColDef,
@@ -19,6 +18,8 @@ import {
   GridRowEditStopReasons,
   useGridApiContext,
   GridRenderEditCellParams,
+  ToolbarButton,
+  Toolbar,
 } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { formatToCurrency } from "@/lib/utils";
@@ -213,16 +214,17 @@ export default function Transactions({
             processRowUpdate={processRowUpdate}
             slots={{
               toolbar: () => (
-                <Box sx={{ p: 1 }}>
+                <Toolbar>
                   <Tooltip title="Add transaction">
-                    <IconButton onClick={handleAddNew} size="small">
+                    <ToolbarButton onClick={handleAddNew} size="small">
                       <AddIcon />
-                    </IconButton>
+                    </ToolbarButton>
                   </Tooltip>
-                </Box>
+                </Toolbar>
               ),
             }}
             autosizeOnMount
+            showToolbar
           />
         </DialogContent>
       </Dialog>
