@@ -69,6 +69,10 @@ vi.mock("@mui/x-data-grid", () => ({
   GridRowEditStopReasons: {
     rowFocusOut: "rowFocusOut",
   },
+  Toolbar: vi.fn(({ children }) => <div>{children}</div>),
+  ToolbarButton: vi.fn(({ children, onClick }) => (
+    <button onClick={onClick}>{children}</button>
+  )),
 }));
 
 const mockEnqueueSnackbar = vi.fn();
@@ -178,10 +182,8 @@ describe("Transactions", () => {
     const button = screen.getByRole("button", { name: /view transactions/i });
     await user.click(button);
 
-    await waitFor(async () => {
-      const addButton = screen.getByRole("button", { name: /add/i });
-      await user.click(addButton);
-    });
+    const addButton = screen.getByTestId("AddIcon");
+    await user.click(addButton.closest("button")!);
 
     await waitFor(() => {
       expect(screen.getByText("Save")).toBeInTheDocument();
