@@ -3,7 +3,15 @@ import { useFormik } from "formik";
 import { useSnackbar } from "notistack";
 import { useSWRConfig } from "swr";
 import { useToggle } from "usehooks-ts";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  MockedFunction,
+  vi,
+} from "vitest";
 import { useBudgetItemSummary } from "@/hooks/useBudgetItemSummary";
 import * as budgets from "@/lib/budgets";
 import { BudgetItem } from "@/types/api";
@@ -36,8 +44,6 @@ const mockBudgetItem: BudgetItem = {
   actualAmount: 250,
   budgetId: "budget1",
   categoryId: "cat1",
-  createdAt: new Date(),
-  updatedAt: new Date(),
 };
 
 describe("useBudgetItemSummary", () => {
@@ -59,7 +65,10 @@ describe("useBudgetItemSummary", () => {
   ) => Promise<void>;
 
   beforeEach(() => {
-    (useSnackbar as vi.Mock).mockReturnValue({ enqueueSnackbar });
+    (useSnackbar as MockedFunction<typeof useSnackbar>).mockReturnValue({
+      closeSnackbar: vi.fn(),
+      enqueueSnackbar,
+    });
     (useSWRConfig as vi.Mock).mockReturnValue({ mutate });
     (useToggle as vi.Mock).mockReturnValue([false, toggle]);
     (useFormik as vi.Mock).mockImplementation((options) => {

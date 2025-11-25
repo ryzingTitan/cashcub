@@ -6,15 +6,13 @@ import { formatToCurrency } from "@/lib/utils";
 
 const mockBudget: BudgetSummary = {
   id: "1",
-  name: "Test Budget",
-  description: "Test Description",
-  startDate: "2024-01-01",
-  endDate: "2024-01-31",
   expectedIncome: 5000,
   actualIncome: 5500,
   expectedExpenses: 3000,
   actualExpenses: 2500,
-  categories: [],
+  month: 10,
+  year: 2025,
+  budgetItems: [],
 };
 
 describe("BudgetSummaryTotals", () => {

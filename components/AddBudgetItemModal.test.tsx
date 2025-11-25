@@ -9,7 +9,7 @@ import * as budgets from "../lib/budgets";
 const enqueueSnackbar = vi.fn();
 
 vi.mock("notistack", async (importOriginal) => {
-  const actual = await importOriginal();
+  const actual = await importOriginal<typeof import("notistack")>();
   return {
     ...actual,
     useSnackbar: vi.fn(() => ({
@@ -73,6 +73,7 @@ describe("AddBudgetItemModal", () => {
       plannedAmount: 100,
       actualAmount: 0,
       categoryId: "1",
+      budgetId: "1",
     });
 
     render(

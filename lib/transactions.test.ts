@@ -49,8 +49,17 @@ vi.mock("./auth0", () => ({
 describe("Transaction API functions", () => {
   beforeEach(() => {
     vi.mocked(auth0.getSession).mockResolvedValue({
-      user: {},
-      tokenSet: { idToken: "test" },
+      accessTokens: [],
+      connectionTokenSets: [],
+      internal: { createdAt: 0, sid: "" },
+      user: {
+        sub: "",
+      },
+      tokenSet: {
+        idToken: "test",
+        accessToken: "",
+        expiresAt: 0,
+      },
     });
   });
 

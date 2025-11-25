@@ -31,10 +31,10 @@ describe("BudgetList", () => {
 
   it("should render the Autocomplete component with budgets when loaded", () => {
     const mockBudgets = [
-      { id: "1", year: 2024, month: 1, name: "January 2024" },
-      { id: "2", year: 2024, month: 2, name: "February 2024" },
+      { id: "1", year: 2024, month: 1 },
+      { id: "2", year: 2024, month: 2 },
     ];
-    const getOptionLabel = (option: Budget) => `${option.name}`;
+    const getOptionLabel = (option: Budget) => `${option.id}`;
 
     mockedUseBudgetList.mockReturnValue({
       budgets: mockBudgets,

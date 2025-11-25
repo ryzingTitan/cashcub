@@ -1,9 +1,17 @@
 import { act, renderHook } from "@testing-library/react";
 import { useFormik } from "formik";
-import { useSnackbar } from "notistack";
+import { enqueueSnackbar, SnackbarKey, useSnackbar } from "notistack";
 import { useSWRConfig } from "swr";
 import { useToggle } from "usehooks-ts";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  MockedFunction,
+  vi,
+} from "vitest";
 import { useAddBudgetItem } from "@/hooks/useAddBudgetItem";
 import * as budgets from "@/lib/budgets";
 
@@ -46,7 +54,10 @@ describe("useAddBudgetItem", () => {
   ) => Promise<void>;
 
   beforeEach(() => {
-    (useSnackbar as vi.Mock).mockReturnValue({ enqueueSnackbar });
+    (useSnackbar as MockedFunction<typeof useSnackbar>).mockReturnValue({
+      closeSnackbar: vi.fn(),
+      enqueueSnackbar,
+    });
     (useSWRConfig as vi.Mock).mockReturnValue({ mutate });
     (useToggle as vi.Mock).mockReturnValue([false, toggle]);
     (useFormik as vi.Mock).mockImplementation((options) => {

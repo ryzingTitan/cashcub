@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, MockedFunction } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import AddBudgetModal from "./AddBudgetModal";
 import { useAddBudget } from "@/hooks/useAddBudget";
@@ -18,7 +18,8 @@ describe("AddBudgetModal", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useAddBudget as vi.Mock).mockReturnValue({
+    (useAddBudget as MockedFunction<typeof useAddBudget>).mockReturnValue({
+      isMutating: false,
       isOpen: false,
       toggle,
       budgetMonthAndYear: dayjs(),
@@ -47,7 +48,8 @@ describe("AddBudgetModal", () => {
   });
 
   it("should render the dialog when isOpen is true", () => {
-    (useAddBudget as vi.Mock).mockReturnValue({
+    (useAddBudget as MockedFunction<typeof useAddBudget>).mockReturnValue({
+      isMutating: false,
       isOpen: true,
       toggle,
       budgetMonthAndYear: dayjs(),
@@ -60,7 +62,8 @@ describe("AddBudgetModal", () => {
   });
 
   it("should call handleClose when the cancel button is clicked", () => {
-    (useAddBudget as vi.Mock).mockReturnValue({
+    (useAddBudget as MockedFunction<typeof useAddBudget>).mockReturnValue({
+      isMutating: false,
       isOpen: true,
       toggle,
       budgetMonthAndYear: dayjs(),
@@ -74,7 +77,8 @@ describe("AddBudgetModal", () => {
   });
 
   it("should call handleSave when the save button is clicked", () => {
-    (useAddBudget as vi.Mock).mockReturnValue({
+    (useAddBudget as MockedFunction<typeof useAddBudget>).mockReturnValue({
+      isMutating: false,
       isOpen: true,
       toggle,
       budgetMonthAndYear: dayjs(),

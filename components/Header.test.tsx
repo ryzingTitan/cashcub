@@ -19,6 +19,7 @@ describe("Header", () => {
       user: undefined,
       isLoading: true,
       error: undefined,
+      invalidate: vi.fn(),
     });
 
     render(<Header />);
@@ -31,9 +32,11 @@ describe("Header", () => {
       user: {
         name: "Test User",
         picture: "https://example.com/avatar.png",
+        sub: "test",
       },
       isLoading: false,
-      error: undefined,
+      error: null,
+      invalidate: vi.fn(),
     });
 
     render(<Header />);
@@ -47,6 +50,7 @@ describe("Header", () => {
       user: undefined,
       isLoading: false,
       error: undefined,
+      invalidate: vi.fn(),
     });
 
     render(<Header />);
@@ -56,9 +60,10 @@ describe("Header", () => {
 
   it("redirects to the error page when there is an error", () => {
     vi.mocked(useUser).mockReturnValue({
-      user: undefined,
+      user: null,
       isLoading: false,
       error: new Error("Test error"),
+      invalidate: vi.fn(),
     });
 
     render(<Header />);
