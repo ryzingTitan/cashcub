@@ -1,4 +1,3 @@
-import { render } from "@testing-library/react";
 import Home from "./page";
 import { auth0 } from "@/lib/auth0";
 import { redirect } from "next/navigation";
@@ -15,13 +14,13 @@ vi.mock("next/navigation");
 describe("Home page", () => {
   it("should redirect to the login URL if there is no session", async () => {
     (auth0.getSession as Mock).mockResolvedValue(null);
-    render(await Home());
+    await Home();
     expect(redirect).toHaveBeenCalledWith("/api/auth/login");
   });
 
   it("should redirect to the budgets page if there is a session", async () => {
     (auth0.getSession as Mock).mockResolvedValue({ user: {} });
-    render(await Home());
+    await Home();
     expect(redirect).toHaveBeenCalledWith("/budgets");
   });
 });

@@ -15,13 +15,18 @@ vi.mock("@/components/Transactions", () => ({
 }));
 
 const mockCategories: Category[] = [
-  { id: "cat1", name: "Groceries", budgetItems: [] },
-  { id: "cat2", name: "Utilities", budgetItems: [] },
+  { id: "cat1", name: "Groceries" },
+  { id: "cat2", name: "Utilities" },
 ];
 
 const mockBudget: BudgetSummary = {
   id: "budget1",
-  name: "Monthly Budget",
+  month: 10,
+  year: 2025,
+  expectedIncome: 500,
+  actualIncome: 400,
+  expectedExpenses: 560,
+  actualExpenses: 440,
   budgetItems: [
     {
       id: "item1",
@@ -29,6 +34,7 @@ const mockBudget: BudgetSummary = {
       plannedAmount: 10,
       actualAmount: 0,
       categoryId: "cat1",
+      budgetId: "2",
     },
     {
       id: "item2",
@@ -36,10 +42,9 @@ const mockBudget: BudgetSummary = {
       plannedAmount: 100,
       actualAmount: 0,
       categoryId: "cat2",
+      budgetId: "2",
     },
   ],
-  startDate: new Date(),
-  endDate: new Date(),
 };
 
 describe("BudgetCategories", () => {
@@ -85,6 +90,6 @@ describe("BudgetCategories", () => {
       </SWRConfig>,
     );
 
-    expect(await screen.queryByTestId(/category-card-/)).toBeNull();
+    expect(screen.queryByTestId(/category-card-/)).toBeNull();
   });
 });

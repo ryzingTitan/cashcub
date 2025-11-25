@@ -1,13 +1,18 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, MockedFunction } from "vitest";
 import Transactions from "./Transactions";
 import { SWRConfig } from "swr";
-import { useSnackbar } from "notistack";
+import { SnackbarKey, useSnackbar } from "notistack";
 import { Transaction } from "@/types/api";
 import { useState } from "react";
 import userEvent from "@testing-library/user-event";
 import { useToggle } from "usehooks-ts";
 import * as transactionsApi from "@/lib/transactions";
+import {
+  createTransaction,
+  deleteTransaction,
+  getAllTransactions,
+} from "@/lib/transactions";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
@@ -21,35 +26,26 @@ vi.mock("usehooks-ts");
 vi.mock("@/lib/transactions");
 
 vi.mock("@mui/x-data-grid", () => ({
-  DataGrid: vi.fn(
-    ({
-      rows,
-      loading,
-      processRowUpdate,
-      onRowModesModelChange,
-      columns,
-      slots = {},
-      slotProps = {},
-    }) => {
-      if (loading) return <div role="progressbar">Loading...</div>;
-      return (
-        <div>
-          {slots.toolbar && <slots.toolbar {...(slotProps.toolbar || {})} />}
-          {!rows || rows.length === 0 ? (
-            <div data-testid="mock-datagrid">No rows</div>
-          ) : (
-            <div data-testid="mock-datagrid">
-              {rows.map((row) => (
-                <div key={row.id}>
-                  <span>{row.merchant}</span>
-                  <div>
-                    {columns
-                      .find((c) => c.field === "actions")
-                      .getActions({ id: row.id })
-                      .map((action) => (
-                        <div key={action.props.label}>{action}</div>
-                      ))}
-                  </div>
+  DataGrid: vi.fn(({ rows, loading, columns, slots = {}, slotProps = {} }) => {
+    if (loading) return <div role="progressbar">Loading...</div>;
+    return (
+      <div>
+        {slots.toolbar && <slots.toolbar {...(slotProps.toolbar || {})} />}
+        {!rows || rows.length === 0 ? (
+          <div data-testid="mock-datagrid">No rows</div>
+        ) : (
+          <div data-testid="mock-datagrid">
+            {rows.map((row: Transaction) => (
+              <div key={row.id}>
+                <span>{row.merchant}</span>
+                <div>
+                  {columns
+                    .find((c) => c.field === "actions")
+                    .getActions({ id: row.id })
+                    .map((action) => (
+                      <div key={action.props.label}>{action}</div>
+                    ))}
+                </div>
               </div>
             ))}
           </div>
@@ -73,9 +69,6 @@ vi.mock("@mui/x-data-grid", () => ({
   GridToolbarContainer: vi.fn(({ children }) => (
     <div data-testid="mock-toolbar">{children}</div>
   )),
-  GridToolbarContainer: vi.fn(({ children }) => (
-    <div data-testid="mock-toolbar-container">{children}</div>
-  )),
 }));
 
 const mockEnqueueSnackbar = vi.fn();
@@ -90,22 +83,23 @@ const mockData: Transaction[] = [
     transactionType: "EXPENSE",
     merchant: "Test Merchant",
     notes: "Test Note",
-    createdAt: "",
-    updatedAt: "",
   },
 ];
 
 describe("Transactions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (useSnackbar as unknown as vi.Mock).mockReturnValue({
+    (useSnackbar as MockedFunction<typeof useSnackbar>).mockReturnValue({
+      closeSnackbar: vi.fn(),
       enqueueSnackbar: mockEnqueueSnackbar,
     });
-    (useToggle as vi.Mock).mockImplementation((initialValue) => {
-      const [value, setValue] = useState(initialValue);
-      const toggle = () => setValue(!value);
-      return [value, toggle];
-    });
+    (useToggle as MockedFunction<typeof useToggle>).mockImplementation(
+      (initialValue: boolean) => {
+        const [value, setValue] = useState(initialValue);
+        const toggle = () => setValue(!value);
+        return [value, toggle];
+      },
+    );
   });
 
   const renderComponent = () => {
@@ -119,7 +113,11 @@ describe("Transactions", () => {
   };
 
   it("should render the component and open the dialog", async () => {
-    (transactionsApi.getAllTransactions as vi.Mock).mockResolvedValue([]);
+    (
+      transactionsApi.getAllTransactions as MockedFunction<
+        typeof getAllTransactions
+      >
+    ).mockResolvedValue([]);
     const { user } = renderComponent();
     const button = screen.getByRole("button", { name: /view transactions/i });
     await user.click(button);
@@ -129,7 +127,11 @@ describe("Transactions", () => {
   });
 
   it("should display transactions in the grid", async () => {
-    (transactionsApi.getAllTransactions as vi.Mock).mockResolvedValue(mockData);
+    (
+      transactionsApi.getAllTransactions as MockedFunction<
+        typeof getAllTransactions
+      >
+    ).mockResolvedValue(mockData);
     const { user } = renderComponent();
     const button = screen.getByRole("button", { name: /view transactions/i });
     await user.click(button);
@@ -139,9 +141,11 @@ describe("Transactions", () => {
   });
 
   it("should show loading state", async () => {
-    (transactionsApi.getAllTransactions as vi.Mock).mockReturnValue(
-      new Promise(() => {}),
-    );
+    (
+      transactionsApi.getAllTransactions as MockedFunction<
+        typeof getAllTransactions
+      >
+    ).mockReturnValue(new Promise(() => {}));
     const { user } = renderComponent();
     const button = screen.getByRole("button", { name: /view transactions/i });
     await user.click(button);
@@ -151,8 +155,22 @@ describe("Transactions", () => {
   });
 
   it("should add a new transaction", async () => {
-    (transactionsApi.getAllTransactions as vi.Mock).mockResolvedValue([]);
-    (transactionsApi.createTransaction as vi.Mock).mockResolvedValue({
+    (
+      transactionsApi.getAllTransactions as MockedFunction<
+        typeof getAllTransactions
+      >
+    ).mockResolvedValue([]);
+    (
+      transactionsApi.createTransaction as MockedFunction<
+        typeof createTransaction
+      >
+    ).mockResolvedValue({
+      amount: 0,
+      budgetId: "1",
+      budgetItemId: "2",
+      date: "",
+      notes: "",
+      transactionType: "EXPENSE",
       id: "2",
       merchant: "New Merchant",
     });
@@ -171,8 +189,16 @@ describe("Transactions", () => {
   });
 
   it("should delete a transaction", async () => {
-    (transactionsApi.getAllTransactions as vi.Mock).mockResolvedValue(mockData);
-    (transactionsApi.deleteTransaction as vi.Mock).mockResolvedValue(undefined);
+    (
+      transactionsApi.getAllTransactions as MockedFunction<
+        typeof getAllTransactions
+      >
+    ).mockResolvedValue(mockData);
+    (
+      transactionsApi.deleteTransaction as MockedFunction<
+        typeof deleteTransaction
+      >
+    ).mockResolvedValue(undefined);
     const { user } = renderComponent();
     const button = screen.getByRole("button", { name: /view transactions/i });
     await user.click(button);

@@ -9,7 +9,6 @@ export interface Budget {
 export interface BudgetSummary {
   readonly id: string;
   month: number;
-
   year: number;
   expectedIncome: number;
   actualIncome: number;

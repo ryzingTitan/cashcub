@@ -3,7 +3,7 @@
 import { render, screen } from "@testing-library/react";
 import Analytics from "./page";
 import { useAnalyticsData } from "@/hooks/analytics/hooks";
-import { vi, describe, it, expect, beforeEach } from "vitest";
+import { vi, describe, it, expect, beforeEach, MockedFunction } from "vitest";
 import { useRouter } from "next/navigation";
 
 vi.mock("./components/DatePickers", () => ({
@@ -39,12 +39,14 @@ vi.mock("@/hooks/analytics/hooks", () => ({
 
 describe("Analytics page", () => {
   beforeEach(() => {
-    (useAnalyticsData as vi.Mock).mockClear();
-    (useRouter as vi.Mock).mockClear();
+    (useAnalyticsData as MockedFunction<typeof useAnalyticsData>).mockClear();
+    (useRouter as MockedFunction<typeof useRouter>).mockClear();
   });
 
   it("should render the loading state", () => {
-    (useAnalyticsData as vi.Mock).mockReturnValue({
+    (
+      useAnalyticsData as MockedFunction<typeof useAnalyticsData>
+    ).mockReturnValue({
       data: undefined,
       isLoading: true,
       error: undefined,
@@ -54,7 +56,9 @@ describe("Analytics page", () => {
   });
 
   it("should render the success state", () => {
-    (useAnalyticsData as vi.Mock).mockReturnValue({
+    (
+      useAnalyticsData as MockedFunction<typeof useAnalyticsData>
+    ).mockReturnValue({
       data: [],
       isLoading: false,
       error: undefined,
@@ -68,10 +72,17 @@ describe("Analytics page", () => {
 
   it("should redirect to the error page when an error occurs", () => {
     const push = vi.fn();
-    (useRouter as vi.Mock).mockReturnValue({
+    (useRouter as MockedFunction<typeof useRouter>).mockReturnValue({
+      back(): void {},
+      forward(): void {},
+      prefetch(): void {},
+      refresh(): void {},
+      replace(): void {},
       push,
     });
-    (useAnalyticsData as vi.Mock).mockReturnValue({
+    (
+      useAnalyticsData as MockedFunction<typeof useAnalyticsData>
+    ).mockReturnValue({
       data: undefined,
       isLoading: false,
       error: new Error("Failed to fetch"),

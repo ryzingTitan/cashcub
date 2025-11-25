@@ -80,7 +80,7 @@ describe("BudgetItemSummary", () => {
 
   it("should update budget item on save", async () => {
     const { updateBudgetItem } = await import("@/lib/budgets");
-    vi.mocked(updateBudgetItem).mockResolvedValue(undefined);
+    vi.mocked(updateBudgetItem).mockResolvedValue(mockBudgetItem);
 
     render(
       <SWRConfig value={{ provider: () => new Map() }}>

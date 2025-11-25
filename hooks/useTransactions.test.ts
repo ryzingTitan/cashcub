@@ -2,10 +2,23 @@ import { act, renderHook } from "@testing-library/react";
 import { GridRowModes } from "@mui/x-data-grid";
 import { useSnackbar } from "notistack";
 import useSWR from "swr";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  MockedFunction,
+  vi,
+} from "vitest";
 import { useTransactions } from "@/hooks/useTransactions";
 import * as transactions from "@/lib/transactions";
 import { Transaction } from "@/types/api";
+import {
+  createTransaction,
+  deleteTransaction,
+  updateTransaction,
+} from "@/lib/transactions";
 
 vi.mock("@mui/x-data-grid", () => ({
   GridRowModes: {
@@ -39,8 +52,6 @@ const mockTransactions: Transaction[] = [
     notes: "",
     budgetId: "budget1",
     budgetItemId: "item1",
-    createdAt: new Date(),
-    updatedAt: new Date(),
   },
 ];
 
@@ -49,17 +60,44 @@ describe("useTransactions", () => {
   const mutate = vi.fn();
 
   beforeEach(() => {
-    (useSWR as vi.Mock).mockReturnValue({
+    (useSWR as unknown as MockedFunction<typeof useSWR>).mockReturnValue({
       data: mockTransactions,
       isLoading: false,
       mutate,
+      error: undefined,
+      isValidating: false,
     });
-    (useSnackbar as vi.Mock).mockReturnValue({ enqueueSnackbar });
-    (transactions.createTransaction as vi.Mock).mockResolvedValue({
+    (useSnackbar as MockedFunction<typeof useSnackbar>).mockReturnValue({
+      closeSnackbar: vi.fn(),
+      enqueueSnackbar,
+    });
+    (
+      transactions.createTransaction as MockedFunction<typeof createTransaction>
+    ).mockResolvedValue({
+      amount: 0,
+      budgetId: "",
+      budgetItemId: "",
+      date: "",
+      merchant: "",
+      notes: "",
+      transactionType: "INCOME",
       id: "new-id",
     });
-    (transactions.updateTransaction as vi.Mock).mockResolvedValue({});
-    (transactions.deleteTransaction as vi.Mock).mockResolvedValue({});
+    (
+      transactions.updateTransaction as MockedFunction<typeof updateTransaction>
+    ).mockResolvedValue({
+      amount: 0,
+      budgetId: "",
+      budgetItemId: "",
+      date: "",
+      id: "",
+      merchant: "",
+      notes: "",
+      transactionType: "INCOME",
+    });
+    (
+      transactions.deleteTransaction as MockedFunction<typeof deleteTransaction>
+    ).mockResolvedValue();
   });
 
   afterEach(() => {
@@ -119,7 +157,7 @@ describe("useTransactions", () => {
     const { result } = renderHook(() => useTransactions("budget1", "item1"));
     const newRow = { id: "new-123", amount: 200 };
     await act(async () => {
-      await result.current.processRowUpdate(newRow, {} as Transaction);
+      await result.current.processRowUpdate(newRow);
     });
     expect(transactions.createTransaction).toHaveBeenCalled();
     expect(mutate).toHaveBeenCalled();
@@ -132,7 +170,7 @@ describe("useTransactions", () => {
     const { result } = renderHook(() => useTransactions("budget1", "item1"));
     const updatedRow = { ...mockTransactions[0], amount: 150 };
     await act(async () => {
-      await result.current.processRowUpdate(updatedRow, mockTransactions[0]);
+      await result.current.processRowUpdate(updatedRow);
     });
     expect(transactions.updateTransaction).toHaveBeenCalled();
     expect(mutate).toHaveBeenCalled();

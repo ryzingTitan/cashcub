@@ -34,8 +34,17 @@ vi.mock("./auth0", () => ({
 describe("getAllCategories", () => {
   it("should fetch categories successfully", async () => {
     vi.mocked(auth0.getSession).mockResolvedValue({
-      user: {},
-      tokenSet: { idToken: "test" },
+      accessTokens: [],
+      connectionTokenSets: [],
+      internal: { createdAt: 0, sid: "" },
+      user: {
+        sub: "",
+      },
+      tokenSet: {
+        idToken: "test",
+        accessToken: "",
+        expiresAt: 0,
+      },
     });
     const data = await getAllCategories("/categories");
     expect(data).toEqual([{ id: 1, name: "Groceries" }]);
@@ -48,8 +57,17 @@ describe("getAllCategories", () => {
       }),
     );
     vi.mocked(auth0.getSession).mockResolvedValue({
-      user: {},
-      tokenSet: { idToken: "test" },
+      accessTokens: [],
+      connectionTokenSets: [],
+      internal: { createdAt: 0, sid: "" },
+      user: {
+        sub: "",
+      },
+      tokenSet: {
+        idToken: "test",
+        accessToken: "",
+        expiresAt: 0,
+      },
     });
     await expect(getAllCategories("/categories")).rejects.toEqual(
       "Failed to fetch categories",

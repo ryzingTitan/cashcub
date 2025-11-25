@@ -15,17 +15,19 @@ vi.mock("next/navigation", () => ({
 }));
 
 const mockCategories: Category[] = [
-  { id: "1", name: "Groceries", description: "" },
-  { id: "2", name: "Rent", description: "" },
+  { id: "1", name: "Groceries" },
+  { id: "2", name: "Rent" },
 ];
 
 const mockBudgets: BudgetSummary[] = [
   {
     id: "1",
-    name: "Monthly Budget",
-    description: "",
-    startDate: "2024-01-01",
-    endDate: "2024-01-31",
+    month: 10,
+    year: 2025,
+    expectedExpenses: 500,
+    actualExpenses: 450,
+    expectedIncome: 700,
+    actualIncome: 750,
     budgetItems: [
       {
         id: "1",
@@ -33,6 +35,7 @@ const mockBudgets: BudgetSummary[] = [
         plannedAmount: 500,
         actualAmount: 450,
         categoryId: "1",
+        budgetId: "1",
       },
       {
         id: "2",
@@ -40,6 +43,7 @@ const mockBudgets: BudgetSummary[] = [
         plannedAmount: 1500,
         actualAmount: 1500,
         categoryId: "2",
+        budgetId: "1",
       },
     ],
   },
@@ -65,7 +69,7 @@ describe("CategoryGraph", () => {
     render(
       <SWRConfig
         value={{
-          provider: () => new Map([["/categories", mockCategories]]),
+          provider: () => new Map(),
         }}
       >
         <CategoryGraph budgets={mockBudgets} />
@@ -99,7 +103,7 @@ describe("CategoryGraph", () => {
     render(
       <SWRConfig
         value={{
-          provider: () => new Map([["/categories", mockCategories]]),
+          provider: () => new Map(),
         }}
       >
         <CategoryGraph budgets={[]} />

@@ -28,7 +28,7 @@ const server = setupServer(
     return HttpResponse.json([{ id: 1, name: "Test Budget" }]);
   }),
   http.post("http://localhost:3001/api/budgets", () => {
-    return HttpResponse.json({ id: 2, name: "New Budget" });
+    return HttpResponse.json({ id: 2, year: 2024, month: 10 });
   }),
   http.post("http://localhost:3001/api/budgets/1/clone", () => {
     return HttpResponse.json({ id: 3, name: "Cloned Budget" });
@@ -61,8 +61,17 @@ vi.mock("./auth0", () => ({
 describe("Budget API functions", () => {
   beforeEach(() => {
     vi.mocked(auth0.getSession).mockResolvedValue({
-      user: {},
-      tokenSet: { idToken: "test" },
+      accessTokens: [],
+      connectionTokenSets: [],
+      internal: { createdAt: 0, sid: "" },
+      user: {
+        sub: "",
+      },
+      tokenSet: {
+        idToken: "test",
+        accessToken: "",
+        expiresAt: 0,
+      },
     });
   });
 
@@ -72,8 +81,8 @@ describe("Budget API functions", () => {
   });
 
   it("createBudget should create a budget successfully", async () => {
-    const data = await createBudget("/budgets", { name: "New Budget" });
-    expect(data).toEqual({ id: 2, name: "New Budget" });
+    const data = await createBudget("/budgets", { month: 10, year: 2024 });
+    expect(data).toEqual({ id: 2, month: 10, year: 2024 });
   });
 
   it("cloneBudget should clone a budget successfully", async () => {
@@ -119,9 +128,9 @@ describe("Budget API functions", () => {
         return new HttpResponse(null, { status: 500 });
       }),
     );
-    await expect(
-      createBudget("/budgets", { name: "New Budget" }),
-    ).rejects.toEqual("Failed to create budget");
+    await expect(createBudget("/budgets", {})).rejects.toEqual(
+      "Failed to create budget",
+    );
   });
 
   it("cloneBudget should reject with an error if the fetch fails", async () => {

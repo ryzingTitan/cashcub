@@ -2,7 +2,7 @@
 
 import { render, screen } from "@testing-library/react";
 import ErrorPage from "./page";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, MockedFunction } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { useRouter } from "next/navigation";
 
@@ -26,7 +26,12 @@ describe("ErrorPage", () => {
 
   it("should redirect to the home page when the HOME button is clicked", async () => {
     const push = vi.fn();
-    (useRouter as vi.Mock).mockReturnValue({
+    (useRouter as MockedFunction<typeof useRouter>).mockReturnValue({
+      back(): void {},
+      forward(): void {},
+      prefetch(): void {},
+      refresh(): void {},
+      replace(): void {},
       push,
     });
     render(<ErrorPage />);

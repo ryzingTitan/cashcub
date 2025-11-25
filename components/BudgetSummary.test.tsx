@@ -55,6 +55,8 @@ describe("BudgetSummary", () => {
     const budget = {
       id: "test-id",
       name: "test-name",
+      month: 1,
+      year: 2024,
       expectedIncome: 1000,
       actualIncome: 1200,
       expectedExpenses: 800,

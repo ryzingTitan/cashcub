@@ -6,11 +6,8 @@ import { describe, it, expect } from "vitest";
 const mockBudgets: BudgetSummary[] = [
   {
     id: "1",
-    userId: "user1",
     month: 1,
     year: 2024,
-    totalPlannedAmount: 1000,
-    totalActualAmount: 800,
     budgetItems: [
       {
         id: "bi1",
@@ -18,7 +15,7 @@ const mockBudgets: BudgetSummary[] = [
         name: "Groceries",
         plannedAmount: 500,
         actualAmount: 450,
-        transactions: [],
+        categoryId: "4",
       },
       {
         id: "bi2",
@@ -26,17 +23,18 @@ const mockBudgets: BudgetSummary[] = [
         name: "Rent",
         plannedAmount: 500,
         actualAmount: 350,
-        transactions: [],
+        categoryId: "5",
       },
     ],
+    expectedIncome: 0,
+    actualIncome: 0,
+    expectedExpenses: 0,
+    actualExpenses: 0,
   },
   {
     id: "2",
-    userId: "user1",
     month: 2,
     year: 2024,
-    totalPlannedAmount: 1200,
-    totalActualAmount: 1100,
     budgetItems: [
       {
         id: "bi3",
@@ -44,7 +42,7 @@ const mockBudgets: BudgetSummary[] = [
         name: "Groceries",
         plannedAmount: 600,
         actualAmount: 550,
-        transactions: [],
+        categoryId: "4",
       },
       {
         id: "bi4",
@@ -52,9 +50,13 @@ const mockBudgets: BudgetSummary[] = [
         name: "Utilities",
         plannedAmount: 600,
         actualAmount: 550,
-        transactions: [],
+        categoryId: "5",
       },
     ],
+    expectedIncome: 0,
+    actualIncome: 0,
+    expectedExpenses: 0,
+    actualExpenses: 0,
   },
 ];
 
@@ -97,7 +99,7 @@ describe("useBudgetItemGraph", () => {
             name: "Groceries",
             plannedAmount: 500,
             actualAmount: null,
-            transactions: [],
+            categoryId: "4",
           },
         ],
       },

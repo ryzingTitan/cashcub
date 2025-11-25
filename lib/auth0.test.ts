@@ -44,21 +44,56 @@ describe("ensureValidSession", () => {
   });
 
   it("should redirect to login if idToken is missing", () => {
-    ensureValidSession({ user: {}, tokenSet: {} });
+    ensureValidSession({
+      accessTokens: [],
+      connectionTokenSets: [],
+      internal: { createdAt: 0, sid: "" },
+      user: {
+        sub: "",
+      },
+      tokenSet: {
+        accessToken: "",
+        expiresAt: 0,
+      },
+    });
     expect(redirect).toHaveBeenCalledWith(loginUrl);
   });
 
   it("should redirect to login if idToken is expired", () => {
     const expiredToken =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDk0NTkyMDB9.test"; // Expired
-    ensureValidSession({ user: {}, tokenSet: { idToken: expiredToken } });
+    ensureValidSession({
+      accessTokens: [],
+      connectionTokenSets: [],
+      internal: { createdAt: 0, sid: "" },
+      user: {
+        sub: "",
+      },
+      tokenSet: {
+        idToken: expiredToken,
+        accessToken: "",
+        expiresAt: 0,
+      },
+    });
     expect(redirect).toHaveBeenCalledWith(loginUrl);
   });
 
   it("should not redirect if session and idToken are valid", () => {
     const validToken =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE5MjQ5OTIwMDB9.test"; // Not expired
-    ensureValidSession({ user: {}, tokenSet: { idToken: validToken } });
+    ensureValidSession({
+      accessTokens: [],
+      connectionTokenSets: [],
+      internal: { createdAt: 0, sid: "" },
+      user: {
+        sub: "",
+      },
+      tokenSet: {
+        idToken: validToken,
+        accessToken: "",
+        expiresAt: 0,
+      },
+    });
     expect(redirect).not.toHaveBeenCalled();
   });
 });

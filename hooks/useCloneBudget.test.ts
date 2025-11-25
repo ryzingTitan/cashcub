@@ -18,19 +18,20 @@ describe("useCloneBudget", () => {
 
   beforeEach(() => {
     vi.mocked(useSnackbar).mockReturnValue({
+      closeSnackbar: vi.fn(),
       enqueueSnackbar: mockEnqueueSnackbar,
     });
-    vi.mocked(useRouter).mockReturnValue({ push: mockPush } as ReturnType<
-      typeof useRouter
-    >);
+    vi.mocked(useRouter).mockReturnValue({
+      push: mockPush,
+    } as unknown as ReturnType<typeof useRouter>);
     vi.mocked(useSWRConfig).mockReturnValue({
       mutate: mockMutate,
-    } as ReturnType<typeof useSWRConfig>);
+    } as unknown as ReturnType<typeof useSWRConfig>);
   });
 
   it("should clone a budget successfully", async () => {
     const { result } = renderHook(() => useCloneBudget("1"));
-    const clonedBudget = { id: "2" };
+    const clonedBudget = { id: "2", month: 10, year: 2023 };
     vi.mocked(cloneBudget).mockResolvedValue(clonedBudget);
 
     await act(async () => {

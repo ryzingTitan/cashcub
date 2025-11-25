@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, MockedFunction } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useAddBudget } from "./useAddBudget";
 import { useSnackbar } from "notistack";
@@ -31,16 +31,30 @@ vi.mock("swr", async () => {
 
 describe("useAddBudget", () => {
   const enqueueSnackbar = vi.fn();
+  const closeSnackbar = vi.fn();
   const push = vi.fn();
   const trigger = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useSnackbar as vi.Mock).mockReturnValue({ enqueueSnackbar });
-    (useRouter as vi.Mock).mockReturnValue({ push });
-    (useSWRMutation as vi.Mock).mockReturnValue({
+    (useSnackbar as MockedFunction<typeof useSnackbar>).mockReturnValue({
+      closeSnackbar,
+      enqueueSnackbar,
+    });
+    (useRouter as MockedFunction<typeof useRouter>).mockReturnValue({
+      back(): void {},
+      forward(): void {},
+      prefetch(): void {},
+      refresh(): void {},
+      replace(): void {},
+      push,
+    });
+    (useSWRMutation as MockedFunction<typeof useSWRMutation>).mockReturnValue({
       trigger,
       isMutating: false,
+      reset: vi.fn(),
+      error: undefined,
+      data: undefined,
     });
   });
 

@@ -34,8 +34,14 @@ vi.mock("./auth0", () => ({
 describe("getAnalyticsData", () => {
   it("should fetch analytics data successfully", async () => {
     vi.mocked(auth0.getSession).mockResolvedValue({
-      user: {},
-      tokenSet: { idToken: "test" },
+      internal: {
+        sid: "",
+        createdAt: 100,
+      },
+      user: {
+        sub: "Test",
+      },
+      tokenSet: { idToken: "test", accessToken: "access", expiresAt: 100 },
     });
     const data = await getAnalyticsData([
       "/analytics",
@@ -52,8 +58,14 @@ describe("getAnalyticsData", () => {
       }),
     );
     vi.mocked(auth0.getSession).mockResolvedValue({
-      user: {},
-      tokenSet: { idToken: "test" },
+      internal: {
+        sid: "",
+        createdAt: 100,
+      },
+      user: {
+        sub: "Test",
+      },
+      tokenSet: { idToken: "test", accessToken: "access", expiresAt: 100 },
     });
     await expect(
       getAnalyticsData(["/analytics", "2023-01-01", "2023-01-31"]),

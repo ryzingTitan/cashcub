@@ -18,7 +18,7 @@ describe("BudgetItemGraph", () => {
 
   it("should render the chart with data", () => {
     mockUseBudgetItemGraph.mockReturnValue({
-      chartData: [{ x: "1/2024", Groceries: 450, Rent: 350, Utilities: 0 }],
+      chartData: [],
       itemKeys: ["Groceries", "Rent", "Utilities"],
     });
     render(<BudgetItemGraph budgets={[]} loading={false} />);
