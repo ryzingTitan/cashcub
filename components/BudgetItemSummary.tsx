@@ -74,10 +74,12 @@ function EditView({ formik, handleCancel }: EditViewProps) {
             helperText={
               formik.touched.plannedAmount && formik.errors.plannedAmount
             }
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">$</InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
+              },
             }}
             sx={{ m: 2, width: { xs: "100%", sm: "auto" } }}
           />
