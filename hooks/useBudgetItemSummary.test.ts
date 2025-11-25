@@ -1,8 +1,8 @@
 import { act, renderHook } from "@testing-library/react";
-import { FormikProps, useFormik } from "formik";
+import { useFormik } from "formik";
 import { useSnackbar } from "notistack";
 import { Dispatch, SetStateAction } from "react";
-import { SWRConfiguration, useSWRConfig } from "swr";
+import { useSWRConfig } from "swr";
 import { useToggle } from "usehooks-ts";
 import {
   afterEach,
@@ -72,9 +72,7 @@ describe("useBudgetItemSummary", () => {
     });
     (useSWRConfig as MockedFunction<typeof useSWRConfig>).mockReturnValue({
       mutate,
-      cache: new Map(),
-      fallback: {},
-    } as unknown as SWRConfiguration);
+    } as ReturnType<typeof useSWRConfig>);
     (useToggle as MockedFunction<typeof useToggle>).mockReturnValue([
       false,
       toggle,
@@ -85,22 +83,7 @@ describe("useBudgetItemSummary", () => {
         onSubmit = options.onSubmit as unknown as typeof onSubmit;
         return {
           resetForm,
-          values: { name: "", plannedAmount: 0 },
-          handleSubmit: vi.fn(),
-          handleChange: vi.fn(),
-          handleBlur: vi.fn(),
-          touched: {},
-          errors: {},
-          isSubmitting: false,
-          isValid: true,
-          dirty: false,
-          setFieldValue: vi.fn(),
-          setSubmitting: vi.fn(),
-          initialValues: { name: "", plannedAmount: 0 },
-          initialErrors: {},
-          initialTouched: {},
-          submitForm: vi.fn(),
-        } as unknown as FormikProps<any>;
+        } as ReturnType<typeof useFormik>;
       },
     );
     vi.spyOn(budgets, "updateBudgetItem").mockResolvedValue({
