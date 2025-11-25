@@ -9,6 +9,8 @@ import DatePickers from "@/components/analytics/DatePickers";
 import BudgetItemGraph from "@/components/BudgetItemGraph";
 import CashFlowGraph from "@/components/CashFlowGraph";
 import CategoryGraph from "@/components/CategoryGraph";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 export default function Analytics() {
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
@@ -21,7 +23,7 @@ export default function Analytics() {
   }
 
   return (
-    <>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       {isLoading ? (
         <Stack spacing={2} alignItems={"center"} sx={{ m: 2 }}>
           <Skeleton
@@ -62,6 +64,6 @@ export default function Analytics() {
           <CategoryGraph budgets={data} />
         </>
       )}
-    </>
+    </LocalizationProvider>
   );
 }

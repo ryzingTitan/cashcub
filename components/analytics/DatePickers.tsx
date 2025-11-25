@@ -1,7 +1,6 @@
 "use client";
 
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers";
 import { Stack } from "@mui/material";
 import { Dayjs } from "dayjs";
 
@@ -19,31 +18,29 @@ export default function DatePickers({
   onEndDateChange,
 }: DatePickersProps) {
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Stack
-        data-testid="date-pickers"
-        spacing={2}
-        justifyContent={"center"}
-        direction={"row"}
+    <Stack
+      data-testid="date-pickers"
+      spacing={2}
+      justifyContent={"center"}
+      direction={"row"}
+      sx={{ m: 2 }}
+    >
+      <DatePicker
+        label="Start Date"
+        views={["year", "month"]}
+        format="MM/YYYY"
+        value={startDate}
+        onChange={onStartDateChange}
         sx={{ m: 2 }}
-      >
-        <DatePicker
-          label="Start Date"
-          views={["year", "month"]}
-          format="MM/YYYY"
-          value={startDate}
-          onChange={onStartDateChange}
-          sx={{ m: 2 }}
-        />
-        <DatePicker
-          label="End Date"
-          views={["year", "month"]}
-          format="MM/YYYY"
-          value={endDate}
-          onChange={onEndDateChange}
-          sx={{ m: 2 }}
-        />
-      </Stack>
-    </LocalizationProvider>
+      />
+      <DatePicker
+        label="End Date"
+        views={["year", "month"]}
+        format="MM/YYYY"
+        value={endDate}
+        onChange={onEndDateChange}
+        sx={{ m: 2 }}
+      />
+    </Stack>
   );
 }
