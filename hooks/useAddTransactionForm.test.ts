@@ -2,7 +2,15 @@ import { act, renderHook } from "@testing-library/react";
 import { useFormik } from "formik";
 import { useSnackbar } from "notistack";
 import { useSWRConfig } from "swr";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  MockedFunction,
+  vi,
+} from "vitest";
 import { useAddTransactionForm } from "@/hooks/useAddTransactionForm";
 import * as transactions from "@/lib/transactions";
 import { useParams } from "next/navigation";
@@ -52,15 +60,23 @@ describe("useAddTransactionForm", () => {
   ) => Promise<void>;
 
   beforeEach(() => {
-    (useSnackbar as vi.Mock).mockReturnValue({ enqueueSnackbar });
-    (useSWRConfig as vi.Mock).mockReturnValue({ mutate });
-    (useParams as vi.Mock).mockReturnValue({ slug: "budget123" });
-    (useFormik as vi.Mock).mockImplementation((options) => {
-      onSubmit = options.onSubmit;
-      return {
-        resetForm,
-      };
+    (useSnackbar as MockedFunction<typeof useSnackbar>).mockReturnValue({
+      enqueueSnackbar,
     });
+    (useSWRConfig as MockedFunction<typeof useSWRConfig>).mockReturnValue({
+      mutate,
+    });
+    (useParams as MockedFunction<typeof useParams>).mockReturnValue({
+      slug: "budget123",
+    });
+    (useFormik as MockedFunction<typeof useFormik>).mockImplementation(
+      (options) => {
+        onSubmit = options.onSubmit;
+        return {
+          resetForm,
+        };
+      },
+    );
     vi.spyOn(transactions, "createTransaction").mockResolvedValue(undefined);
   });
 
