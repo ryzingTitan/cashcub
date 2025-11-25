@@ -21,11 +21,9 @@ Follow these instructions to get a copy of the project up and running on your lo
 ### Installation
 
 1. **Clone the repository:**
-
    ```bash
    git clone https://github.com/your-username/cashcub.git
    ```
-
 2. **Navigate to the project directory:**
    ```bash
    cd cashcub
@@ -34,7 +32,12 @@ Follow these instructions to get a copy of the project up and running on your lo
    ```bash
    npm install
    ```
-4. **Create a `.env.local` file in the root of the project and add the necessary environment variables (see the "Environment Variables" section below).**
+4. **Set up your environment variables:**
+   Copy the example environment file and update it with your Auth0 credentials.
+   ```bash
+   cp .env.example .env
+   ```
+   See the "Environment Variables" section below for more details.
 
 ### Running the Application
 
@@ -46,13 +49,13 @@ Open http://localhost:3000 in your browser to see the application.
 
 ## Environment Variables
 
-This project uses Auth0 for authentication. You will need to create a new application in the [Auth0 Dashboard](https://manage.auth0.com/) and configure the following environment variables in a `.env.local` file:
+This project uses Auth0 for authentication. You will need to create a new "Regular Web Application" in the [Auth0 Dashboard](https://manage.auth0.com/). Once created, you will find the necessary credentials in your application's "Settings" tab. Populate your `.env` file with the following values:
 
-- `AUTH0_SECRET`: A long, secret value used to sign the session cookie.
-- `AUTH0_BASE_URL`: The base URL of your application.
-- `AUTH0_ISSUER_BASE_URL`: The URL of your Auth0 tenant domain.
-- `AUTH0_CLIENT_ID`: The client ID of your Auth0 application.
-- `AUTH0_CLIENT_SECRET`: The client secret of your Auth0 application.
+- `AUTH0_DOMAIN`: Your Auth0 application's domain.
+- `AUTH0_CLIENT_ID`: The Client ID of your Auth0 application.
+- `AUTH0_SECRET`: A long, secret value used to sign the session cookie. You can generate one with `openssl rand -hex 32` on the command line.
+- `AUTH0_CLIENT_SECRET`: The Client Secret of your Auth0 application.
+- `APP_BASE_URL`: The base URL of your application (e.g., `http://localhost:3000`). This is used for Auth0 callbacks.
 
 ## Technologies Used
 
