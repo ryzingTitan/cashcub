@@ -1,6 +1,7 @@
 "use client";
 
 import { render, screen } from "@testing-library/react";
+import { SyntheticEvent } from "react";
 import Footer from "./Footer";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { usePathname } from "next/navigation";
@@ -70,7 +71,9 @@ describe("Footer", () => {
 
     // Act
     const { onChange } = vi.mocked(BottomNavigation).mock.calls[0][0];
-    onChange({}, 1);
+    if (onChange) {
+      onChange({} as SyntheticEvent, 1);
+    }
 
     // Assert
     expect(push).toHaveBeenCalledWith("/analytics");
@@ -83,7 +86,9 @@ describe("Footer", () => {
 
     // Act
     const { onChange } = vi.mocked(BottomNavigation).mock.calls[0][0];
-    onChange({}, 0);
+    if (onChange) {
+      onChange({} as SyntheticEvent, 0);
+    }
 
     // Assert
     expect(push).toHaveBeenCalledWith("/budgets");
