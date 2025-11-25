@@ -9,6 +9,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
+import Box from "@mui/material/Box";
 import {
   DataGrid,
   GridColDef,
@@ -53,7 +54,6 @@ const AmountEditCell = (props: GridRenderEditCellParams) => {
   );
 };
 
-import { GridToolbarContainer } from "@mui/x-data-grid";
 interface TransactionsProps {
   budgetId: string;
   budgetItemId: string;
@@ -213,16 +213,15 @@ export default function Transactions({
             processRowUpdate={processRowUpdate}
             slots={{
               toolbar: () => (
-                <GridToolbarContainer>
+                <Box sx={{ p: 1 }}>
                   <Tooltip title="Add transaction">
                     <IconButton onClick={handleAddNew} size="small">
                       <AddIcon />
                     </IconButton>
                   </Tooltip>
-                </GridToolbarContainer>
+                </Box>
               ),
             }}
-            showToolbar
             autosizeOnMount
           />
         </DialogContent>
