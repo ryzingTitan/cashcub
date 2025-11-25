@@ -88,4 +88,5 @@ describe("BudgetSummaryTotals", () => {
       color: "rgb(46, 125, 50)",
     });
   });
+
 });
