@@ -3,20 +3,16 @@ import userEvent from "@testing-library/user-event";
 import DatePickers from "./DatePickers";
 import dayjs from "dayjs";
 import { describe, it, expect, vi } from "vitest";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 describe("DatePickers", () => {
   it("renders the date pickers", () => {
     render(
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePickers
-          startDate={null}
-          endDate={null}
-          onStartDateChange={() => {}}
-          onEndDateChange={() => {}}
-        />
-      </LocalizationProvider>,
+      <DatePickers
+        startDate={null}
+        endDate={null}
+        onStartDateChange={() => {}}
+        onEndDateChange={() => {}}
+      />,
     );
 
     expect(screen.getAllByLabelText("Start Date")[0]).toBeInTheDocument();
@@ -27,14 +23,12 @@ describe("DatePickers", () => {
     const onStartDateChange = vi.fn();
     const user = userEvent.setup();
     render(
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePickers
-          startDate={null}
-          endDate={null}
-          onStartDateChange={onStartDateChange}
-          onEndDateChange={() => {}}
-        />
-      </LocalizationProvider>,
+      <DatePickers
+        startDate={null}
+        endDate={null}
+        onStartDateChange={onStartDateChange}
+        onEndDateChange={() => {}}
+      />,
     );
 
     const openCalendarButtons = screen.getAllByLabelText("Choose date");
@@ -62,14 +56,12 @@ describe("DatePickers", () => {
     const onEndDateChange = vi.fn();
     const user = userEvent.setup();
     render(
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePickers
-          startDate={null}
-          endDate={null}
-          onStartDateChange={() => {}}
-          onEndDateChange={onEndDateChange}
-        />
-      </LocalizationProvider>,
+      <DatePickers
+        startDate={null}
+        endDate={null}
+        onStartDateChange={() => {}}
+        onEndDateChange={onEndDateChange}
+      />,
     );
 
     const openCalendarButtons = screen.getAllByLabelText("Choose date");
