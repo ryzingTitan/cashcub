@@ -38,7 +38,7 @@ interface ReadOnlyViewProps {
 function EditView({ formik, handleCancel }: EditViewProps) {
   return (
     <>
-      <ListItem>
+      <ListItem sx={{ flexDirection: { xs: "column", sm: "row" } }}>
         <TextField
           required
           label="Name"
@@ -48,13 +48,16 @@ function EditView({ formik, handleCancel }: EditViewProps) {
           onBlur={formik.handleBlur}
           error={formik.touched.name && Boolean(formik.errors.name)}
           helperText={formik.touched.name && formik.errors.name}
-          sx={{ m: 2 }}
+          sx={{ m: 2, width: { xs: "100%", sm: "auto" } }}
         />
         <Stack
           direction={"row"}
           spacing={2}
-          sx={{ flexGrow: 1 }}
-          justifyContent="flex-end"
+          sx={{
+            flexGrow: 1,
+            justifyContent: { xs: "center", sm: "flex-end" },
+            width: { xs: "100%", sm: "auto" },
+          }}
         >
           <TextField
             required
@@ -76,7 +79,7 @@ function EditView({ formik, handleCancel }: EditViewProps) {
                 <InputAdornment position="start">$</InputAdornment>
               ),
             }}
-            sx={{ m: 2 }}
+            sx={{ m: 2, width: { xs: "100%", sm: "auto" } }}
           />
         </Stack>
       </ListItem>
@@ -104,13 +107,12 @@ function ReadOnlyView({
 
   return (
     <>
-      <ListItem>
-        <Typography>{budgetItem.name}</Typography>
+      <ListItem sx={{ flexDirection: { xs: "column", sm: "row" } }}>
+        <Typography sx={{ mb: { xs: 2, sm: 0 } }}>{budgetItem.name}</Typography>
         <Stack
           direction={"row"}
           spacing={2}
-          sx={{ flexGrow: 1 }}
-          justifyContent="flex-end"
+          sx={{ flexGrow: 1, justifyContent: { xs: "center", sm: "flex-end" } }}
         >
           <Stack>
             <Typography align={"center"}>Planned</Typography>
