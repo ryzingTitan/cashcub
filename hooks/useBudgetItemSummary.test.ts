@@ -69,14 +69,21 @@ describe("useBudgetItemSummary", () => {
       closeSnackbar: vi.fn(),
       enqueueSnackbar,
     });
-    (useSWRConfig as vi.Mock).mockReturnValue({ mutate });
-    (useToggle as vi.Mock).mockReturnValue([false, toggle]);
-    (useFormik as vi.Mock).mockImplementation((options) => {
-      onSubmit = options.onSubmit;
-      return {
-        resetForm,
-      };
+    (useSWRConfig as MockedFunction<typeof useSWRConfig>).mockReturnValue({
+      mutate,
     });
+    (useToggle as MockedFunction<typeof useToggle>).mockReturnValue([
+      false,
+      toggle,
+    ]);
+    (useFormik as MockedFunction<typeof useFormik>).mockImplementation(
+      (options) => {
+        onSubmit = options.onSubmit;
+        return {
+          resetForm,
+        };
+      },
+    );
     vi.spyOn(budgets, "updateBudgetItem").mockResolvedValue(undefined);
     vi.spyOn(budgets, "deleteBudgetItem").mockResolvedValue(undefined);
   });
