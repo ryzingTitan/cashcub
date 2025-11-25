@@ -4,7 +4,7 @@ import Transactions from "./Transactions";
 import { SWRConfig } from "swr";
 import { useSnackbar } from "notistack";
 import { Transaction } from "@/types/api";
-import { useState } from "react";
+import { Dispatch, ReactElement, SetStateAction, useState } from "react";
 import userEvent from "@testing-library/user-event";
 import { useToggle } from "usehooks-ts";
 import * as transactionsApi from "@/lib/transactions";
@@ -25,6 +25,8 @@ vi.mock("notistack");
 vi.mock("usehooks-ts");
 vi.mock("@/lib/transactions");
 
+import { GridActionsColDef, GridColDef } from "@mui/x-data-grid";
+
 vi.mock("@mui/x-data-grid", () => ({
   DataGrid: vi.fn(({ rows, loading, columns, slots = {}, slotProps = {} }) => {
     if (loading) return <div role="progressbar">Loading...</div>;
@@ -39,11 +41,21 @@ vi.mock("@mui/x-data-grid", () => ({
               <div key={row.id}>
                 <span>{row.merchant}</span>
                 <div>
-                  {columns
-                    .find((c) => c.field === "actions")
-                    .getActions({ id: row.id })
+                  {(
+                    columns.find(
+                      (c: GridColDef) => c.field === "actions",
+                    ) as GridActionsColDef<Transaction>
+                  )
+                    .getActions({ id: row.id ?? "", row, columns })
                     .map((action) => (
-                      <div key={action.props.label}>{action}</div>
+                      <div
+                        key={
+                          (action as React.ReactElement<{ label: string }>)
+                            .props.label
+                        }
+                      >
+                        {action}
+                      </div>
                     ))}
                 </div>
               </div>
@@ -98,10 +110,12 @@ describe("Transactions", () => {
       enqueueSnackbar: mockEnqueueSnackbar,
     });
     (useToggle as MockedFunction<typeof useToggle>).mockImplementation(
-      (initialValue: boolean) => {
-        const [value, setValue] = useState(initialValue);
+      (
+        defaultValue: boolean | undefined,
+      ): [boolean, () => void, Dispatch<SetStateAction<boolean>>] => {
+        const [value, setValue] = useState(!!defaultValue);
         const toggle = () => setValue(!value);
-        return [value, toggle];
+        return [value, toggle, setValue];
       },
     );
   });

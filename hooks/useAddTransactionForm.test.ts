@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
-import { useFormik } from "formik";
+import { FormikProps, useFormik } from "formik";
 import { useSnackbar } from "notistack";
-import { useSWRConfig } from "swr";
+import { SWRConfiguration, useSWRConfig } from "swr";
 import {
   afterEach,
   beforeEach,
@@ -62,22 +62,61 @@ describe("useAddTransactionForm", () => {
   beforeEach(() => {
     (useSnackbar as MockedFunction<typeof useSnackbar>).mockReturnValue({
       enqueueSnackbar,
+      closeSnackbar: vi.fn(),
     });
     (useSWRConfig as MockedFunction<typeof useSWRConfig>).mockReturnValue({
       mutate,
-    });
+      cache: new Map(),
+      fallback: {},
+    } as unknown as SWRConfiguration);
     (useParams as MockedFunction<typeof useParams>).mockReturnValue({
       slug: "budget123",
     });
     (useFormik as MockedFunction<typeof useFormik>).mockImplementation(
       (options) => {
-        onSubmit = options.onSubmit;
+        onSubmit = options.onSubmit as unknown as typeof onSubmit;
         return {
           resetForm,
-        };
+          values: {
+            amount: 0,
+            transactionType: "",
+            merchant: "",
+            notes: "",
+            budgetItemId: "",
+          },
+          handleSubmit: vi.fn(),
+          handleChange: vi.fn(),
+          handleBlur: vi.fn(),
+          touched: {},
+          errors: {},
+          isSubmitting: false,
+          isValid: true,
+          dirty: false,
+          setFieldValue: vi.fn(),
+          setSubmitting: vi.fn(),
+          initialValues: {
+            amount: 0,
+            transactionType: "",
+            merchant: "",
+            notes: "",
+            budgetItemId: "",
+          },
+          initialErrors: {},
+          initialTouched: {},
+          submitForm: vi.fn(),
+        } as unknown as FormikProps<any>;
       },
     );
-    vi.spyOn(transactions, "createTransaction").mockResolvedValue(undefined);
+    vi.spyOn(transactions, "createTransaction").mockResolvedValue({
+      id: "1",
+      amount: 100,
+      transactionType: "EXPENSE",
+      merchant: "Test Merchant",
+      notes: "Test Note",
+      budgetItemId: "item123",
+      budgetId: "budget123",
+      date: "2023-01-01T00:00:00.000Z",
+    });
   });
 
   afterEach(() => {
