@@ -1,7 +1,7 @@
 "use server";
 
 import { auth0, ensureValidSession } from "@/lib/auth0";
-import { ApiError } from "./api-error";
+import { ApiError } from "./apiError";
 
 type FetchOptions = {
   method?: "GET" | "POST" | "PUT" | "DELETE";
