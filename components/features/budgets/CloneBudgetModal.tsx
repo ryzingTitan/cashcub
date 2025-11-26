@@ -9,7 +9,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import DialogContent from "@mui/material/DialogContent";
 import { DatePicker } from "@mui/x-date-pickers";
-import { useCloneBudget } from "@/hooks/useCloneBudget";
+import { useCloneBudget } from "@/hooks/features/budgets/useCloneBudget";
 
 export default function CloneBudgetModal({
   budgetId,

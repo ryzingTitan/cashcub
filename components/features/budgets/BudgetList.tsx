@@ -4,7 +4,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import Skeleton from "@mui/material/Skeleton";
 import TextField from "@mui/material/TextField";
 
-import { useBudgetList } from "@/hooks/useBudgetList";
+import { useBudgetList } from "@/hooks/features/budgets/useBudgetList";
 
 export default function BudgetList() {
   const {

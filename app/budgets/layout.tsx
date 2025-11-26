@@ -1,11 +1,11 @@
 "use client";
 
-import BudgetList from "@/components/BudgetList";
+import BudgetList from "@/components/features/budgets/BudgetList";
 import Stack from "@mui/material/Stack";
-import AddBudgetModal from "@/components/AddBudgetModal";
-import CloneBudgetModal from "@/components/CloneBudgetModal";
-import BudgetsLayout from "@/components/budgets/BudgetsLayout";
-import { useBudgetList } from "@/hooks/useBudgetList";
+import AddBudgetModal from "@/components/features/budgets/AddBudgetModal";
+import CloneBudgetModal from "@/components/features/budgets/CloneBudgetModal";
+import BudgetsLayout from "@/components/features/budgets/BudgetsLayout";
+import { useBudgetList } from "@/hooks/features/budgets/useBudgetList";
 
 export default function BudgetLayout({
   children,

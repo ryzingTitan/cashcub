@@ -6,11 +6,11 @@ import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import AddBudgetItemModal from "@/components/AddBudgetItemModal";
+import AddBudgetItemModal from "@/components/features/budgets/AddBudgetItemModal";
 import Divider from "@mui/material/Divider";
 import { BudgetItem, BudgetSummary } from "@/types/api";
 import List from "@mui/material/List";
-import BudgetItemSummary from "@/components/BudgetItemSummary";
+import BudgetItemSummary from "@/components/features/budgets/BudgetItemSummary";
 
 interface BudgetCategoriesProps {
   budget?: BudgetSummary | undefined;

@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import AddBudgetItemModal from "./AddBudgetItemModal";
 import { SWRConfig } from "swr";
 import { SnackbarProvider } from "notistack";
-import * as budgets from "../lib/budgets";
+import * as budgets from "@/lib/budgets";
 
 const enqueueSnackbar = vi.fn();
 

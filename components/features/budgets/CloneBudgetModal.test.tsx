@@ -1,13 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, Mock } from "vitest";
 import CloneBudgetModal from "./CloneBudgetModal";
-import { useCloneBudget } from "@/hooks/useCloneBudget";
+import { useCloneBudget } from "@/hooks/features/budgets/useCloneBudget";
 import userEvent from "@testing-library/user-event";
 import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
-vi.mock("@/hooks/useCloneBudget");
+vi.mock("@/hooks/features/budgets/useCloneBudget");
 
 describe("CloneBudgetModal", () => {
   const mockToggleModal = vi.fn();

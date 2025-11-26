@@ -3,15 +3,15 @@
 import { render, screen } from "@testing-library/react";
 import Budget from "./page";
 import { vi, describe, it, expect, beforeEach } from "vitest";
-import BudgetSummary from "@/components/BudgetSummary";
+import BudgetSummary from "@/components/features/budgets/BudgetSummary";
 
 // Automatically mock the child components
-vi.mock("@/components/BudgetSummary");
-vi.mock("@/components/Transactions", () => ({
+vi.mock("@/components/features/budgets/BudgetSummary");
+vi.mock("@/components/ui/Transactions", () => ({
   __esModule: true,
   default: () => <div data-testid="transactions" />,
 }));
-vi.mock("@/components/AddTransactionModal", () => ({
+vi.mock("@/components/ui/AddTransactionModal", () => ({
   __esModule: true,
   default: () => <div data-testid="add-transaction-modal" />,
 }));

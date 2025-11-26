@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach, MockedFunction } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import AddBudgetModal from "./AddBudgetModal";
-import { useAddBudget } from "@/hooks/useAddBudget";
+import { useAddBudget } from "@/hooks/features/budgets/useAddBudget";
 import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
-vi.mock("@/hooks/useAddBudget", () => ({
+vi.mock("@/hooks/features/budgets/useAddBudget", () => ({
   useAddBudget: vi.fn(),
 }));
 

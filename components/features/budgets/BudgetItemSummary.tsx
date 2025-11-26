@@ -10,9 +10,9 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import TextField from "@mui/material/TextField";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Transactions from "@/components/Transactions";
+import Transactions from "@/components/ui/Transactions";
 import InputAdornment from "@mui/material/InputAdornment";
-import { useBudgetItemSummary } from "@/hooks/useBudgetItemSummary";
+import { useBudgetItemSummary } from "@/hooks/features/budgets/useBudgetItemSummary";
 import { FormikProps } from "formik";
 
 interface BudgetItemProps {

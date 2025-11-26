@@ -29,7 +29,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import { useMemo } from "react";
-import { useTransactions } from "@/hooks/useTransactions";
+import { useTransactions } from "@/hooks/ui/useTransactions";
 
 const AmountEditCell = (props: GridRenderEditCellParams) => {
   const { id, value, field } = props;
