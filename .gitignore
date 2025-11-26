@@ -44,4 +44,4 @@ dev.log*
 next-env.d.ts
 
 .idea
-*.log
+.claude
