@@ -10,7 +10,7 @@ import {
   MockedFunction,
   vi,
 } from "vitest";
-import { useBudgetSummary } from "@/hooks/useBudgetSummary";
+import { useBudgetSummary } from "@/hooks/features/budgets/useBudgetSummary";
 import { BudgetSummary } from "@/types/api";
 
 vi.mock("next/navigation", () => ({

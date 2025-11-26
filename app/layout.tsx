@@ -3,9 +3,9 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { Roboto } from "next/font/google";
 import { ThemeProvider } from "@mui/material/styles";
-import Header from "@/components/Header";
-import theme from "@/theme";
-import Footer from "@/components/Footer";
+import Header from "@/components/layout/Header";
+import theme from "@/config/theme";
+import Footer from "@/components/layout/Footer";
 import { SWRConfig } from "swr";
 
 export const metadata: Metadata = {

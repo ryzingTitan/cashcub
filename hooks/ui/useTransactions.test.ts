@@ -11,7 +11,7 @@ import {
   MockedFunction,
   vi,
 } from "vitest";
-import { useTransactions } from "@/hooks/useTransactions";
+import { useTransactions } from "@/hooks/ui/useTransactions";
 import * as transactions from "@/lib/transactions";
 import { Transaction } from "@/types/api";
 import {

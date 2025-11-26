@@ -9,7 +9,7 @@ import DialogContent from "@mui/material/DialogContent";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
-import { useAddBudgetItem } from "@/hooks/useAddBudgetItem";
+import { useAddBudgetItem } from "@/hooks/features/budgets/useAddBudgetItem";
 
 interface AddBudgetItemModalProps {
   budgetId?: string | undefined;

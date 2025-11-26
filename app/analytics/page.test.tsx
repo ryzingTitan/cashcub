@@ -2,20 +2,20 @@
 
 import { render, screen } from "@testing-library/react";
 import Analytics from "./page";
-import { useAnalyticsData } from "@/hooks/analytics/hooks";
+import { useAnalyticsData } from "@/hooks/features/analytics/hooks";
 import { vi, describe, it, expect, beforeEach, MockedFunction } from "vitest";
 import { useRouter } from "next/navigation";
 
 vi.mock("./components/DatePickers", () => ({
   default: () => <div data-testid="date-pickers" />,
 }));
-vi.mock("@/components/CashFlowGraph", () => ({
+vi.mock("@/components/features/analytics/CashFlowGraph", () => ({
   __esModule: true,
   default: ({ loading }: { loading: boolean }) => (
     <div data-testid="cash-flow-graph">{loading ? "Loading..." : "Loaded"}</div>
   ),
 }));
-vi.mock("@/components/BudgetItemGraph", () => ({
+vi.mock("@/components/features/budgets/BudgetItemGraph", () => ({
   __esModule: true,
   default: ({ loading }: { loading: boolean }) => (
     <div data-testid="budget-item-graph">
@@ -23,7 +23,7 @@ vi.mock("@/components/BudgetItemGraph", () => ({
     </div>
   ),
 }));
-vi.mock("@/components/CategoryGraph", () => ({
+vi.mock("@/components/features/analytics/CategoryGraph", () => ({
   __esModule: true,
   default: ({ loading }: { loading: boolean }) => (
     <div data-testid="category-graph">{loading ? "Loading..." : "Loaded"}</div>
@@ -33,7 +33,7 @@ vi.mock("next/navigation", () => ({
   useRouter: vi.fn(),
 }));
 
-vi.mock("@/hooks/analytics/hooks", () => ({
+vi.mock("@/hooks/features/analytics/hooks", () => ({
   useAnalyticsData: vi.fn(),
 }));
 

@@ -4,11 +4,11 @@ import { Skeleton, Stack } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAnalyticsData } from "@/hooks/analytics/hooks";
-import DatePickers from "@/components/analytics/DatePickers";
-import BudgetItemGraph from "@/components/BudgetItemGraph";
-import CashFlowGraph from "@/components/CashFlowGraph";
-import CategoryGraph from "@/components/CategoryGraph";
+import { useAnalyticsData } from "@/hooks/features/analytics/hooks";
+import DatePickers from "@/components/features/analytics/DatePickers";
+import BudgetItemGraph from "@/components/features/budgets/BudgetItemGraph";
+import CashFlowGraph from "@/components/features/analytics/CashFlowGraph";
+import CategoryGraph from "@/components/features/analytics/CategoryGraph";
 
 export default function Analytics() {
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());

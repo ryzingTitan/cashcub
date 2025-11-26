@@ -11,7 +11,7 @@ import {
   MockedFunction,
   vi,
 } from "vitest";
-import { useAddTransactionForm } from "@/hooks/useAddTransactionForm";
+import { useAddTransactionForm } from "@/hooks/ui/useAddTransactionForm";
 import * as transactions from "@/lib/transactions";
 import { useParams } from "next/navigation";
 import dayjs from "dayjs";

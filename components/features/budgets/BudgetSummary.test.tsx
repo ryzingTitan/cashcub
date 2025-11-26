@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import BudgetSummary from "@/components/BudgetSummary";
-import { useBudgetSummary } from "@/hooks/useBudgetSummary";
+import BudgetSummary from "@/components/features/budgets/BudgetSummary";
+import { useBudgetSummary } from "@/hooks/features/budgets/useBudgetSummary";
 import { BudgetSummary as BudgetSummaryType } from "@/types/api";
 
-vi.mock("@/hooks/useBudgetSummary");
+vi.mock("@/hooks/features/budgets/useBudgetSummary");
 const mockPush = vi.fn();
 vi.mock("next/navigation", () => ({
   useRouter: () => ({

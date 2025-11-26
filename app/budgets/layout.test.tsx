@@ -13,17 +13,17 @@ vi.mock("next/navigation", () => ({
     slug: "1",
   }),
 }));
-import BudgetList from "@/components/BudgetList";
+import BudgetList from "@/components/features/budgets/BudgetList";
 
 // Automatically mock the child component that's causing issues
-vi.mock("@/components/BudgetList");
+vi.mock("@/components/features/budgets/BudgetList");
 
 // Mock other simple components with an inline factory
-vi.mock("@/components/AddBudgetModal", () => ({
+vi.mock("@/components/features/budgets/AddBudgetModal", () => ({
   __esModule: true,
   default: () => <div data-testid="add-budget-modal" />,
 }));
-vi.mock("@/components/CloneBudgetModal", () => ({
+vi.mock("@/components/features/budgets/CloneBudgetModal", () => ({
   __esModule: true,
   default: () => <div data-testid="clone-budget-modal" />,
 }));

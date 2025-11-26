@@ -21,7 +21,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { getBudgetSummary } from "@/lib/budgets";
 import { useState } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
-import { useAddTransactionForm } from "@/hooks/useAddTransactionForm";
+import { useAddTransactionForm } from "@/hooks/ui/useAddTransactionForm";
 
 export default function AddTransactionModal() {
   const [isOpen, setIsOpen] = useState(false);

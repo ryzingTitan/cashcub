@@ -13,9 +13,8 @@ import {
   MockedFunction,
   vi,
 } from "vitest";
-import { useBudgetItemSummary } from "@/hooks/useBudgetItemSummary";
+import { useAddBudgetItem } from "@/hooks/features/budgets/useAddBudgetItem";
 import * as budgets from "@/lib/budgets";
-import { BudgetItem } from "@/types/api";
 
 vi.mock("formik", () => ({
   useFormik: vi.fn(),
@@ -34,20 +33,10 @@ vi.mock("usehooks-ts", () => ({
 }));
 
 vi.mock("@/lib/budgets", () => ({
-  updateBudgetItem: vi.fn(),
-  deleteBudgetItem: vi.fn(),
+  createBudgetItem: vi.fn(),
 }));
 
-const mockBudgetItem: BudgetItem = {
-  id: "item1",
-  name: "Groceries",
-  plannedAmount: 500,
-  actualAmount: 250,
-  budgetId: "budget1",
-  categoryId: "cat1",
-};
-
-describe("useBudgetItemSummary", () => {
+describe("useAddBudgetItem", () => {
   const enqueueSnackbar = vi.fn();
   const mutate = vi.fn();
   const toggle = vi.fn();
@@ -103,103 +92,89 @@ describe("useBudgetItemSummary", () => {
         } as unknown as FormikProps<any>;
       },
     );
-    vi.spyOn(budgets, "updateBudgetItem").mockResolvedValue({
-      id: "item1",
-      name: "Updated Groceries",
-      plannedAmount: 600,
-      actualAmount: 250,
+    vi.spyOn(budgets, "createBudgetItem").mockResolvedValue({
+      id: "1",
+      name: "Test Item",
+      plannedAmount: 100,
+      actualAmount: 0,
       budgetId: "budget1",
       categoryId: "cat1",
     });
-    vi.spyOn(budgets, "deleteBudgetItem").mockResolvedValue(undefined);
   });
 
   afterEach(() => {
     vi.clearAllMocks();
   });
 
-  it("should handle successful form submission (update)", async () => {
-    renderHook(() => useBudgetItemSummary(mockBudgetItem));
-    const values = { name: "Updated Groceries", plannedAmount: 600 };
+  it("should handle successful form submission", async () => {
+    renderHook(() =>
+      useAddBudgetItem({ budgetId: "budget1", categoryId: "cat1" }),
+    );
+    const values = { name: "Test Item", plannedAmount: 100 };
 
     await act(async () => {
       await onSubmit(values, { setSubmitting, resetForm });
     });
 
-    expect(budgets.updateBudgetItem).toHaveBeenCalledWith(
-      `/budgets/budget1/items/item1`,
+    expect(budgets.createBudgetItem).toHaveBeenCalledWith(
+      "/budgets/budget1/items",
       {
-        name: "Updated Groceries",
-        plannedAmount: 600,
+        name: "Test Item",
+        plannedAmount: 100,
         categoryId: "cat1",
       },
     );
-    expect(mutate).toHaveBeenCalledWith(`/budgets/budget1`);
-    expect(enqueueSnackbar).toHaveBeenCalledWith("Budget item updated", {
+    expect(mutate).toHaveBeenCalledWith("/budgets/budget1");
+    expect(enqueueSnackbar).toHaveBeenCalledWith("Budget item created", {
       variant: "success",
     });
     expect(toggle).toHaveBeenCalled();
     expect(resetForm).toHaveBeenCalled();
   });
 
-  it("should handle API error on update", async () => {
-    vi.spyOn(budgets, "updateBudgetItem").mockRejectedValue(
-      new Error("API Error"),
-    );
-    renderHook(() => useBudgetItemSummary(mockBudgetItem));
-    const values = { name: "Updated Groceries", plannedAmount: 600 };
+  it("should show error if budgetId or categoryId is missing", async () => {
+    renderHook(() => useAddBudgetItem({}));
+    const values = { name: "Test Item", plannedAmount: 100 };
 
     await act(async () => {
       await onSubmit(values, { setSubmitting, resetForm });
     });
 
     expect(enqueueSnackbar).toHaveBeenCalledWith(
-      "Failed to update budget item",
+      "Budget or category ID is missing",
       {
         variant: "error",
       },
     );
+    expect(budgets.createBudgetItem).not.toHaveBeenCalled();
   });
 
-  it("should handle successful deletion", async () => {
-    const { result } = renderHook(() => useBudgetItemSummary(mockBudgetItem));
-
-    await act(async () => {
-      await result.current.handleDelete();
-    });
-
-    expect(budgets.deleteBudgetItem).toHaveBeenCalledWith(
-      `/budgets/budget1/items/item1`,
-    );
-    expect(mutate).toHaveBeenCalledWith(`/budgets/budget1`);
-    expect(enqueueSnackbar).toHaveBeenCalledWith("Budget item deleted", {
-      variant: "success",
-    });
-  });
-
-  it("should handle API error on deletion", async () => {
-    vi.spyOn(budgets, "deleteBudgetItem").mockRejectedValue(
+  it("should handle API error on submission", async () => {
+    vi.spyOn(budgets, "createBudgetItem").mockRejectedValue(
       new Error("API Error"),
     );
-    const { result } = renderHook(() => useBudgetItemSummary(mockBudgetItem));
+    renderHook(() =>
+      useAddBudgetItem({ budgetId: "budget1", categoryId: "cat1" }),
+    );
+    const values = { name: "Test Item", plannedAmount: 100 };
 
     await act(async () => {
-      await result.current.handleDelete();
+      await onSubmit(values, { setSubmitting, resetForm });
     });
 
     expect(enqueueSnackbar).toHaveBeenCalledWith(
-      "Failed to delete budget item",
+      "Failed to create budget item",
       {
         variant: "error",
       },
     );
   });
 
-  it("should handle cancel", () => {
-    const { result } = renderHook(() => useBudgetItemSummary(mockBudgetItem));
+  it("should handle close", () => {
+    const { result } = renderHook(() => useAddBudgetItem({}));
 
     act(() => {
-      result.current.handleCancel();
+      result.current.handleClose();
     });
 
     expect(toggle).toHaveBeenCalled();

@@ -7,7 +7,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import DialogContent from "@mui/material/DialogContent";
 import { DatePicker } from "@mui/x-date-pickers";
-import { useAddBudget } from "@/hooks/useAddBudget";
+import { useAddBudget } from "@/hooks/features/budgets/useAddBudget";
 
 export default function AddBudgetModal() {
   const {

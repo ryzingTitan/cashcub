@@ -4,7 +4,7 @@ import { BudgetSummary } from "@/types/api";
 import { BarChart } from "@mui/x-charts";
 import { formatToCurrency } from "@/lib/utils";
 import Typography from "@mui/material/Typography";
-import { useBudgetItemGraph } from "@/hooks/useBudgetItemGraph";
+import { useBudgetItemGraph } from "@/hooks/features/budgets/useBudgetItemGraph";
 import { memo } from "react";
 import Skeleton from "@mui/material/Skeleton";
 import Box from "@mui/material/Box";

@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import BudgetItemGraph from "./BudgetItemGraph";
-import { useBudgetItemGraph } from "@/hooks/useBudgetItemGraph";
+import { useBudgetItemGraph } from "@/hooks/features/budgets/useBudgetItemGraph";
 import { vi, describe, it, expect } from "vitest";
 
-vi.mock("@/hooks/useBudgetItemGraph");
+vi.mock("@/hooks/features/budgets/useBudgetItemGraph");
 
 const mockUseBudgetItemGraph = vi.mocked(useBudgetItemGraph);
 

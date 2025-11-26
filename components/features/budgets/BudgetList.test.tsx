@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import BudgetList from "./BudgetList";
-import { useBudgetList } from "@/hooks/useBudgetList";
+import { useBudgetList } from "@/hooks/features/budgets/useBudgetList";
 import { Budget } from "@/types/api";
 
 // Mock the hook
-vi.mock("@/hooks/useBudgetList");
+vi.mock("@/hooks/features/budgets/useBudgetList");
 
 const mockedUseBudgetList = vi.mocked(useBudgetList);
 

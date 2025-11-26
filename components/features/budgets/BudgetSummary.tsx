@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
-import BudgetCategories from "@/components/BudgetCategories";
-import BudgetSummaryTotals from "@/components/BudgetSummaryTotals";
-import { useBudgetSummary } from "@/hooks/useBudgetSummary";
+import BudgetCategories from "@/components/features/budgets/BudgetCategories";
+import BudgetSummaryTotals from "@/components/features/budgets/BudgetSummaryTotals";
+import { useBudgetSummary } from "@/hooks/features/budgets/useBudgetSummary";
 
 export default function BudgetSummary() {
   const { budget, isLoading, error } = useBudgetSummary();

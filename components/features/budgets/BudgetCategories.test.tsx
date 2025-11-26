@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import BudgetCategories from "@/components/BudgetCategories";
+import BudgetCategories from "@/components/features/budgets/BudgetCategories";
 import { SWRConfig } from "swr";
 import { BudgetSummary, Category } from "@/types/api";
 

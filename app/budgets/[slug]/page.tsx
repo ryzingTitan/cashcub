@@ -1,5 +1,5 @@
-import BudgetSummary from "@/components/BudgetSummary";
-import AddTransactionModal from "@/components/AddTransactionModal";
+import BudgetSummary from "@/components/features/budgets/BudgetSummary";
+import AddTransactionModal from "@/components/ui/AddTransactionModal";
 
 export default function Budget() {
   return (
