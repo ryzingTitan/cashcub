@@ -4,7 +4,7 @@ import Transactions from "./Transactions";
 import { SWRConfig } from "swr";
 import { useSnackbar } from "notistack";
 import { Transaction } from "@/types/api";
-import { Dispatch, ReactElement, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import userEvent from "@testing-library/user-event";
 import { useToggle } from "usehooks-ts";
 import * as transactionsApi from "@/lib/transactions";

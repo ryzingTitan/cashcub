@@ -37,7 +37,7 @@ export function useCloneBudget(budgetId: string | string[] | undefined | null) {
       router.push(`/budgets/${clonedBudget.id}`);
       toggleModal();
     } catch (error) {
-      console.log(error);
+      console.error("Failed to clone budget:", error);
       enqueueSnackbar("Failed to clone budget", { variant: "error" });
     }
   };

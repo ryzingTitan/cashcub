@@ -16,9 +16,11 @@ vi.mock("@/components/features/budgets/AddBudgetItemModal", () => ({
 
 vi.mock("@/components/features/budgets/BudgetItemSummary", () => ({
   __esModule: true,
-  default: vi.fn(({ budgetItem }: any) => (
-    <div data-testid={`budget-item-${budgetItem.id}`}>{budgetItem.name}</div>
-  )),
+  default: vi.fn(
+    ({ budgetItem }: { budgetItem: { id: string; name: string } }) => (
+      <div data-testid={`budget-item-${budgetItem.id}`}>{budgetItem.name}</div>
+    ),
+  ),
 }));
 
 vi.mock("@/components/ui/Transactions", () => ({

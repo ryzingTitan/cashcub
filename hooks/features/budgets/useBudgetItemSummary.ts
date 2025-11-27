@@ -34,7 +34,7 @@ export function useBudgetItemSummary(budgetItem: BudgetItem) {
         toggle();
         resetForm();
       } catch (error) {
-        console.log(error);
+        console.error("Failed to update budget item:", error);
         enqueueSnackbar("Failed to update budget item", { variant: "error" });
       } finally {
         setSubmitting(false);
@@ -55,7 +55,7 @@ export function useBudgetItemSummary(budgetItem: BudgetItem) {
       await mutate(`/budgets/${budgetItem.budgetId}`);
       enqueueSnackbar("Budget item deleted", { variant: "success" });
     } catch (error) {
-      console.log(error);
+      console.error("Failed to delete budget item:", error);
       enqueueSnackbar("Failed to delete budget item", { variant: "error" });
     }
   };

@@ -36,6 +36,11 @@ vi.mock("@/lib/budgets", () => ({
   createBudgetItem: vi.fn(),
 }));
 
+interface BudgetItemFormValues {
+  name: string;
+  plannedAmount: number;
+}
+
 describe("useAddBudgetItem", () => {
   const enqueueSnackbar = vi.fn();
   const mutate = vi.fn();
@@ -44,7 +49,7 @@ describe("useAddBudgetItem", () => {
   const setSubmitting = vi.fn();
 
   let onSubmit: (
-    values: { name: string; plannedAmount: number },
+    values: BudgetItemFormValues,
     {
       setSubmitting,
       resetForm,
@@ -89,7 +94,7 @@ describe("useAddBudgetItem", () => {
           initialErrors: {},
           initialTouched: {},
           submitForm: vi.fn(),
-        } as unknown as FormikProps<any>;
+        } as unknown as FormikProps<BudgetItemFormValues>;
       },
     );
     vi.spyOn(budgets, "createBudgetItem").mockResolvedValue({

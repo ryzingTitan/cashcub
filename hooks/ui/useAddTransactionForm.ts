@@ -52,7 +52,7 @@ export const useAddTransactionForm = () => {
         enqueueSnackbar("Transaction created", { variant: "success" });
         resetForm();
       } catch (error) {
-        console.log(error);
+        console.error("Failed to create transaction:", error);
         enqueueSnackbar("Failed to create transaction", { variant: "error" });
       } finally {
         setSubmitting(false);

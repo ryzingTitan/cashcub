@@ -9,6 +9,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useAddTransactionForm } from "@/hooks/ui/useAddTransactionForm";
 import * as budgets from "@/lib/budgets";
 import dayjs from "dayjs";
+import type { FormikProps } from "formik";
 
 vi.mock("next/navigation", () => ({
   useParams: () => ({
@@ -20,8 +21,16 @@ vi.mock("@/hooks/ui/useAddTransactionForm");
 
 const getBudgetSummarySpy = vi.spyOn(budgets, "getBudgetSummary");
 
+interface FormValues {
+  amount: number;
+  transactionType: string;
+  merchant: string;
+  notes: string;
+  budgetItemId: string;
+}
+
 describe("AddTransactionModal", () => {
-  const mockFormik = {
+  const mockFormik: Partial<FormikProps<FormValues>> = {
     values: {
       amount: 0,
       transactionType: "",
@@ -45,7 +54,7 @@ describe("AddTransactionModal", () => {
     (
       useAddTransactionForm as MockedFunction<typeof useAddTransactionForm>
     ).mockReturnValue({
-      formik: mockFormik as any,
+      formik: mockFormik as FormikProps<FormValues>,
       transactionDate: dayjs(),
       setTransactionDate: mockSetTransactionDate,
     });
@@ -210,7 +219,7 @@ describe("AddTransactionModal", () => {
     (
       useAddTransactionForm as MockedFunction<typeof useAddTransactionForm>
     ).mockReturnValue({
-      formik: { ...mockFormik, isValid: true } as any,
+      formik: { ...mockFormik, isValid: true } as FormikProps<FormValues>,
       transactionDate: dayjs(),
       setTransactionDate: mockSetTransactionDate,
     });
@@ -237,7 +246,7 @@ describe("AddTransactionModal", () => {
     (
       useAddTransactionForm as MockedFunction<typeof useAddTransactionForm>
     ).mockReturnValue({
-      formik: { ...mockFormik, isValid: false } as any,
+      formik: { ...mockFormik, isValid: false } as FormikProps<FormValues>,
       transactionDate: dayjs(),
       setTransactionDate: mockSetTransactionDate,
     });
@@ -258,7 +267,7 @@ describe("AddTransactionModal", () => {
     (
       useAddTransactionForm as MockedFunction<typeof useAddTransactionForm>
     ).mockReturnValue({
-      formik: { ...mockFormik, isValid: true } as any,
+      formik: { ...mockFormik, isValid: true } as FormikProps<FormValues>,
       transactionDate: dayjs(),
       setTransactionDate: mockSetTransactionDate,
     });
@@ -284,7 +293,7 @@ describe("AddTransactionModal", () => {
         ...mockFormik,
         isValid: true,
         handleSubmit: mockHandleSubmit,
-      } as any,
+      } as FormikProps<FormValues>,
       transactionDate: dayjs(),
       setTransactionDate: mockSetTransactionDate,
     });
@@ -348,7 +357,7 @@ describe("AddTransactionModal", () => {
         ...mockFormik,
         touched: { amount: true, budgetItemId: true },
         errors: { amount: "Amount is required", budgetItemId: "Required" },
-      } as any,
+      } as FormikProps<FormValues>,
       transactionDate: dayjs(),
       setTransactionDate: mockSetTransactionDate,
     });
