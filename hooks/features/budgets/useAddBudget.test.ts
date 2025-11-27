@@ -131,7 +131,7 @@ describe("useAddBudget", () => {
 
   it("should handle successful budget creation", async () => {
     const mockBudget = { id: "123", month: 6, year: 2024 };
-    let onSuccessCallback: ((data: any) => void) | undefined;
+    let onSuccessCallback: ((data: typeof mockBudget) => void) | undefined;
 
     (
       useSWRMutation as MockedFunction<typeof useSWRMutation>

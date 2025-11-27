@@ -36,6 +36,14 @@ vi.mock("@/lib/transactions", () => ({
   createTransaction: vi.fn(),
 }));
 
+interface TransactionFormValues {
+  amount: number;
+  transactionType: string;
+  merchant: string;
+  notes: string;
+  budgetItemId: string;
+}
+
 describe("useAddTransactionForm", () => {
   const enqueueSnackbar = vi.fn();
   const mutate = vi.fn();
@@ -43,13 +51,7 @@ describe("useAddTransactionForm", () => {
   const setSubmitting = vi.fn();
 
   let onSubmit: (
-    values: {
-      amount: number;
-      transactionType: string;
-      merchant: string;
-      notes: string;
-      budgetItemId: string;
-    },
+    values: TransactionFormValues,
     {
       setSubmitting,
       resetForm,
@@ -104,7 +106,7 @@ describe("useAddTransactionForm", () => {
           initialErrors: {},
           initialTouched: {},
           submitForm: vi.fn(),
-        } as unknown as FormikProps<any>;
+        } as unknown as FormikProps<TransactionFormValues>;
       },
     );
     vi.spyOn(transactions, "createTransaction").mockResolvedValue({

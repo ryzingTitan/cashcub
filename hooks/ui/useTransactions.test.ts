@@ -258,7 +258,7 @@ describe("useTransactions", () => {
     await act(async () => {
       try {
         await result.current.processRowUpdate(newRow);
-      } catch (e) {
+      } catch {
         // Expected to throw
       }
     });

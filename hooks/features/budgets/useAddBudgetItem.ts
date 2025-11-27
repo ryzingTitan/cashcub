@@ -46,7 +46,7 @@ export function useAddBudgetItem({
         toggle();
         resetForm();
       } catch (error) {
-        console.log(error);
+        console.error("Failed to create budget item:", error);
         enqueueSnackbar("Failed to create budget item", { variant: "error" });
       } finally {
         setSubmitting(false);
