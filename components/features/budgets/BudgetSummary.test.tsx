@@ -11,12 +11,12 @@ vi.mock("next/navigation", () => ({
     push: mockPush,
   }),
 }));
-vi.mock("@/components/BudgetSummaryTotals", () => ({
+vi.mock("@/components/features/budgets/BudgetSummaryTotals", () => ({
   default: ({ budget }: { budget: BudgetSummaryType | undefined }) => (
     <div data-testid="budget-summary-totals">{JSON.stringify(budget)}</div>
   ),
 }));
-vi.mock("@/components/BudgetCategories", () => ({
+vi.mock("@/components/features/budgets/BudgetCategories", () => ({
   default: ({ budget }: { budget: BudgetSummaryType | undefined }) => (
     <div data-testid="budget-categories">{JSON.stringify(budget)}</div>
   ),

@@ -110,4 +110,90 @@ describe("useAddBudget", () => {
 
     expect(trigger).not.toHaveBeenCalled();
   });
+
+  it("should save budget when date is selected", async () => {
+    const { result } = renderHook(() => useAddBudget());
+    const testDate = dayjs("2024-06-15");
+
+    act(() => {
+      result.current.setBudgetMonthAndYear(testDate);
+    });
+
+    await act(async () => {
+      await result.current.handleSave();
+    });
+
+    expect(trigger).toHaveBeenCalledWith({
+      month: 6,
+      year: 2024,
+    });
+  });
+
+  it("should handle successful budget creation", async () => {
+    const mockBudget = { id: "123", month: 6, year: 2024 };
+    let onSuccessCallback: ((data: any) => void) | undefined;
+
+    (
+      useSWRMutation as MockedFunction<typeof useSWRMutation>
+    ).mockImplementation((key, fetcher, options) => {
+      onSuccessCallback = options?.onSuccess;
+      return {
+        trigger: vi.fn().mockResolvedValue(mockBudget),
+        isMutating: false,
+        reset: vi.fn(),
+        error: undefined,
+        data: undefined,
+      };
+    });
+
+    renderHook(() => useAddBudget());
+
+    expect(onSuccessCallback).toBeDefined();
+
+    await act(async () => {
+      await onSuccessCallback!(mockBudget);
+    });
+
+    expect(mutate).toHaveBeenCalledWith("/budgets");
+    expect(enqueueSnackbar).toHaveBeenCalledWith("Budget created", {
+      variant: "success",
+    });
+    expect(push).toHaveBeenCalledWith("/budgets/123");
+  });
+
+  it("should handle budget creation error", async () => {
+    let onErrorCallback: ((error: Error) => void) | undefined;
+
+    (
+      useSWRMutation as MockedFunction<typeof useSWRMutation>
+    ).mockImplementation((key, fetcher, options) => {
+      onErrorCallback = options?.onError;
+      return {
+        trigger: vi.fn().mockRejectedValue(new Error("API Error")),
+        isMutating: false,
+        reset: vi.fn(),
+        error: undefined,
+        data: undefined,
+      };
+    });
+
+    renderHook(() => useAddBudget());
+
+    expect(onErrorCallback).toBeDefined();
+
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    act(() => {
+      onErrorCallback!(new Error("API Error"));
+    });
+
+    expect(consoleError).toHaveBeenCalledWith(new Error("API Error"));
+    expect(enqueueSnackbar).toHaveBeenCalledWith("Failed to create budget", {
+      variant: "error",
+    });
+
+    consoleError.mockRestore();
+  });
 });

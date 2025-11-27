@@ -9,11 +9,13 @@ Cash Cub is a Next.js 15 budgeting application with Auth0 authentication. The fr
 ## Development Commands
 
 **Development:**
+
 ```bash
 npm run dev          # Start dev server with Turbopack
 ```
 
 **Testing:**
+
 ```bash
 npm test             # Run all tests with Vitest
 vitest run           # Same as npm test
@@ -21,12 +23,14 @@ vitest               # Run tests in watch mode
 ```
 
 **Build & Production:**
+
 ```bash
 npm run build        # Build for production with Turbopack
 npm start            # Start production server
 ```
 
 **Code Quality:**
+
 ```bash
 npm run lint         # Run ESLint
 npm run format       # Format code with Prettier
@@ -67,24 +71,28 @@ npm run format       # Format code with Prettier
 ### Key Architectural Patterns
 
 **Authentication Flow:**
+
 - Auth0 handles authentication via `@auth0/nextjs-auth0/server`
 - Middleware (`middleware.ts`) runs on all routes except static assets
 - `lib/auth0.ts` provides session validation with JWT expiration checking
 - All API calls use `fetchWithAuth()` which attaches the Auth0 ID token as Bearer token
 
 **Data Fetching:**
+
 - Server actions (`"use server"`) in `lib/` handle all external API communication
 - Client components use SWR for data fetching and caching
 - SWR configured globally in `app/layout.tsx` with 3s refresh interval
 - Custom hooks (in `hooks/`) encapsulate SWR logic and provide clean interfaces
 
 **Component Organization:**
+
 - Pages in `app/` are minimal and delegate to feature components
 - Feature components in `components/features/` handle specific domain logic
 - Shared UI components in `components/ui/` are reusable across features
 - All components have co-located test files
 
 **Testing:**
+
 - Vitest + React Testing Library for all tests
 - Test files co-located with source files (`.test.ts`, `.test.tsx`)
 - Setup in `vitest.setup.ts` includes `@testing-library/jest-dom` matchers
@@ -93,11 +101,13 @@ npm run format       # Format code with Prettier
 ### Important Implementation Details
 
 **Path Aliases:**
+
 - `@/*` resolves to repository root (configured in `tsconfig.json`)
 - Example: `import { theme } from "@/config/theme"`
 
 **Environment Variables:**
 Required in `.env` (see `.env.example`):
+
 - `AUTH0_DOMAIN` - Auth0 tenant domain
 - `AUTH0_CLIENT_ID` - Auth0 application client ID
 - `AUTH0_SECRET` - Session cookie signing secret (generate with `openssl rand -hex 32`)
@@ -106,6 +116,7 @@ Required in `.env` (see `.env.example`):
 - `API_BASE_URL` - External backend API base URL (not in .env.example but required for API calls)
 
 **Material-UI Integration:**
+
 - Uses MUI v7 with Next.js App Router integration (`@mui/material-nextjs`)
 - Theme supports CSS variables and dark mode (see `config/theme.ts`)
 - `AppRouterCacheProvider` wraps app in `layout.tsx` for proper SSR
@@ -116,6 +127,7 @@ Both `dev` and `build` scripts use `--turbopack` flag for faster builds.
 ## Common Development Tasks
 
 **Running a Single Test:**
+
 ```bash
 vitest run path/to/file.test.ts
 ```

@@ -195,4 +195,99 @@ describe("useTransactions", () => {
       fieldToFocus: "date",
     });
   });
+
+  it("should handle deletion error and restore rows", async () => {
+    (
+      transactions.deleteTransaction as MockedFunction<typeof deleteTransaction>
+    ).mockRejectedValue(new Error("Delete failed"));
+
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    const { result } = renderHook(() => useTransactions("budget1", "item1"));
+    const originalRowCount = result.current.rows.length;
+
+    await act(async () => {
+      await result.current.handleDeleteClick("1")();
+    });
+
+    expect(consoleError).toHaveBeenCalled();
+    expect(result.current.rows).toHaveLength(originalRowCount);
+    expect(enqueueSnackbar).toHaveBeenCalledWith(
+      "Failed to delete transaction",
+      { variant: "error" },
+    );
+
+    consoleError.mockRestore();
+  });
+
+  it("should handle delete new row without API call", async () => {
+    const { result } = renderHook(() => useTransactions("budget1", "item1"));
+
+    // Add a new row
+    act(() => {
+      result.current.handleAddNew();
+    });
+
+    const newRowId = result.current.rows[0].id;
+
+    // Delete the new row
+    await act(async () => {
+      await result.current.handleDeleteClick(newRowId)();
+    });
+
+    expect(transactions.deleteTransaction).not.toHaveBeenCalled();
+    expect(result.current.rows).not.toContainEqual(
+      expect.objectContaining({ id: newRowId }),
+    );
+  });
+
+  it("should handle process row update error", async () => {
+    (
+      transactions.createTransaction as MockedFunction<typeof createTransaction>
+    ).mockRejectedValue(new Error("Create failed"));
+
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    const { result } = renderHook(() => useTransactions("budget1", "item1"));
+    const newRow = { id: "new-123", amount: 200 };
+
+    await act(async () => {
+      try {
+        await result.current.processRowUpdate(newRow);
+      } catch (e) {
+        // Expected to throw
+      }
+    });
+
+    expect(consoleError).toHaveBeenCalled();
+    expect(enqueueSnackbar).toHaveBeenCalledWith("Failed to save transaction", {
+      variant: "error",
+    });
+
+    consoleError.mockRestore();
+  });
+
+  it("should handle cancel click on new row", () => {
+    const { result } = renderHook(() => useTransactions("budget1", "item1"));
+
+    // Add a new row
+    act(() => {
+      result.current.handleAddNew();
+    });
+
+    const newRowId = result.current.rows[0].id;
+
+    // Cancel the new row
+    act(() => {
+      result.current.handleCancelClick(newRowId)();
+    });
+
+    expect(result.current.rows).not.toContainEqual(
+      expect.objectContaining({ id: newRowId }),
+    );
+  });
 });

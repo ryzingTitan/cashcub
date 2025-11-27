@@ -90,4 +90,22 @@ describe("AddBudgetModal", () => {
     fireEvent.click(screen.getByText("Save"));
     expect(handleSave).toHaveBeenCalled();
   });
+
+  it("should render DatePicker with correct props", () => {
+    (useAddBudget as MockedFunction<typeof useAddBudget>).mockReturnValue({
+      isMutating: false,
+      isOpen: true,
+      toggle,
+      budgetMonthAndYear: dayjs("2024-06-15"),
+      setBudgetMonthAndYear,
+      handleSave,
+      handleClose,
+    });
+    renderComponent();
+
+    // Verify the DatePicker is rendered
+    const inputs = screen.getAllByLabelText("New Budget");
+    expect(inputs.length).toBeGreaterThan(0);
+    expect(inputs[0]).toBeInTheDocument();
+  });
 });

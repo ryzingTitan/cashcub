@@ -1,4 +1,4 @@
-import { expect, afterEach } from "vitest";
+import { expect, afterEach, vi } from "vitest";
 import { cleanup } from "@testing-library/react";
 import * as matchers from "@testing-library/jest-dom/matchers";
 
@@ -9,3 +9,9 @@ expect.extend(matchers);
 afterEach(() => {
   cleanup();
 });
+
+// Mock MUI X components that import CSS files
+vi.mock("@mui/x-data-grid", () => ({
+  DataGrid: vi.fn(() => null),
+  GridColDef: vi.fn(),
+}));
