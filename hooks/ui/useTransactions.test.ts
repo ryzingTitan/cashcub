@@ -230,11 +230,13 @@ describe("useTransactions", () => {
       result.current.handleAddNew();
     });
 
-    const newRowId = result.current.rows[0].id;
+    const newRowId = result.current.rows[0]?.id;
+
+    expect(newRowId).toBeDefined();
 
     // Delete the new row
     await act(async () => {
-      await result.current.handleDeleteClick(newRowId)();
+      await result.current.handleDeleteClick(newRowId!)();
     });
 
     expect(transactions.deleteTransaction).not.toHaveBeenCalled();
@@ -279,11 +281,13 @@ describe("useTransactions", () => {
       result.current.handleAddNew();
     });
 
-    const newRowId = result.current.rows[0].id;
+    const newRowId = result.current.rows[0]?.id;
+
+    expect(newRowId).toBeDefined();
 
     // Cancel the new row
     act(() => {
-      result.current.handleCancelClick(newRowId)();
+      result.current.handleCancelClick(newRowId!)();
     });
 
     expect(result.current.rows).not.toContainEqual(

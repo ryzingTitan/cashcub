@@ -131,11 +131,13 @@ describe("useAddBudget", () => {
 
   it("should handle successful budget creation", async () => {
     const mockBudget = { id: "123", month: 6, year: 2024 };
-    let onSuccessCallback: ((data: typeof mockBudget) => void) | undefined;
+    let onSuccessCallback:
+      | ((data: unknown, key: string, config: Record<string, unknown>) => void)
+      | undefined;
 
     (
       useSWRMutation as MockedFunction<typeof useSWRMutation>
-    ).mockImplementation((key, fetcher, options) => {
+    ).mockImplementation((_key, _fetcher, options) => {
       onSuccessCallback = options?.onSuccess;
       return {
         trigger: vi.fn().mockResolvedValue(mockBudget),
@@ -151,7 +153,7 @@ describe("useAddBudget", () => {
     expect(onSuccessCallback).toBeDefined();
 
     await act(async () => {
-      await onSuccessCallback!(mockBudget);
+      onSuccessCallback?.(mockBudget, "/budgets", {});
     });
 
     expect(mutate).toHaveBeenCalledWith("/budgets");
@@ -162,11 +164,13 @@ describe("useAddBudget", () => {
   });
 
   it("should handle budget creation error", async () => {
-    let onErrorCallback: ((error: Error) => void) | undefined;
+    let onErrorCallback:
+      | ((err: unknown, key: string, config: Record<string, unknown>) => void)
+      | undefined;
 
     (
       useSWRMutation as MockedFunction<typeof useSWRMutation>
-    ).mockImplementation((key, fetcher, options) => {
+    ).mockImplementation((_key, _fetcher, options) => {
       onErrorCallback = options?.onError;
       return {
         trigger: vi.fn().mockRejectedValue(new Error("API Error")),
@@ -186,7 +190,7 @@ describe("useAddBudget", () => {
       .mockImplementation(() => {});
 
     act(() => {
-      onErrorCallback!(new Error("API Error"));
+      onErrorCallback?.(new Error("API Error"), "/budgets", {});
     });
 
     expect(consoleError).toHaveBeenCalledWith(new Error("API Error"));

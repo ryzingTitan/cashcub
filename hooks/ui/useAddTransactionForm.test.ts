@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
-import { FormikProps, useFormik } from "formik";
+import { FormikConfig, FormikProps, useFormik } from "formik";
 import { useSnackbar } from "notistack";
-import { SWRConfiguration, useSWRConfig } from "swr";
+import { useSWRConfig } from "swr";
 import {
   afterEach,
   beforeEach,
@@ -68,47 +68,46 @@ describe("useAddTransactionForm", () => {
     });
     (useSWRConfig as MockedFunction<typeof useSWRConfig>).mockReturnValue({
       mutate,
-      cache: new Map(),
-      fallback: {},
-    } as unknown as SWRConfiguration);
+    } as unknown as ReturnType<typeof useSWRConfig>);
     (useParams as MockedFunction<typeof useParams>).mockReturnValue({
       slug: "budget123",
     });
-    (useFormik as MockedFunction<typeof useFormik>).mockImplementation(
-      (options) => {
-        onSubmit = options.onSubmit as unknown as typeof onSubmit;
-        return {
-          resetForm,
-          values: {
-            amount: 0,
-            transactionType: "",
-            merchant: "",
-            notes: "",
-            budgetItemId: "",
-          },
-          handleSubmit: vi.fn(),
-          handleChange: vi.fn(),
-          handleBlur: vi.fn(),
-          touched: {},
-          errors: {},
-          isSubmitting: false,
-          isValid: true,
-          dirty: false,
-          setFieldValue: vi.fn(),
-          setSubmitting: vi.fn(),
-          initialValues: {
-            amount: 0,
-            transactionType: "",
-            merchant: "",
-            notes: "",
-            budgetItemId: "",
-          },
-          initialErrors: {},
-          initialTouched: {},
-          submitForm: vi.fn(),
-        } as unknown as FormikProps<TransactionFormValues>;
-      },
-    );
+    (useFormik as MockedFunction<typeof useFormik>).mockImplementation(((
+      options: FormikConfig<TransactionFormValues>,
+    ) => {
+      onSubmit = options.onSubmit as unknown as typeof onSubmit;
+      return {
+        resetForm,
+        values: {
+          amount: 0,
+          transactionType: "",
+          merchant: "",
+          notes: "",
+          budgetItemId: "",
+        },
+        handleSubmit: vi.fn(),
+        handleChange: vi.fn(),
+        handleBlur: vi.fn(),
+        touched: {},
+        errors: {},
+        isSubmitting: false,
+        isValid: true,
+        dirty: false,
+        setFieldValue: vi.fn(),
+        setSubmitting: vi.fn(),
+        initialValues: {
+          amount: 0,
+          transactionType: "",
+          merchant: "",
+          notes: "",
+          budgetItemId: "",
+        },
+        initialErrors: {},
+        initialTouched: {},
+        submitForm: vi.fn(),
+        initialStatus: undefined,
+      } as unknown as FormikProps<TransactionFormValues>;
+    }) as unknown as typeof useFormik);
     vi.spyOn(transactions, "createTransaction").mockResolvedValue({
       id: "1",
       amount: 100,

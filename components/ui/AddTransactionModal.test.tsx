@@ -45,6 +45,7 @@ describe("AddTransactionModal", () => {
     handleSubmit: vi.fn(),
     resetForm: vi.fn(),
     isValid: false,
+    initialStatus: undefined,
   };
 
   const mockSetTransactionDate = vi.fn();
@@ -54,14 +55,19 @@ describe("AddTransactionModal", () => {
     (
       useAddTransactionForm as MockedFunction<typeof useAddTransactionForm>
     ).mockReturnValue({
-      formik: mockFormik as FormikProps<FormValues>,
+      formik: mockFormik,
       transactionDate: dayjs(),
       setTransactionDate: mockSetTransactionDate,
-    });
+    } as ReturnType<typeof useAddTransactionForm>);
 
     getBudgetSummarySpy.mockResolvedValue({
       id: "1",
-      monthAndYear: "2024-01",
+      month: 1,
+      year: 2024,
+      expectedIncome: 0,
+      actualIncome: 0,
+      expectedExpenses: 700,
+      actualExpenses: 150,
       budgetItems: [
         {
           id: "item-1",
@@ -80,7 +86,6 @@ describe("AddTransactionModal", () => {
           budgetId: "1",
         },
       ],
-      categories: [],
     });
   });
 
@@ -219,10 +224,10 @@ describe("AddTransactionModal", () => {
     (
       useAddTransactionForm as MockedFunction<typeof useAddTransactionForm>
     ).mockReturnValue({
-      formik: { ...mockFormik, isValid: true } as FormikProps<FormValues>,
+      formik: { ...mockFormik, isValid: true },
       transactionDate: dayjs(),
       setTransactionDate: mockSetTransactionDate,
-    });
+    } as ReturnType<typeof useAddTransactionForm>);
 
     renderComponent();
 
@@ -246,10 +251,10 @@ describe("AddTransactionModal", () => {
     (
       useAddTransactionForm as MockedFunction<typeof useAddTransactionForm>
     ).mockReturnValue({
-      formik: { ...mockFormik, isValid: false } as FormikProps<FormValues>,
+      formik: { ...mockFormik, isValid: false },
       transactionDate: dayjs(),
       setTransactionDate: mockSetTransactionDate,
-    });
+    } as ReturnType<typeof useAddTransactionForm>);
 
     renderComponent();
 
@@ -267,10 +272,10 @@ describe("AddTransactionModal", () => {
     (
       useAddTransactionForm as MockedFunction<typeof useAddTransactionForm>
     ).mockReturnValue({
-      formik: { ...mockFormik, isValid: true } as FormikProps<FormValues>,
+      formik: { ...mockFormik, isValid: true },
       transactionDate: dayjs(),
       setTransactionDate: mockSetTransactionDate,
-    });
+    } as ReturnType<typeof useAddTransactionForm>);
 
     renderComponent();
 
@@ -293,10 +298,10 @@ describe("AddTransactionModal", () => {
         ...mockFormik,
         isValid: true,
         handleSubmit: mockHandleSubmit,
-      } as FormikProps<FormValues>,
+      },
       transactionDate: dayjs(),
       setTransactionDate: mockSetTransactionDate,
-    });
+    } as ReturnType<typeof useAddTransactionForm>);
 
     renderComponent();
 
@@ -357,10 +362,10 @@ describe("AddTransactionModal", () => {
         ...mockFormik,
         touched: { amount: true, budgetItemId: true },
         errors: { amount: "Amount is required", budgetItemId: "Required" },
-      } as FormikProps<FormValues>,
+      },
       transactionDate: dayjs(),
       setTransactionDate: mockSetTransactionDate,
-    });
+    } as ReturnType<typeof useAddTransactionForm>);
 
     renderComponent();
 
