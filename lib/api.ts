@@ -1,6 +1,6 @@
 "use server";
 
-import { auth0, ensureValidSession } from "@/lib/auth0";
+import { auth0 } from "@/lib/auth0";
 import { ApiError } from "./apiError";
 
 type FetchOptions = {
@@ -14,7 +14,11 @@ export async function fetchWithAuth<T>(
   options: FetchOptions = {},
 ): Promise<T> {
   const session = await auth0.getSession();
-  ensureValidSession(session);
+
+  // Session validation is now handled by callers before try-catch blocks
+  if (!session?.tokenSet?.idToken) {
+    throw new Error("No valid session");
+  }
 
   const baseUrl = process.env.API_BASE_URL;
   const fullUrl = new URL(baseUrl + url);
