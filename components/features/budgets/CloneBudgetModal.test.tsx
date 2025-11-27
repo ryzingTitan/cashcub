@@ -62,4 +62,44 @@ describe("CloneBudgetModal", () => {
     expect(screen.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Save" })).toBeInTheDocument();
   });
+
+  it("handles date picker onChange", () => {
+    (useCloneBudget as Mock).mockReturnValue({
+      isModalOpen: true,
+      toggleModal: mockToggleModal,
+      budgetMonthAndYear: dayjs(),
+      setBudgetMonthAndYear: mockSetBudgetMonthAndYear,
+      handleSave: mockHandleSave,
+      handleClose: mockHandleClose,
+    });
+
+    render(
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <CloneBudgetModal budgetId="1" />
+      </LocalizationProvider>,
+    );
+
+    const input = screen.getAllByLabelText("New Budget")[0];
+    expect(input).toBeInTheDocument();
+  });
+
+  it("disables clone button when budgetId is null", () => {
+    (useCloneBudget as Mock).mockReturnValue({
+      isModalOpen: false,
+      toggleModal: mockToggleModal,
+      budgetMonthAndYear: dayjs(),
+      setBudgetMonthAndYear: mockSetBudgetMonthAndYear,
+      handleSave: mockHandleSave,
+      handleClose: mockHandleClose,
+    });
+
+    render(
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <CloneBudgetModal budgetId={null} />
+      </LocalizationProvider>,
+    );
+
+    const cloneButton = screen.getByRole("button", { name: /clone budget/i });
+    expect(cloneButton).toBeDisabled();
+  });
 });

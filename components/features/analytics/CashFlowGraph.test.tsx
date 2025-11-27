@@ -61,4 +61,53 @@ describe("CashFlowGraph", () => {
     ];
     expect(JSON.parse(chart.textContent!)).toEqual(expectedData);
   });
+
+  it("sorts budgets across multiple years correctly", () => {
+    const multiYearBudgets: BudgetSummary[] = [
+      {
+        id: "3",
+        month: 12,
+        year: 2024,
+        expectedIncome: 6000,
+        expectedExpenses: 3500,
+        actualIncome: 6200,
+        actualExpenses: 3200,
+        budgetItems: [],
+      },
+      {
+        id: "1",
+        month: 1,
+        year: 2024,
+        expectedIncome: 5000,
+        expectedExpenses: 3200,
+        actualIncome: 5200,
+        actualExpenses: 2800,
+        budgetItems: [],
+      },
+      {
+        id: "4",
+        month: 1,
+        year: 2025,
+        expectedIncome: 5500,
+        expectedExpenses: 3300,
+        actualIncome: 5700,
+        actualExpenses: 3100,
+        budgetItems: [],
+      },
+    ];
+
+    render(<CashFlowGraph budgets={multiYearBudgets} loading={false} />);
+    const chart = screen.getByTestId("mock-chart");
+    const data = JSON.parse(chart.textContent!);
+
+    // Verify the budgets are sorted correctly (2024/1, then 2024/12, then 2025/1)
+    expect(data[0].x).toBe("1/2024");
+    expect(data[1].x).toBe("12/2024");
+    expect(data[2].x).toBe("1/2025");
+
+    // Verify cumulative totals
+    expect(data[0].actualIncome).toBe(5200);
+    expect(data[1].actualIncome).toBe(11400); // 5200 + 6200
+    expect(data[2].actualIncome).toBe(17100); // 11400 + 5700
+  });
 });

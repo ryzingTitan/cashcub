@@ -229,4 +229,54 @@ describe("Transactions", () => {
       );
     });
   });
+
+  it("should handle edit mode transitions", async () => {
+    (
+      transactionsApi.getAllTransactions as MockedFunction<
+        typeof getAllTransactions
+      >
+    ).mockResolvedValue(mockData);
+    const { user } = renderComponent();
+    const button = screen.getByRole("button", { name: /view transactions/i });
+    await user.click(button);
+    await waitFor(async () => {
+      const editButton = screen.getByRole("button", { name: /edit/i });
+      await user.click(editButton);
+    });
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /save/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /cancel/i }),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("should cancel edit mode and remove new rows", async () => {
+    (
+      transactionsApi.getAllTransactions as MockedFunction<
+        typeof getAllTransactions
+      >
+    ).mockResolvedValue([]);
+    const { user } = renderComponent();
+    const button = screen.getByRole("button", { name: /view transactions/i });
+    await user.click(button);
+
+    const addButton = screen.getByTestId("AddIcon");
+    await user.click(addButton.closest("button")!);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: /cancel/i }),
+      ).toBeInTheDocument();
+    });
+
+    const cancelButton = screen.getByRole("button", { name: /cancel/i });
+    await user.click(cancelButton);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("button", { name: /save/i }),
+      ).not.toBeInTheDocument();
+    });
+  });
 });

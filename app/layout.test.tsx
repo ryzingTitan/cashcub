@@ -4,11 +4,26 @@ import { render, screen } from "@testing-library/react";
 import RootLayout from "./layout";
 import { vi, describe, it, expect } from "vitest";
 
-vi.mock("@/components/Header", () => ({
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+  }),
+  usePathname: () => "/",
+}));
+
+vi.mock("@auth0/nextjs-auth0/client", () => ({
+  useUser: () => ({
+    user: null,
+    isLoading: false,
+    error: null,
+  }),
+}));
+
+vi.mock("@/components/layout/Header", () => ({
   __esModule: true,
   default: () => <div data-testid="header" />,
 }));
-vi.mock("@/components/Footer", () => ({
+vi.mock("@/components/layout/Footer", () => ({
   __esModule: true,
   default: () => <div data-testid="footer" />,
 }));
