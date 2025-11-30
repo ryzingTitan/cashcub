@@ -102,6 +102,7 @@ export default function Transactions({
         type: "date",
         headerAlign: "center",
         align: "center",
+        flex: 1,
       },
       {
         field: "amount",
@@ -115,6 +116,7 @@ export default function Transactions({
           return `${formatToCurrency(value)}`;
         },
         editable: true,
+        flex: 1,
         renderEditCell: (params) => <AmountEditCell {...params} />,
       },
       {
@@ -124,6 +126,7 @@ export default function Transactions({
         align: "center",
         editable: true,
         type: "singleSelect",
+        flex: 1,
         valueOptions: ["EXPENSE", "INCOME"],
       },
       {
@@ -132,6 +135,7 @@ export default function Transactions({
         headerAlign: "center",
         align: "center",
         editable: true,
+        flex: 1,
       },
       {
         field: "notes",
@@ -139,6 +143,7 @@ export default function Transactions({
         headerAlign: "center",
         align: "center",
         editable: true,
+        flex: 1,
       },
       {
         field: "actions",
@@ -146,6 +151,7 @@ export default function Transactions({
         headerName: "Actions",
         headerAlign: "center",
         align: "center",
+        flex: 1,
         getActions: ({ id }) => {
           const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
           if (isInEditMode) {
@@ -212,6 +218,11 @@ export default function Transactions({
             onRowModesModelChange={handleRowModesModelChange}
             onRowEditStop={handleRowEditStop}
             processRowUpdate={processRowUpdate}
+            initialState={{
+              sorting: {
+                sortModel: [{ field: "date", sort: "desc" }],
+              },
+            }}
             slots={{
               toolbar: () => (
                 <Toolbar>
@@ -223,7 +234,6 @@ export default function Transactions({
                 </Toolbar>
               ),
             }}
-            autosizeOnMount
             showToolbar
           />
         </DialogContent>
