@@ -11,7 +11,7 @@ import { Transaction, TransactionType } from "@/types/api";
 import { createTransaction } from "@/lib/transactions";
 import { useState } from "react";
 
-export const useAddTransactionForm = () => {
+export const useAddTransactionForm = (onSuccess?: () => void) => {
   const [transactionDate, setTransactionDate] = useState<Dayjs | null>(dayjs());
   const { mutate } = useSWRConfig();
   const { enqueueSnackbar } = useSnackbar();
@@ -19,12 +19,13 @@ export const useAddTransactionForm = () => {
 
   const formik = useFormik({
     initialValues: {
-      amount: 0,
+      amount: "",
       transactionType: "",
       merchant: "",
       notes: "",
       budgetItemId: "",
     },
+    validateOnMount: true,
     validationSchema: transactionValidationSchema.concat(
       yup.object({
         budgetItemId: yup
@@ -51,6 +52,8 @@ export const useAddTransactionForm = () => {
         );
         enqueueSnackbar("Transaction created", { variant: "success" });
         resetForm();
+        setTransactionDate(dayjs());
+        onSuccess?.();
       } catch (error) {
         console.error("Failed to create transaction:", error);
         enqueueSnackbar("Failed to create transaction", { variant: "error" });

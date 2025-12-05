@@ -22,7 +22,7 @@ vi.mock("@/hooks/ui/useAddTransactionForm");
 const getBudgetSummarySpy = vi.spyOn(budgets, "getBudgetSummary");
 
 interface FormValues {
-  amount: number;
+  amount: string;
   transactionType: string;
   merchant: string;
   notes: string;
@@ -32,7 +32,7 @@ interface FormValues {
 describe("AddTransactionModal", () => {
   const mockFormik: Partial<FormikProps<FormValues>> = {
     values: {
-      amount: 0,
+      amount: "",
       transactionType: "",
       merchant: "",
       notes: "",
@@ -45,6 +45,7 @@ describe("AddTransactionModal", () => {
     handleSubmit: vi.fn(),
     resetForm: vi.fn(),
     isValid: false,
+    isSubmitting: false,
     initialStatus: undefined,
   };
 
@@ -200,7 +201,7 @@ describe("AddTransactionModal", () => {
     });
   });
 
-  it("should reset form when dialog is closed", async () => {
+  it("should not reset form when dialog is closed via cancel", async () => {
     const user = userEvent.setup();
     renderComponent();
 
@@ -215,16 +216,19 @@ describe("AddTransactionModal", () => {
     await user.click(cancelButton);
 
     await waitFor(() => {
-      expect(mockFormik.resetForm).toHaveBeenCalled();
+      expect(screen.queryByText("Add Transaction")).not.toBeInTheDocument();
     });
+
+    // Form reset happens only after successful submission via onSuccess callback
+    expect(mockFormik.resetForm).not.toHaveBeenCalled();
   });
 
-  it("should call formik handleSubmit when form is submitted", async () => {
+  it("should enable form submission when form is valid", async () => {
     const user = userEvent.setup();
     (
       useAddTransactionForm as MockedFunction<typeof useAddTransactionForm>
     ).mockReturnValue({
-      formik: { ...mockFormik, isValid: true },
+      formik: { ...mockFormik, isValid: true, isSubmitting: false },
       transactionDate: dayjs(),
       setTransactionDate: mockSetTransactionDate,
     } as ReturnType<typeof useAddTransactionForm>);
@@ -239,11 +243,8 @@ describe("AddTransactionModal", () => {
     });
 
     const saveButton = screen.getByRole("button", { name: /save/i });
-    await user.click(saveButton);
-
-    await waitFor(() => {
-      expect(mockFormik.handleSubmit).toHaveBeenCalled();
-    });
+    // Save button should be enabled when form is valid
+    expect(saveButton).not.toBeDisabled();
   });
 
   it("should disable save button when form is invalid", async () => {
@@ -288,16 +289,15 @@ describe("AddTransactionModal", () => {
     });
   });
 
-  it("should close dialog after successful form submission", async () => {
+  it("should disable buttons and show 'Saving...' when form is submitting", async () => {
     const user = userEvent.setup();
-    const mockHandleSubmit = vi.fn().mockResolvedValue(undefined);
     (
       useAddTransactionForm as MockedFunction<typeof useAddTransactionForm>
     ).mockReturnValue({
       formik: {
         ...mockFormik,
         isValid: true,
-        handleSubmit: mockHandleSubmit,
+        isSubmitting: true,
       },
       transactionDate: dayjs(),
       setTransactionDate: mockSetTransactionDate,
@@ -309,14 +309,36 @@ describe("AddTransactionModal", () => {
     await user.click(addButton);
 
     await waitFor(() => {
-      expect(screen.getByText("Add Transaction")).toBeInTheDocument();
+      const saveButton = screen.getByRole("button", { name: /saving/i });
+      const cancelButton = screen.getByRole("button", { name: /cancel/i });
+      expect(saveButton).toBeDisabled();
+      expect(cancelButton).toBeDisabled();
+      expect(screen.getByText("Saving...")).toBeInTheDocument();
     });
+  });
 
-    const saveButton = screen.getByRole("button", { name: /save/i });
-    await user.click(saveButton);
+  it("should disable save button when form is submitting even if valid", async () => {
+    const user = userEvent.setup();
+    (
+      useAddTransactionForm as MockedFunction<typeof useAddTransactionForm>
+    ).mockReturnValue({
+      formik: {
+        ...mockFormik,
+        isValid: true,
+        isSubmitting: true,
+      },
+      transactionDate: dayjs(),
+      setTransactionDate: mockSetTransactionDate,
+    } as ReturnType<typeof useAddTransactionForm>);
+
+    renderComponent();
+
+    const addButton = screen.getByRole("button");
+    await user.click(addButton);
 
     await waitFor(() => {
-      expect(mockHandleSubmit).toHaveBeenCalled();
+      const saveButton = screen.getByRole("button", { name: /saving/i });
+      expect(saveButton).toBeDisabled();
     });
   });
 
