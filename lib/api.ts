@@ -37,8 +37,9 @@ export async function fetchWithAuth<T>(
   });
 
   if (!response.ok) {
+    const errorText = await response.text();
     throw new ApiError(
-      `Request failed with status ${response.status}`,
+      `Request failed with status ${response.status}: ${errorText}`,
       response.status,
       response.statusText,
     );

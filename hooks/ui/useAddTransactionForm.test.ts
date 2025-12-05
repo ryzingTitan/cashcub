@@ -37,7 +37,7 @@ vi.mock("@/lib/transactions", () => ({
 }));
 
 interface TransactionFormValues {
-  amount: number;
+  amount: string;
   transactionType: string;
   merchant: string;
   notes: string;
@@ -79,7 +79,7 @@ describe("useAddTransactionForm", () => {
       return {
         resetForm,
         values: {
-          amount: 0,
+          amount: "",
           transactionType: "",
           merchant: "",
           notes: "",
@@ -96,7 +96,7 @@ describe("useAddTransactionForm", () => {
         setFieldValue: vi.fn(),
         setSubmitting: vi.fn(),
         initialValues: {
-          amount: 0,
+          amount: "",
           transactionType: "",
           merchant: "",
           notes: "",
@@ -133,7 +133,7 @@ describe("useAddTransactionForm", () => {
     });
 
     const values = {
-      amount: 100,
+      amount: "100",
       transactionType: "EXPENSE",
       merchant: "Test Merchant",
       notes: "Test Note",
@@ -161,6 +161,7 @@ describe("useAddTransactionForm", () => {
       variant: "success",
     });
     expect(resetForm).toHaveBeenCalled();
+    expect(setSubmitting).toHaveBeenCalledWith(false);
   });
 
   it("should handle API error on submission", async () => {
@@ -169,7 +170,7 @@ describe("useAddTransactionForm", () => {
     );
     renderHook(() => useAddTransactionForm());
     const values = {
-      amount: 100,
+      amount: "100",
       transactionType: "EXPENSE",
       merchant: "Test Merchant",
       notes: "Test Note",
@@ -186,5 +187,111 @@ describe("useAddTransactionForm", () => {
         variant: "error",
       },
     );
+    expect(setSubmitting).toHaveBeenCalledWith(false);
+  });
+
+  it("should call onSuccess callback after successful submission", async () => {
+    const onSuccess = vi.fn();
+    const { result } = renderHook(() => useAddTransactionForm(onSuccess));
+    const date = dayjs("2023-01-01");
+
+    act(() => {
+      result.current.setTransactionDate(date);
+    });
+
+    const values = {
+      amount: "100",
+      transactionType: "EXPENSE",
+      merchant: "Test Merchant",
+      notes: "Test Note",
+      budgetItemId: "item123",
+    };
+
+    await act(async () => {
+      await onSubmit(values, { setSubmitting, resetForm });
+    });
+
+    expect(onSuccess).toHaveBeenCalled();
+  });
+
+  it("should reset transaction date to today after successful submission", async () => {
+    const { result } = renderHook(() => useAddTransactionForm());
+    const pastDate = dayjs("2023-01-01");
+
+    act(() => {
+      result.current.setTransactionDate(pastDate);
+    });
+
+    const values = {
+      amount: "100",
+      transactionType: "EXPENSE",
+      merchant: "Test Merchant",
+      notes: "Test Note",
+      budgetItemId: "item123",
+    };
+
+    await act(async () => {
+      await onSubmit(values, { setSubmitting, resetForm });
+    });
+
+    // Transaction date should be reset to today (approximately)
+    const currentDate = result.current.transactionDate;
+    expect(currentDate?.format("YYYY-MM-DD")).toBe(
+      dayjs().format("YYYY-MM-DD"),
+    );
+  });
+
+  it("should handle empty merchant and notes by converting to null", async () => {
+    const { result } = renderHook(() => useAddTransactionForm());
+    const date = dayjs("2023-01-01");
+
+    act(() => {
+      result.current.setTransactionDate(date);
+    });
+
+    const values = {
+      amount: "100",
+      transactionType: "EXPENSE",
+      merchant: "",
+      notes: "  ",
+      budgetItemId: "item123",
+    };
+
+    await act(async () => {
+      await onSubmit(values, { setSubmitting, resetForm });
+    });
+
+    expect(transactions.createTransaction).toHaveBeenCalledWith(
+      `/budgets/budget123/items/item123/transactions`,
+      {
+        date: date.toISOString(),
+        amount: 100,
+        transactionType: "EXPENSE",
+        merchant: null,
+        notes: null,
+      },
+    );
+  });
+
+  it("should not call onSuccess callback when submission fails", async () => {
+    const onSuccess = vi.fn();
+    vi.spyOn(transactions, "createTransaction").mockRejectedValue(
+      new Error("API Error"),
+    );
+    renderHook(() => useAddTransactionForm(onSuccess));
+
+    const values = {
+      amount: "100",
+      transactionType: "EXPENSE",
+      merchant: "Test Merchant",
+      notes: "Test Note",
+      budgetItemId: "item123",
+    };
+
+    await act(async () => {
+      await onSubmit(values, { setSubmitting, resetForm });
+    });
+
+    expect(onSuccess).not.toHaveBeenCalled();
   });
 });

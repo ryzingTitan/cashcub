@@ -27,21 +27,19 @@ export default function AddTransactionModal() {
   const [isOpen, setIsOpen] = useState(false);
   const params = useParams();
   const { data } = useSWR(`/budgets/${params.slug}`, getBudgetSummary);
-  const { formik, transactionDate, setTransactionDate } =
-    useAddTransactionForm();
 
-  const handleOpen = () => setIsOpen(true);
   const handleClose = () => {
     setIsOpen(false);
-    formik.resetForm();
   };
+
+  const { formik, transactionDate, setTransactionDate } =
+    useAddTransactionForm(handleClose);
+
+  const handleOpen = () => setIsOpen(true);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await formik.handleSubmit();
-    if (formik.isValid) {
-      handleClose();
-    }
+    formik.handleSubmit();
   };
 
   return (
@@ -146,9 +144,15 @@ export default function AddTransactionModal() {
             </Stack>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button type={"submit"} disabled={!formik.isValid} autoFocus>
-              Save
+            <Button onClick={handleClose} disabled={formik.isSubmitting}>
+              Cancel
+            </Button>
+            <Button
+              type={"submit"}
+              disabled={!formik.isValid || formik.isSubmitting}
+              autoFocus
+            >
+              {formik.isSubmitting ? "Saving..." : "Save"}
             </Button>
           </DialogActions>
         </Box>
