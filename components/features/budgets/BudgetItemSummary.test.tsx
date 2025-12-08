@@ -161,6 +161,10 @@ describe("BudgetItemSummary", () => {
   });
 
   it("should display updated values in edit mode after a save", async () => {
+    const { updateBudgetItem } = await import("@/lib/budgets");
+    const updatedBudgetItem = { ...mockBudgetItem, plannedAmount: 600 };
+    vi.mocked(updateBudgetItem).mockResolvedValue(updatedBudgetItem);
+
     const { rerender } = render(
       <SWRConfig value={{ provider: () => new Map() }}>
         <BudgetItemSummary budgetItem={mockBudgetItem} categoryName="Expense" />
@@ -185,7 +189,6 @@ describe("BudgetItemSummary", () => {
     });
 
     // Rerender with updated prop
-    const updatedBudgetItem = { ...mockBudgetItem, plannedAmount: 600 };
     rerender(
       <SWRConfig value={{ provider: () => new Map() }}>
         <BudgetItemSummary
