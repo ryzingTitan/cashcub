@@ -13,12 +13,7 @@ export async function fetchWithAuth<T>(
   url: string,
   options: FetchOptions = {},
 ): Promise<T> {
-  const session = await auth0.getSession();
-
-  // Session validation is now handled by callers before try-catch blocks
-  if (!session?.tokenSet?.idToken) {
-    throw new Error("No valid session");
-  }
+  const accessToken = await auth0.getAccessToken();
 
   const baseUrl = process.env.API_BASE_URL;
   const fullUrl = new URL(baseUrl + url);
@@ -31,7 +26,7 @@ export async function fetchWithAuth<T>(
     method: options.method || "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session?.tokenSet.idToken}`,
+      Authorization: `Bearer ${accessToken.token}`,
     },
     body: options.body ? JSON.stringify(options.body) : undefined,
   });

@@ -26,25 +26,14 @@ afterAll(() => server.close());
 
 vi.mock("./auth0", () => ({
   auth0: {
-    getSession: vi.fn(),
+    getAccessToken: vi.fn(),
   },
-  ensureValidSession: vi.fn(),
 }));
 
 describe("getAllCategories", () => {
   it("should fetch categories successfully", async () => {
-    vi.mocked(auth0.getSession).mockResolvedValue({
-      accessTokens: [],
-      connectionTokenSets: [],
-      internal: { createdAt: 0, sid: "" },
-      user: {
-        sub: "",
-      },
-      tokenSet: {
-        idToken: "test",
-        accessToken: "",
-        expiresAt: 0,
-      },
+    vi.mocked(auth0.getAccessToken).mockResolvedValue({
+      token: "test-access-token",
     });
     const data = await getAllCategories("/categories");
     expect(data).toEqual([{ id: 1, name: "Groceries" }]);
@@ -56,18 +45,8 @@ describe("getAllCategories", () => {
         return new HttpResponse(null, { status: 500 });
       }),
     );
-    vi.mocked(auth0.getSession).mockResolvedValue({
-      accessTokens: [],
-      connectionTokenSets: [],
-      internal: { createdAt: 0, sid: "" },
-      user: {
-        sub: "",
-      },
-      tokenSet: {
-        idToken: "test",
-        accessToken: "",
-        expiresAt: 0,
-      },
+    vi.mocked(auth0.getAccessToken).mockResolvedValue({
+      token: "test-access-token",
     });
     await expect(getAllCategories("/categories")).rejects.toEqual(
       "Failed to fetch categories",
