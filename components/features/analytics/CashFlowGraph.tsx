@@ -24,9 +24,6 @@ export default function CashFlowGraph({
   loading,
 }: CashFlowGraphProps) {
   const chartData: CashFlowDatasetRow[] = useMemo(() => {
-    let totalExpenses = 0;
-    let totalIncome = 0;
-
     // Sort the budgets by year and then by month
     const sortedBudgets = budgets
       ? [...budgets].sort((a, b) => {
@@ -37,16 +34,22 @@ export default function CashFlowGraph({
         })
       : [];
 
-    // Map the sorted budgets to the chart data format
-    return sortedBudgets.map((budget): CashFlowDatasetRow => {
-      totalExpenses += budget.actualExpenses;
-      totalIncome += budget.actualIncome;
-      return {
+    // Map the sorted budgets to the chart data format with cumulative totals
+    return sortedBudgets.reduce<CashFlowDatasetRow[]>((acc, budget) => {
+      const previousRow = acc[acc.length - 1];
+      const totalExpenses =
+        (previousRow?.actualExpenses || 0) + budget.actualExpenses;
+      const totalIncome =
+        (previousRow?.actualIncome || 0) + budget.actualIncome;
+
+      acc.push({
         x: `${budget.month}/${budget.year}`,
         actualIncome: totalIncome,
         actualExpenses: totalExpenses,
-      };
-    });
+      });
+
+      return acc;
+    }, []);
   }, [budgets]);
 
   return (
