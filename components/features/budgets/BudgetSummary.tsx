@@ -20,9 +20,8 @@ export default function BudgetSummary() {
 
   if (isLoading) {
     return (
-      <Stack spacing={2} data-testid="loading-skeleton">
-        <Skeleton variant="rectangular" height={80} />
-        <Skeleton variant="rectangular" height={120} />
+      <Stack data-testid="loading-skeleton">
+        <Skeleton variant="rectangular" height={150} />
       </Stack>
     );
   }

@@ -42,11 +42,6 @@ export default function Header() {
           {isLoading ? (
             <>
               <Skeleton
-                variant="text"
-                width={150}
-                data-testid="loading-skeleton"
-              />
-              <Skeleton
                 variant="circular"
                 width={40}
                 height={40}
