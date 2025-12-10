@@ -39,7 +39,7 @@ export default defineConfig({
         "**/node_modules/**",
         "**/.next/**",
         "**/coverage/**",
-        "middleware.ts", // Auth middleware is hard to test in isolation
+        "proxy.ts", // Auth proxy is hard to test in isolation
       ],
       thresholds: {
         lines: 90,

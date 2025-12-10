@@ -73,7 +73,7 @@ npm run format       # Format code with Prettier
 **Authentication Flow:**
 
 - Auth0 handles authentication via `@auth0/nextjs-auth0/server`
-- Middleware (`middleware.ts`) runs on all routes except static assets
+- Proxy (`proxy.ts`) runs on all routes except static assets
 - `lib/auth0.ts` provides session validation with JWT expiration checking
 - All API calls use `fetchWithAuth()` which attaches the Auth0 ID token as Bearer token
 
