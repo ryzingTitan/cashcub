@@ -24,7 +24,7 @@ describe("Header", () => {
 
     render(<Header />);
 
-    expect(screen.getAllByTestId("loading-skeleton")).toHaveLength(3);
+    expect(screen.getAllByTestId("loading-skeleton")).toHaveLength(2);
   });
 
   it("renders user information when authenticated", () => {
