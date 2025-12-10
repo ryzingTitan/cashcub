@@ -28,7 +28,7 @@ export default function BudgetCategories({ budget }: BudgetCategoriesProps) {
       acc.set(item.categoryId, items);
       return acc;
     }, new Map());
-  }, [budget?.budgetItems]);
+  }, [budget]);
 
   return (
     <Stack
