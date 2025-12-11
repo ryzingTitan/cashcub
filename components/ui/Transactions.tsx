@@ -1,59 +1,22 @@
 "use client";
 
+import { useState } from "react";
 import { useToggle } from "usehooks-ts";
 import ReceiptIcon from "@mui/icons-material/Receipt";
+import CloseIcon from "@mui/icons-material/Close";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
-import {
-  DataGrid,
-  GridColDef,
-  GridActionsCellItem,
-  GridRowModes,
-  GridEventListener,
-  GridRowEditStopReasons,
-  useGridApiContext,
-  GridRenderEditCellParams,
-  ToolbarButton,
-  Toolbar,
-} from "@mui/x-data-grid";
-import dayjs from "dayjs";
-import { formatToCurrency } from "@/lib/utils";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import SaveIcon from "@mui/icons-material/Save";
-import CancelIcon from "@mui/icons-material/Close";
-import { useMemo } from "react";
+import Box from "@mui/material/Box";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTransactions } from "@/hooks/ui/useTransactions";
-
-const AmountEditCell = (props: GridRenderEditCellParams) => {
-  const { id, value, field } = props;
-  const apiRef = useGridApiContext();
-
-  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value; // The new value entered by the user
-    apiRef.current.setEditCellValue({ id, field, value: newValue });
-  };
-
-  return (
-    <TextField
-      autoFocus
-      size="small"
-      value={value}
-      onChange={handleValueChange}
-      slotProps={{
-        input: {
-          startAdornment: <InputAdornment position="start">$</InputAdornment>,
-        },
-      }}
-    />
-  );
-};
+import MobileTransactionList, {
+  type TransactionRow,
+} from "./MobileTransactionList";
+import DesktopTransactionGrid from "./DesktopTransactionGrid";
 
 interface TransactionsProps {
   budgetId: string;
@@ -65,6 +28,15 @@ export default function Transactions({
   budgetItemId,
 }: TransactionsProps) {
   const [value, toggle] = useToggle(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [editingMobileId, setEditingMobileId] = useState<
+    string | number | null
+  >(null);
+  const [mobileEditData, setMobileEditData] = useState<Partial<TransactionRow>>(
+    {},
+  );
+
   const {
     rows,
     isLoading,
@@ -78,126 +50,51 @@ export default function Transactions({
     handleAddNew,
   } = useTransactions(budgetId, budgetItemId);
 
-  const handleRowEditStop: GridEventListener<"rowEditStop"> = (
-    params,
-    event,
-  ) => {
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true;
+  // Mobile handlers
+  const handleMobileEdit = (id: string | number) => {
+    setEditingMobileId(id);
+    const transaction = rows?.find((row) => row.id === id);
+    if (transaction) {
+      setMobileEditData(transaction);
     }
   };
 
-  const columns: GridColDef[] = useMemo(
-    () => [
-      {
-        field: "date",
-        headerName: "Date",
-        valueFormatter: (value?: string) => {
-          if (value == null) {
-            return "";
-          }
-          return `${dayjs(value).format("MMM DD")}`;
-        },
-        editable: true,
-        type: "date",
-        headerAlign: "center",
-        align: "center",
-        flex: 1,
-      },
-      {
-        field: "amount",
-        headerName: "Amount",
-        headerAlign: "center",
-        align: "center",
-        valueFormatter: (value?: number) => {
-          if (value == null) {
-            return "";
-          }
-          return `${formatToCurrency(value)}`;
-        },
-        editable: true,
-        flex: 1,
-        renderEditCell: (params) => <AmountEditCell {...params} />,
-      },
-      {
-        field: "transactionType",
-        headerName: "Type",
-        headerAlign: "center",
-        align: "center",
-        editable: true,
-        type: "singleSelect",
-        flex: 1,
-        valueOptions: ["EXPENSE", "INCOME"],
-      },
-      {
-        field: "merchant",
-        headerName: "Merchant",
-        headerAlign: "center",
-        align: "center",
-        editable: true,
-        flex: 1,
-      },
-      {
-        field: "notes",
-        headerName: "Notes",
-        headerAlign: "center",
-        align: "center",
-        editable: true,
-        flex: 1,
-      },
-      {
-        field: "actions",
-        type: "actions",
-        headerName: "Actions",
-        headerAlign: "center",
-        align: "center",
-        flex: 1,
-        getActions: ({ id }) => {
-          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-          if (isInEditMode) {
-            return [
-              <GridActionsCellItem
-                key="save"
-                icon={<SaveIcon />}
-                label="Save"
-                onClick={handleSaveClick(id)}
-              />,
-              <GridActionsCellItem
-                key="cancel"
-                icon={<CancelIcon />}
-                label="Cancel"
-                onClick={handleCancelClick(id)}
-                color="inherit"
-              />,
-            ];
-          }
-          return [
-            <GridActionsCellItem
-              key="edit"
-              icon={<EditIcon />}
-              label="Edit"
-              onClick={handleEditClick(id)}
-              color="inherit"
-            />,
-            <GridActionsCellItem
-              key="delete"
-              icon={<DeleteIcon />}
-              label="Delete"
-              onClick={handleDeleteClick(id)}
-              color="inherit"
-            />,
-          ];
-        },
-      },
-    ],
-    [
-      handleCancelClick,
-      handleDeleteClick,
-      handleEditClick,
-      handleSaveClick,
-      rowModesModel,
-    ],
-  );
+  const handleMobileSave = async (id: string | number) => {
+    const updatedRow = {
+      ...rows?.find((row) => row.id === id),
+      ...mobileEditData,
+    };
+    await processRowUpdate(
+      updatedRow as TransactionRow,
+      rows?.find((row) => row.id === id) as TransactionRow,
+    );
+    setEditingMobileId(null);
+    setMobileEditData({});
+  };
+
+  const handleMobileCancel = () => {
+    setEditingMobileId(null);
+    setMobileEditData({});
+  };
+
+  const handleMobileUpdate = (
+    id: string | number,
+    field: string,
+    value: string | number,
+  ) => {
+    setMobileEditData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleMobileDelete = (id: string | number) => {
+    handleDeleteClick(id)();
+  };
+
+  const handleProcessRowUpdate = async (
+    newRow: TransactionRow,
+    oldRow: TransactionRow,
+  ): Promise<TransactionRow> => {
+    return processRowUpdate(newRow, oldRow) as Promise<TransactionRow>;
+  };
 
   return (
     <>
@@ -206,36 +103,59 @@ export default function Transactions({
           <ReceiptIcon />
         </IconButton>
       </Tooltip>
-      <Dialog onClose={toggle} open={value} fullWidth={true} maxWidth={"xl"}>
-        <DialogTitle>Transactions</DialogTitle>
+      <Dialog
+        onClose={toggle}
+        open={value}
+        fullWidth={true}
+        maxWidth={isMobile ? "sm" : "xl"}
+      >
+        <DialogTitle>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            Transactions
+            <IconButton
+              aria-label="close"
+              onClick={toggle}
+              sx={{
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </DialogTitle>
         <DialogContent>
-          <DataGrid
-            rows={rows || []}
-            columns={columns}
-            loading={isLoading}
-            editMode="row"
-            rowModesModel={rowModesModel}
-            onRowModesModelChange={handleRowModesModelChange}
-            onRowEditStop={handleRowEditStop}
-            processRowUpdate={processRowUpdate}
-            initialState={{
-              sorting: {
-                sortModel: [{ field: "date", sort: "desc" }],
-              },
-            }}
-            slots={{
-              toolbar: () => (
-                <Toolbar>
-                  <Tooltip title="Add transaction">
-                    <ToolbarButton onClick={handleAddNew} size="small">
-                      <AddIcon />
-                    </ToolbarButton>
-                  </Tooltip>
-                </Toolbar>
-              ),
-            }}
-            showToolbar
-          />
+          {isMobile ? (
+            <MobileTransactionList
+              rows={rows as unknown as TransactionRow[]}
+              isLoading={isLoading}
+              editingId={editingMobileId}
+              onEdit={handleMobileEdit}
+              onSave={handleMobileSave}
+              onCancel={handleMobileCancel}
+              onDelete={handleMobileDelete}
+              onUpdate={handleMobileUpdate}
+              onAddNew={handleAddNew}
+            />
+          ) : (
+            <DesktopTransactionGrid
+              rows={rows as unknown as TransactionRow[]}
+              isLoading={isLoading}
+              rowModesModel={rowModesModel}
+              onRowModesModelChange={handleRowModesModelChange}
+              onEditClick={handleEditClick}
+              onSaveClick={handleSaveClick}
+              onCancelClick={handleCancelClick}
+              onDeleteClick={handleDeleteClick}
+              processRowUpdate={handleProcessRowUpdate}
+              onAddNew={handleAddNew}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </>
