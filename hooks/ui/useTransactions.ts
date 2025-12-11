@@ -84,7 +84,10 @@ export const useTransactions = (budgetId: string, budgetItemId: string) => {
   );
 
   const processRowUpdate = useCallback(
-    async (newRow: GridValidRowModel): Promise<GridValidRowModel> => {
+    async (
+      newRow: GridValidRowModel,
+      oldRow?: GridValidRowModel,
+    ): Promise<GridValidRowModel> => {
       const payload: Partial<Transaction> = {
         ...newRow,
         budgetId,

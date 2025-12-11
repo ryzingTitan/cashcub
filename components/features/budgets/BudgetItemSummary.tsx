@@ -38,7 +38,9 @@ interface ReadOnlyViewProps {
 function EditView({ formik, handleCancel }: EditViewProps) {
   return (
     <>
-      <ListItem sx={{ flexDirection: { xs: "column", sm: "row" } }}>
+      <ListItem
+        sx={{ flexDirection: { xs: "column", sm: "row" }, flexGrow: 1 }}
+      >
         <TextField
           required
           label="Name"
@@ -85,16 +87,26 @@ function EditView({ formik, handleCancel }: EditViewProps) {
           />
         </Stack>
       </ListItem>
-      <Tooltip title="Save Budget Item">
-        <IconButton onClick={() => formik.handleSubmit()}>
-          <SaveIcon />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Cancel Edit">
-        <IconButton onClick={handleCancel}>
-          <CancelIcon />
-        </IconButton>
-      </Tooltip>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          flexShrink: 0,
+          justifyContent: { xs: "center", sm: "flex-start" },
+          width: { xs: "100%", sm: "auto" },
+        }}
+      >
+        <Tooltip title="Save Budget Item">
+          <IconButton onClick={() => formik.handleSubmit()}>
+            <SaveIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Cancel Edit">
+          <IconButton onClick={handleCancel}>
+            <CancelIcon />
+          </IconButton>
+        </Tooltip>
+      </Stack>
     </>
   );
 }
@@ -109,7 +121,9 @@ function ReadOnlyView({
 
   return (
     <>
-      <ListItem sx={{ flexDirection: { xs: "column", sm: "row" } }}>
+      <ListItem
+        sx={{ flexDirection: { xs: "column", sm: "row" }, flexGrow: 1 }}
+      >
         <Typography sx={{ mb: { xs: 2, sm: 0 } }}>{budgetItem.name}</Typography>
         <Stack
           direction={"row"}
@@ -150,20 +164,30 @@ function ReadOnlyView({
           </Stack>
         </Stack>
       </ListItem>
-      <Transactions
-        budgetId={budgetItem.budgetId!}
-        budgetItemId={budgetItem.id!}
-      />
-      <Tooltip title="Edit Budget Item">
-        <IconButton onClick={onEdit}>
-          <EditIcon />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Delete Budget Item">
-        <IconButton onClick={onDelete}>
-          <DeleteIcon />
-        </IconButton>
-      </Tooltip>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          flexShrink: 0,
+          justifyContent: { xs: "center", sm: "flex-start" },
+          width: { xs: "100%", sm: "auto" },
+        }}
+      >
+        <Transactions
+          budgetId={budgetItem.budgetId!}
+          budgetItemId={budgetItem.id!}
+        />
+        <Tooltip title="Edit Budget Item">
+          <IconButton onClick={onEdit}>
+            <EditIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Delete Budget Item">
+          <IconButton onClick={onDelete}>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
+      </Stack>
     </>
   );
 }
@@ -176,7 +200,11 @@ export default function BudgetItemSummary({
     useBudgetItemSummary(budgetItem);
 
   return (
-    <Stack direction="row" alignItems="center">
+    <Stack
+      direction={{ xs: "column", sm: "row" }}
+      alignItems={{ xs: "flex-start", sm: "center" }}
+      sx={{ width: "100%" }}
+    >
       {isEditing ? (
         <EditView formik={formik} handleCancel={handleCancel} />
       ) : (
