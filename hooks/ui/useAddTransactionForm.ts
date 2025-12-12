@@ -11,7 +11,10 @@ import { Transaction, TransactionType } from "@/types/api";
 import { createTransaction } from "@/lib/transactions";
 import { useState } from "react";
 
-export const useAddTransactionForm = (onSuccess?: () => void) => {
+export const useAddTransactionForm = (
+  onSuccess?: () => void,
+  initialBudgetItemId?: string,
+) => {
   const [transactionDate, setTransactionDate] = useState<Dayjs | null>(dayjs());
   const { mutate } = useSWRConfig();
   const { enqueueSnackbar } = useSnackbar();
@@ -23,7 +26,7 @@ export const useAddTransactionForm = (onSuccess?: () => void) => {
       transactionType: "",
       merchant: "",
       notes: "",
-      budgetItemId: "",
+      budgetItemId: initialBudgetItemId || "",
     },
     validateOnMount: true,
     validationSchema: transactionValidationSchema.concat(
