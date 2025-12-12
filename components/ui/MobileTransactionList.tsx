@@ -20,8 +20,10 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
+import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { formatToCurrency } from "@/lib/utils";
+import AddTransactionDialog from "./AddTransactionDialog";
 
 export interface TransactionRow {
   id: string | number | null;
@@ -73,15 +75,17 @@ const MobileTransactionCard = ({
       <Card sx={{ mb: 2, border: 2, borderColor: "primary.main" }}>
         <CardContent>
           <Stack spacing={2}>
-            <TextField
+            <DatePicker
               label="Date"
-              type="date"
-              fullWidth
-              size="small"
-              value={dayjs(editValues.date).format("YYYY-MM-DD")}
-              onChange={(e) => handleLocalUpdate("date", e.target.value)}
+              value={dayjs(editValues.date)}
+              onChange={(newValue) =>
+                handleLocalUpdate(
+                  "date",
+                  newValue ? newValue.format("YYYY-MM-DD") : editValues.date,
+                )
+              }
               slotProps={{
-                inputLabel: { shrink: true },
+                textField: { size: "small", fullWidth: true },
               }}
             />
             <TextField
@@ -204,7 +208,7 @@ interface MobileTransactionListProps {
     field: string,
     value: string | number,
   ) => void;
-  onAddNew: () => void;
+  budgetItemId?: string;
 }
 
 export default function MobileTransactionList({
@@ -216,15 +220,20 @@ export default function MobileTransactionList({
   onCancel,
   onDelete,
   onUpdate,
-  onAddNew,
+  budgetItemId,
 }: MobileTransactionListProps) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleOpenDialog = () => setIsDialogOpen(true);
+  const handleCloseDialog = () => setIsDialogOpen(false);
+
   return (
     <Box sx={{ pt: 2 }}>
       <Box sx={{ mb: 2, display: "flex", justifyContent: "flex-end" }}>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={onAddNew}
+          onClick={handleOpenDialog}
           size="small"
         >
           Add Transaction
@@ -261,6 +270,11 @@ export default function MobileTransactionList({
           No transactions found
         </Typography>
       )}
+      <AddTransactionDialog
+        open={isDialogOpen}
+        onClose={handleCloseDialog}
+        budgetItemId={budgetItemId}
+      />
     </Box>
   );
 }

@@ -140,7 +140,7 @@ export default function Transactions({
               onCancel={handleMobileCancel}
               onDelete={handleMobileDelete}
               onUpdate={handleMobileUpdate}
-              onAddNew={handleAddNew}
+              budgetItemId={budgetItemId}
             />
           ) : (
             <DesktopTransactionGrid
