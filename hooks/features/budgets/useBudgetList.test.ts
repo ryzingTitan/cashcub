@@ -48,7 +48,7 @@ describe("useBudgetList", () => {
       mutate: vi.fn(),
       isValidating: false,
     });
-    mockedUseParams.mockReturnValue({ slug: "" });
+    mockedUseParams.mockReturnValue({ budgetId: "" });
 
     const { result } = renderHook(() => useBudgetList());
 
@@ -63,7 +63,7 @@ describe("useBudgetList", () => {
       mutate: vi.fn(),
       isValidating: false,
     });
-    mockedUseParams.mockReturnValue({ slug: "" });
+    mockedUseParams.mockReturnValue({ budgetId: "" });
 
     renderHook(() => useBudgetList());
 
@@ -78,7 +78,7 @@ describe("useBudgetList", () => {
       mutate: vi.fn(),
       isValidating: false,
     });
-    mockedUseParams.mockReturnValue({ slug: "1" });
+    mockedUseParams.mockReturnValue({ budgetId: "1" });
 
     const { result } = renderHook(() => useBudgetList());
 
@@ -97,7 +97,7 @@ describe("useBudgetList", () => {
       mutate: vi.fn(),
       isValidating: false,
     });
-    mockedUseParams.mockReturnValue({ slug: "non-existent-slug" });
+    mockedUseParams.mockReturnValue({ budgetId: "non-existent-slug" });
 
     const { result } = renderHook(() => useBudgetList());
 
@@ -112,7 +112,7 @@ describe("useBudgetList", () => {
       mutate: vi.fn(),
       isValidating: false,
     });
-    mockedUseParams.mockReturnValue({ slug: "" });
+    mockedUseParams.mockReturnValue({ budgetId: "" });
 
     const { result } = renderHook(() => useBudgetList());
 
@@ -130,7 +130,7 @@ describe("useBudgetList", () => {
       mutate: vi.fn(),
       isValidating: false,
     });
-    mockedUseParams.mockReturnValue({ slug: "1" });
+    mockedUseParams.mockReturnValue({ budgetId: "1" });
 
     const { result } = renderHook(() => useBudgetList());
 
@@ -147,7 +147,7 @@ describe("useBudgetList", () => {
       mutate: vi.fn(),
       isValidating: false,
     });
-    mockedUseParams.mockReturnValue({ slug: "" });
+    mockedUseParams.mockReturnValue({ budgetId: "" });
 
     const { result } = renderHook(() => useBudgetList());
     const budget = {

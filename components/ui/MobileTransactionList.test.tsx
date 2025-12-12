@@ -20,7 +20,9 @@ vi.mock("./AddTransactionDialog", () => ({
       {open && (
         <>
           <div>Add Transaction Dialog</div>
-          {budgetItemId && <div data-testid="budget-item-id">{budgetItemId}</div>}
+          {budgetItemId && (
+            <div data-testid="budget-item-id">{budgetItemId}</div>
+          )}
           <button onClick={onClose}>Close Dialog</button>
         </>
       )}

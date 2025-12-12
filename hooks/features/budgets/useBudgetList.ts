@@ -29,8 +29,8 @@ export function useBudgetList() {
   }, [data]);
 
   const selectedBudget = useMemo(() => {
-    return data?.find((budget) => budget.id === params.slug) ?? null;
-  }, [params.slug, data]);
+    return data?.find((budget) => budget.id === params.budgetId) ?? null;
+  }, [params.budgetId, data]);
 
   const handleBudgetChange = (_event: unknown, value: Budget | null) => {
     if (!value) {

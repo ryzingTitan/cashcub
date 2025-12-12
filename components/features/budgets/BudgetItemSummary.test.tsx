@@ -38,7 +38,7 @@ vi.mock("@/lib/budgets", () => ({
   deleteBudgetItem: vi.fn(),
 }));
 
-vi.mock("@/components/Transactions", () => ({
+vi.mock("@/components/ui/Transactions", () => ({
   __esModule: true,
   default: () => <div data-testid="transactions-mock" />,
 }));

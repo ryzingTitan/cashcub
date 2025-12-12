@@ -13,7 +13,7 @@ import type { FormikProps } from "formik";
 
 vi.mock("next/navigation", () => ({
   useParams: () => ({
-    slug: "test-budget",
+    budgetId: "test-budget",
   }),
 }));
 

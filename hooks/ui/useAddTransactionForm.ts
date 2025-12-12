@@ -47,11 +47,11 @@ export const useAddTransactionForm = (
           notes: values.notes.trim() === "" ? null : values.notes,
         };
         await createTransaction(
-          `/budgets/${params.slug}/items/${values.budgetItemId}/transactions`,
+          `/budgets/${params.budgetId}/items/${values.budgetItemId}/transactions`,
           newTransaction,
         );
         await mutate(
-          `/budgets/${params.slug}/items/${values.budgetItemId}/transactions`,
+          `/budgets/${params.budgetId}/items/${values.budgetItemId}/transactions`,
         );
         enqueueSnackbar("Transaction created", { variant: "success" });
         resetForm();
