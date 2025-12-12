@@ -7,7 +7,7 @@ import useSWR from "swr";
 
 export const useBudgetSummary = () => {
   const params = useParams();
-  const key = params.slug ? `/budgets/${params.slug}` : null;
+  const key = params.budgetId ? `/budgets/${params.budgetId}` : null;
   const { data, isLoading, error } = useSWR<BudgetSummaryType>(
     key,
     getBudgetSummary,

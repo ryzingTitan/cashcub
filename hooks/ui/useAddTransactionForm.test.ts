@@ -70,7 +70,7 @@ describe("useAddTransactionForm", () => {
       mutate,
     } as unknown as ReturnType<typeof useSWRConfig>);
     (useParams as MockedFunction<typeof useParams>).mockReturnValue({
-      slug: "budget123",
+      budgetId: "budget123",
     });
     (useFormik as MockedFunction<typeof useFormik>).mockImplementation(((
       options: FormikConfig<TransactionFormValues>,
@@ -165,6 +165,9 @@ describe("useAddTransactionForm", () => {
   });
 
   it("should handle API error on submission", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
     vi.spyOn(transactions, "createTransaction").mockRejectedValue(
       new Error("API Error"),
     );
@@ -188,6 +191,7 @@ describe("useAddTransactionForm", () => {
       },
     );
     expect(setSubmitting).toHaveBeenCalledWith(false);
+    consoleErrorSpy.mockRestore();
   });
 
   it("should call onSuccess callback after successful submission", async () => {
@@ -274,6 +278,9 @@ describe("useAddTransactionForm", () => {
   });
 
   it("should not call onSuccess callback when submission fails", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
     const onSuccess = vi.fn();
     vi.spyOn(transactions, "createTransaction").mockRejectedValue(
       new Error("API Error"),
@@ -293,5 +300,6 @@ describe("useAddTransactionForm", () => {
     });
 
     expect(onSuccess).not.toHaveBeenCalled();
+    consoleErrorSpy.mockRestore();
   });
 });

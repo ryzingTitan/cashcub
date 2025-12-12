@@ -32,17 +32,19 @@ export default function AddTransactionDialog({
   budgetItemId,
 }: AddTransactionDialogProps) {
   const params = useParams();
-  const { data } = useSWR(`/budgets/${params.slug}`, getBudgetSummary);
+  const { data } = useSWR(`/budgets/${params.budgetId}`, getBudgetSummary);
 
-  const { formik, transactionDate, setTransactionDate } =
-    useAddTransactionForm(onClose, budgetItemId);
+  const { formik, transactionDate, setTransactionDate } = useAddTransactionForm(
+    onClose,
+    budgetItemId,
+  );
 
   // Reset the budget item ID when the dialog opens with a pre-selected item
   useEffect(() => {
     if (open && budgetItemId) {
       formik.setFieldValue("budgetItemId", budgetItemId);
     }
-  }, [open, budgetItemId]);
+  }, [open, budgetItemId, formik]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
