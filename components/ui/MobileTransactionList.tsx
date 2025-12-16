@@ -81,7 +81,7 @@ const MobileTransactionCard = ({
               onChange={(newValue) =>
                 handleLocalUpdate(
                   "date",
-                  newValue ? newValue.format("YYYY-MM-DD") : editValues.date,
+                  newValue ? newValue.toISOString() : editValues.date,
                 )
               }
               slotProps={{
