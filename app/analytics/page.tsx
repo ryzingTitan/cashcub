@@ -1,6 +1,6 @@
 "use client";
 
-import { Skeleton, Stack, Box } from "@mui/material";
+import { Stack, Box, Fade } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -26,49 +26,45 @@ export default function Analytics() {
   }
 
   return (
-    <>
-      {isLoading ? (
-        <Stack spacing={2} alignItems={"center"} sx={{ m: 2, width: "100%" }}>
-          {/* Date picker skeleton */}
-          <Skeleton
-            variant="rectangular"
-            width={{ xs: "90%", md: "75%" }}
-            height={40}
-            data-testid="skeleton"
-          />
+    <Stack spacing={2} alignItems="center" sx={{ m: 2 }}>
+      {/* DatePickers always visible - not dependent on data */}
+      <DatePickers
+        startDate={startDate}
+        endDate={endDate}
+        onStartDateChange={setStartDate}
+        onEndDateChange={setEndDate}
+      />
 
-          {/* CashFlowGraph skeleton */}
-          <Box sx={{ width: { xs: "90%", md: "75%" } }}>
-            <LineChartSkeleton height={300} lineCount={2} testId="skeleton" />
-          </Box>
+      {/* Each chart manages its own loading state with fade transition */}
+      <Fade in={!isLoading} timeout={300}>
+        <Box sx={{ width: { xs: "90%", md: "75%" } }}>
+          {isLoading ? (
+            <LineChartSkeleton height={300} lineCount={2} />
+          ) : (
+            <CashFlowGraph budgets={data} loading={false} />
+          )}
+        </Box>
+      </Fade>
 
-          {/* BudgetItemGraph skeleton */}
-          <Box sx={{ width: { xs: "90%", md: "75%" } }}>
-            <BarChartSkeleton height={300} barCount={6} testId="skeleton" />
-          </Box>
+      <Fade in={!isLoading} timeout={400}>
+        <Box sx={{ width: { xs: "90%", md: "75%" } }}>
+          {isLoading ? (
+            <BarChartSkeleton height={300} barCount={6} />
+          ) : (
+            <BudgetItemGraph budgets={data} loading={false} />
+          )}
+        </Box>
+      </Fade>
 
-          {/* CategoryGraph skeleton */}
-          <Box sx={{ width: { xs: "90%", md: "75%" } }}>
-            <PieChartSkeleton
-              height={300}
-              legendItemCount={5}
-              testId="skeleton"
-            />
-          </Box>
-        </Stack>
-      ) : (
-        <>
-          <DatePickers
-            startDate={startDate}
-            endDate={endDate}
-            onStartDateChange={setStartDate}
-            onEndDateChange={setEndDate}
-          />
-          <CashFlowGraph budgets={data} loading={isLoading} />
-          <BudgetItemGraph budgets={data} loading={isLoading} />
-          <CategoryGraph budgets={data} />
-        </>
-      )}
-    </>
+      <Fade in={!isLoading} timeout={500}>
+        <Box sx={{ width: { xs: "90%", md: "75%" } }}>
+          {isLoading ? (
+            <PieChartSkeleton height={300} legendItemCount={5} />
+          ) : (
+            <CategoryGraph budgets={data} />
+          )}
+        </Box>
+      </Fade>
+    </Stack>
   );
 }

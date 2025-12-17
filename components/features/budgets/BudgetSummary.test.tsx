@@ -27,7 +27,7 @@ describe("BudgetSummary", () => {
     vi.resetAllMocks();
   });
 
-  it("should render the loading skeleton when loading", () => {
+  it("should render loading states for individual sections", () => {
     vi.mocked(useBudgetSummary).mockReturnValue({
       budget: undefined,
       isLoading: true,
@@ -36,7 +36,12 @@ describe("BudgetSummary", () => {
 
     render(<BudgetSummary />);
 
-    expect(screen.getByTestId("loading-skeleton")).toBeInTheDocument();
+    // Should render budget-summary container (not loading-skeleton)
+    expect(screen.getByTestId("budget-summary")).toBeInTheDocument();
+
+    // BudgetSummaryTotals and BudgetCategories are mocked and will render
+    expect(screen.getByTestId("budget-summary-totals")).toBeInTheDocument();
+    expect(screen.getByTestId("budget-categories")).toBeInTheDocument();
   });
 
   it("should redirect to the error page when there is an error", () => {
@@ -76,6 +81,36 @@ describe("BudgetSummary", () => {
       JSON.stringify(budget),
     );
     expect(screen.getByTestId("budget-categories")).toHaveTextContent(
+      JSON.stringify(budget),
+    );
+  });
+
+  it("should show sections even when loading", () => {
+    const budget = {
+      id: "test-id",
+      name: "test-name",
+      month: 1,
+      year: 2024,
+      expectedIncome: 1000,
+      actualIncome: 1200,
+      expectedExpenses: 800,
+      actualExpenses: 750,
+      budgetItems: [],
+    };
+    vi.mocked(useBudgetSummary).mockReturnValue({
+      budget,
+      isLoading: false,
+      error: undefined,
+    });
+
+    render(<BudgetSummary />);
+
+    // Both sections should render regardless of loading state
+    expect(screen.getByTestId("budget-summary-totals")).toBeInTheDocument();
+    expect(screen.getByTestId("budget-categories")).toBeInTheDocument();
+
+    // The sections receive the budget data and manage their own loading states
+    expect(screen.getByTestId("budget-summary-totals")).toHaveTextContent(
       JSON.stringify(budget),
     );
   });

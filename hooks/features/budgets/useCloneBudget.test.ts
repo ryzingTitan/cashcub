@@ -21,7 +21,7 @@ describe("useCloneBudget", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     vi.mocked(useSnackbar).mockReturnValue({
       closeSnackbar: vi.fn(),
       enqueueSnackbar: mockEnqueueSnackbar,
@@ -36,7 +36,7 @@ describe("useCloneBudget", () => {
 
   it("should clone a budget successfully", async () => {
     const clonedBudget = { id: "2", month: 10, year: 2023 };
-    
+
     // Mock useSWRMutation to call the onSuccess callback
     vi.mocked(useSWRMutation).mockImplementation((key, fetcher, options) => {
       const trigger = async (arg: any) => {
@@ -46,7 +46,7 @@ describe("useCloneBudget", () => {
         }
         return result;
       };
-      
+
       return {
         trigger: mockTrigger.mockImplementation(trigger),
         isMutating: false,
@@ -55,7 +55,7 @@ describe("useCloneBudget", () => {
         reset: vi.fn(),
       };
     });
-    
+
     vi.mocked(cloneBudget).mockResolvedValue(clonedBudget);
 
     const { result } = renderHook(() => useCloneBudget("1"));
@@ -74,7 +74,7 @@ describe("useCloneBudget", () => {
 
   it("should handle errors when cloning a budget", async () => {
     const error = new Error("Failed to clone");
-    
+
     // Mock useSWRMutation to call the onError callback
     vi.mocked(useSWRMutation).mockImplementation((key, fetcher, options) => {
       const trigger = async (arg: any) => {
@@ -87,7 +87,7 @@ describe("useCloneBudget", () => {
           throw err;
         }
       };
-      
+
       return {
         trigger: mockTrigger.mockImplementation(trigger),
         isMutating: false,
@@ -96,7 +96,7 @@ describe("useCloneBudget", () => {
         reset: vi.fn(),
       };
     });
-    
+
     vi.mocked(cloneBudget).mockRejectedValue(error);
 
     const { result } = renderHook(() => useCloneBudget("1"));

@@ -102,7 +102,9 @@ function EditView({ formik, handleCancel }: EditViewProps) {
             <IconButton
               onClick={() => formik.handleSubmit()}
               disabled={formik.isSubmitting}
-              aria-label={formik.isSubmitting ? "Saving..." : "Save Budget Item"}
+              aria-label={
+                formik.isSubmitting ? "Saving..." : "Save Budget Item"
+              }
             >
               {formik.isSubmitting ? (
                 <CircularProgress size={24} />

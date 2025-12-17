@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -223,9 +223,26 @@ export default function MobileTransactionList({
   budgetItemId,
 }: MobileTransactionListProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(20);
 
   const handleOpenDialog = () => setIsDialogOpen(true);
   const handleCloseDialog = () => setIsDialogOpen(false);
+
+  // Sort transactions once and memoize
+  const sortedRows = useMemo(() => {
+    if (!rows) return [];
+    return [...rows]
+      .filter((transaction) => transaction.id !== null)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [rows]);
+
+  // Only show subset of transactions
+  const visibleRows = sortedRows.slice(0, visibleCount);
+  const hasMore = visibleCount < sortedRows.length;
+
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => prev + 20);
+  };
 
   return (
     <Box sx={{ pt: 2 }}>
@@ -249,14 +266,10 @@ export default function MobileTransactionList({
             />
           ))}
         </Stack>
-      ) : rows && rows.length > 0 ? (
-        <Stack spacing={2}>
-          {[...rows]
-            .filter((transaction) => transaction.id !== null)
-            .sort(
-              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-            )
-            .map((transaction) => (
+      ) : visibleRows.length > 0 ? (
+        <>
+          <Stack spacing={2}>
+            {visibleRows.map((transaction) => (
               <MobileTransactionCard
                 key={transaction.id}
                 transaction={transaction}
@@ -270,7 +283,16 @@ export default function MobileTransactionList({
                 }
               />
             ))}
-        </Stack>
+          </Stack>
+
+          {hasMore && (
+            <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
+              <Button onClick={handleLoadMore} variant="outlined">
+                Load More ({sortedRows.length - visibleCount} remaining)
+              </Button>
+            </Box>
+          )}
+        </>
       ) : (
         <Typography variant="body2" color="text.secondary" align="center">
           No transactions found
