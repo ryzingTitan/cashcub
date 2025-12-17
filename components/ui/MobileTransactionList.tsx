@@ -14,7 +14,6 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -24,6 +23,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { formatToCurrency } from "@/lib/utils";
 import AddTransactionDialog from "./AddTransactionDialog";
+import { TransactionCardSkeleton } from "@/components/ui/skeletons";
 
 export interface TransactionRow {
   id: string | number | null;
@@ -240,9 +240,15 @@ export default function MobileTransactionList({
         </Button>
       </Box>
       {isLoading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-          <CircularProgress />
-        </Box>
+        <Stack spacing={2} data-testid="transaction-list-skeleton">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <TransactionCardSkeleton
+              key={i}
+              showNotes={i % 3 === 0}
+              testId={`transaction-skeleton-${i}`}
+            />
+          ))}
+        </Stack>
       ) : rows && rows.length > 0 ? (
         <Stack spacing={2}>
           {[...rows]

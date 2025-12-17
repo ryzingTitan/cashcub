@@ -6,8 +6,8 @@ import { formatToCurrency } from "@/lib/utils";
 import Typography from "@mui/material/Typography";
 import { useBudgetItemGraph } from "@/hooks/features/budgets/useBudgetItemGraph";
 import { memo } from "react";
-import Skeleton from "@mui/material/Skeleton";
 import Box from "@mui/material/Box";
+import { BarChartSkeleton } from "@/components/ui/skeletons";
 
 interface BudgetItemGraphProps {
   budgets?: BudgetSummary[] | undefined;
@@ -19,10 +19,10 @@ function BudgetItemGraph({ budgets, loading }: BudgetItemGraphProps) {
 
   if (loading) {
     return (
-      <Skeleton
-        variant="rectangular"
+      <BarChartSkeleton
         height={300}
-        data-testid="budget-item-graph-skeleton"
+        barCount={5}
+        testId="budget-item-graph-skeleton"
       />
     );
   }

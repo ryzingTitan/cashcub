@@ -97,7 +97,7 @@ describe("MobileTransactionList", () => {
   it("should show loading state", () => {
     renderComponent({ isLoading: true });
 
-    expect(screen.getByRole("progressbar")).toBeInTheDocument();
+    expect(screen.getByTestId("transaction-list-skeleton")).toBeInTheDocument();
     expect(screen.queryByText("Test Merchant")).not.toBeInTheDocument();
   });
 
