@@ -302,4 +302,46 @@ describe("useAddTransactionForm", () => {
     expect(onSuccess).not.toHaveBeenCalled();
     consoleErrorSpy.mockRestore();
   });
+
+  it("should set budgetItemId when initialBudgetItemId is provided", () => {
+    const setFieldValue = vi.fn();
+    (useFormik as MockedFunction<typeof useFormik>).mockImplementation(((
+      options: FormikConfig<TransactionFormValues>,
+    ) => {
+      onSubmit = options.onSubmit as unknown as typeof onSubmit;
+      return {
+        resetForm,
+        values: {
+          amount: "",
+          transactionType: "",
+          merchant: "",
+          notes: "",
+          budgetItemId: options.initialValues.budgetItemId || "",
+        },
+        handleSubmit: vi.fn(),
+        handleChange: vi.fn(),
+        handleBlur: vi.fn(),
+        touched: {},
+        errors: {},
+        isSubmitting: false,
+        isValid: true,
+        dirty: false,
+        setFieldValue,
+        setSubmitting: vi.fn(),
+        initialValues: options.initialValues,
+        initialErrors: {},
+        initialTouched: {},
+        submitForm: vi.fn(),
+        initialStatus: undefined,
+      } as unknown as FormikProps<TransactionFormValues>;
+    }) as unknown as typeof useFormik);
+
+    renderHook(() => useAddTransactionForm(undefined, "budget-item-123"));
+
+    // Verify setFieldValue was called to sync the budgetItemId
+    expect(setFieldValue).toHaveBeenCalledWith(
+      "budgetItemId",
+      "budget-item-123",
+    );
+  });
 });
