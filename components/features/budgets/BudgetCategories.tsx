@@ -2,7 +2,6 @@ import useSWR from "swr";
 import React from "react";
 import { getAllCategories } from "@/lib/categories";
 import Typography from "@mui/material/Typography";
-import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -12,6 +11,7 @@ import Divider from "@mui/material/Divider";
 import { BudgetItem, BudgetSummary } from "@/types/api";
 import List from "@mui/material/List";
 import BudgetItemSummary from "@/components/features/budgets/BudgetItemSummary";
+import { CategoryCardSkeleton } from "@/components/ui/skeletons";
 
 interface BudgetCategoriesProps {
   budget?: BudgetSummary | undefined;
@@ -39,14 +39,16 @@ export default function BudgetCategories({ budget }: BudgetCategoriesProps) {
       data-testid="budget-categories-list"
     >
       {isLoading ? (
-        <Grid size={{ xs: 12, sm: 12, md: 6 }}>
-          <Skeleton
-            variant="rectangular"
-            width="100%"
-            height={120}
-            data-testid="loading-skeleton"
-          />
-        </Grid>
+        <>
+          {[1, 2, 3, 4].map((i) => (
+            <Grid key={i} size={{ xs: 12, sm: 12, md: 6 }}>
+              <CategoryCardSkeleton
+                itemCount={2}
+                testId={`category-skeleton-${i}`}
+              />
+            </Grid>
+          ))}
+        </>
       ) : (
         data?.map((item) => {
           const itemsForCategory = budgetItemsByCategoryId.get(item.id) || [];

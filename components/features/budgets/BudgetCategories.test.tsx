@@ -76,7 +76,7 @@ describe("BudgetCategories", () => {
         <BudgetCategories budget={mockBudget} />
       </SWRConfig>,
     );
-    expect(screen.getByTestId("loading-skeleton")).toBeInTheDocument();
+    expect(screen.getByTestId("category-skeleton-1")).toBeInTheDocument();
   });
 
   it("should render categories and budget items on successful data fetch", async () => {
