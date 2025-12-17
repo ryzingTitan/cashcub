@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Tooltip from "@mui/material/Tooltip";
@@ -66,7 +66,7 @@ interface DesktopTransactionGridProps {
   onAddNew: () => void;
 }
 
-export default function DesktopTransactionGrid({
+function DesktopTransactionGrid({
   rows,
   isLoading,
   rowModesModel,
@@ -223,3 +223,5 @@ export default function DesktopTransactionGrid({
     />
   );
 }
+
+export default memo(DesktopTransactionGrid);
