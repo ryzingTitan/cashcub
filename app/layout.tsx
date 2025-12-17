@@ -33,7 +33,7 @@ export default function RootLayout({
             <CssBaseline />
             <SWRConfig
               value={{
-                refreshInterval: 3000,
+                refreshInterval: 30000,
                 revalidateOnFocus: true,
               }}
             >
