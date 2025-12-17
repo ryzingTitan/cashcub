@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import React from "react";
+import React, { memo } from "react";
 import { getAllCategories } from "@/lib/categories";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
@@ -17,7 +17,7 @@ interface BudgetCategoriesProps {
   budget?: BudgetSummary | undefined;
 }
 
-export default function BudgetCategories({ budget }: BudgetCategoriesProps) {
+function BudgetCategories({ budget }: BudgetCategoriesProps) {
   const { data, isLoading } = useSWR(`/categories`, getAllCategories);
   const budgetItemsByCategoryId = React.useMemo(() => {
     if (!budget?.budgetItems) {
@@ -89,3 +89,5 @@ export default function BudgetCategories({ budget }: BudgetCategoriesProps) {
     </Grid>
   );
 }
+
+export default memo(BudgetCategories);

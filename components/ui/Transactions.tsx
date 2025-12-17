@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useToggle } from "usehooks-ts";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import CloseIcon from "@mui/icons-material/Close";
@@ -51,50 +51,61 @@ export default function Transactions({
   } = useTransactions(budgetId, budgetItemId);
 
   // Mobile handlers
-  const handleMobileEdit = (id: string | number) => {
-    setEditingMobileId(id);
-    const transaction = rows?.find((row) => row.id === id);
-    if (transaction) {
-      setMobileEditData(transaction);
-    }
-  };
+  const handleMobileEdit = useCallback(
+    (id: string | number) => {
+      setEditingMobileId(id);
+      const transaction = rows?.find((row) => row.id === id);
+      if (transaction) {
+        setMobileEditData(transaction);
+      }
+    },
+    [rows],
+  );
 
-  const handleMobileSave = async (id: string | number) => {
-    const updatedRow = {
-      ...rows?.find((row) => row.id === id),
-      ...mobileEditData,
-    };
-    await processRowUpdate(
-      updatedRow as TransactionRow,
-      rows?.find((row) => row.id === id) as TransactionRow,
-    );
+  const handleMobileSave = useCallback(
+    async (id: string | number) => {
+      const updatedRow = {
+        ...rows?.find((row) => row.id === id),
+        ...mobileEditData,
+      };
+      await processRowUpdate(
+        updatedRow as TransactionRow,
+        rows?.find((row) => row.id === id) as TransactionRow,
+      );
+      setEditingMobileId(null);
+      setMobileEditData({});
+    },
+    [rows, mobileEditData, processRowUpdate],
+  );
+
+  const handleMobileCancel = useCallback(() => {
     setEditingMobileId(null);
     setMobileEditData({});
-  };
+  }, []);
 
-  const handleMobileCancel = () => {
-    setEditingMobileId(null);
-    setMobileEditData({});
-  };
+  const handleMobileUpdate = useCallback(
+    (id: string | number, field: string, value: string | number) => {
+      setMobileEditData((prev) => ({ ...prev, [field]: value }));
+    },
+    [],
+  );
 
-  const handleMobileUpdate = (
-    id: string | number,
-    field: string,
-    value: string | number,
-  ) => {
-    setMobileEditData((prev) => ({ ...prev, [field]: value }));
-  };
+  const handleMobileDelete = useCallback(
+    (id: string | number) => {
+      handleDeleteClick(id)();
+    },
+    [handleDeleteClick],
+  );
 
-  const handleMobileDelete = (id: string | number) => {
-    handleDeleteClick(id)();
-  };
-
-  const handleProcessRowUpdate = async (
-    newRow: TransactionRow,
-    oldRow: TransactionRow,
-  ): Promise<TransactionRow> => {
-    return processRowUpdate(newRow, oldRow) as Promise<TransactionRow>;
-  };
+  const handleProcessRowUpdate = useCallback(
+    async (
+      newRow: TransactionRow,
+      oldRow: TransactionRow,
+    ): Promise<TransactionRow> => {
+      return processRowUpdate(newRow, oldRow) as Promise<TransactionRow>;
+    },
+    [processRowUpdate],
+  );
 
   return (
     <>

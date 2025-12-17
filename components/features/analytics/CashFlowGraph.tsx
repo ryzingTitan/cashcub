@@ -5,7 +5,7 @@ import { LineChart } from "@mui/x-charts";
 import { formatToCurrency } from "@/lib/utils";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 
 interface CashFlowGraphProps {
   budgets?: BudgetSummary[] | undefined;
@@ -19,10 +19,7 @@ type CashFlowDatasetRow = {
   actualExpenses: number;
 } & Record<string, number | string>;
 
-export default function CashFlowGraph({
-  budgets,
-  loading,
-}: CashFlowGraphProps) {
+function CashFlowGraph({ budgets, loading }: CashFlowGraphProps) {
   const chartData: CashFlowDatasetRow[] = useMemo(() => {
     // Sort the budgets by year and then by month
     const sortedBudgets = budgets
@@ -105,3 +102,5 @@ export default function CashFlowGraph({
     </>
   );
 }
+
+export default memo(CashFlowGraph);

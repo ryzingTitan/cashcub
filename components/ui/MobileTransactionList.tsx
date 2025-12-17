@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -44,156 +44,158 @@ interface MobileTransactionCardProps {
   onUpdate: (field: string, value: string | number) => void;
 }
 
-const MobileTransactionCard = ({
-  transaction,
-  onEdit,
-  onSave,
-  onCancel,
-  onDelete,
-  isEditing,
-  onUpdate,
-}: MobileTransactionCardProps) => {
-  const [editValues, setEditValues] = useState({
-    date: transaction.date,
-    amount: transaction.amount.toString(),
-    transactionType: transaction.transactionType,
-    merchant: transaction.merchant ?? "",
-    notes: transaction.notes ?? "",
-  });
+const MobileTransactionCard = memo(
+  ({
+    transaction,
+    onEdit,
+    onSave,
+    onCancel,
+    onDelete,
+    isEditing,
+    onUpdate,
+  }: MobileTransactionCardProps) => {
+    const [editValues, setEditValues] = useState({
+      date: transaction.date,
+      amount: transaction.amount.toString(),
+      transactionType: transaction.transactionType,
+      merchant: transaction.merchant ?? "",
+      notes: transaction.notes ?? "",
+    });
 
-  const handleLocalUpdate = (field: string, value: string) => {
-    setEditValues((prev) => ({ ...prev, [field]: value }));
-    onUpdate(field, field === "amount" ? parseFloat(value) || 0 : value);
-  };
+    const handleLocalUpdate = (field: string, value: string) => {
+      setEditValues((prev) => ({ ...prev, [field]: value }));
+      onUpdate(field, field === "amount" ? parseFloat(value) || 0 : value);
+    };
 
-  const handleSave = () => {
-    onSave();
-  };
+    const handleSave = () => {
+      onSave();
+    };
 
-  if (isEditing) {
-    return (
-      <Card sx={{ mb: 2, border: 2, borderColor: "primary.main" }}>
-        <CardContent>
-          <Stack spacing={2}>
-            <DatePicker
-              label="Date"
-              value={dayjs(editValues.date)}
-              onChange={(newValue) =>
-                handleLocalUpdate(
-                  "date",
-                  newValue ? newValue.toISOString() : editValues.date,
-                )
-              }
-              slotProps={{
-                textField: { size: "small", fullWidth: true },
-              }}
-            />
-            <TextField
-              label="Amount"
-              type="number"
-              fullWidth
-              size="small"
-              value={editValues.amount}
-              onChange={(e) => handleLocalUpdate("amount", e.target.value)}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">$</InputAdornment>
-                  ),
-                },
-              }}
-            />
-            <FormControl fullWidth size="small">
-              <Select
-                value={editValues.transactionType}
-                onChange={(e) =>
-                  handleLocalUpdate("transactionType", e.target.value)
+    if (isEditing) {
+      return (
+        <Card sx={{ mb: 2, border: 2, borderColor: "primary.main" }}>
+          <CardContent>
+            <Stack spacing={2}>
+              <DatePicker
+                label="Date"
+                value={dayjs(editValues.date)}
+                onChange={(newValue) =>
+                  handleLocalUpdate(
+                    "date",
+                    newValue ? newValue.toISOString() : editValues.date,
+                  )
                 }
-              >
-                <MenuItem value="EXPENSE">EXPENSE</MenuItem>
-                <MenuItem value="INCOME">INCOME</MenuItem>
-              </Select>
-            </FormControl>
-            <TextField
-              label="Merchant"
-              fullWidth
-              size="small"
-              value={editValues.merchant}
-              onChange={(e) => handleLocalUpdate("merchant", e.target.value)}
-            />
-            <TextField
-              label="Notes"
-              fullWidth
-              size="small"
-              multiline
-              rows={2}
-              value={editValues.notes}
-              onChange={(e) => handleLocalUpdate("notes", e.target.value)}
-            />
-            <Stack direction="row" spacing={1} justifyContent="flex-end">
-              <Button size="small" onClick={onCancel}>
-                Cancel
-              </Button>
-              <Button size="small" onClick={handleSave}>
-                Save
-              </Button>
+                slotProps={{
+                  textField: { size: "small", fullWidth: true },
+                }}
+              />
+              <TextField
+                label="Amount"
+                type="number"
+                fullWidth
+                size="small"
+                value={editValues.amount}
+                onChange={(e) => handleLocalUpdate("amount", e.target.value)}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">$</InputAdornment>
+                    ),
+                  },
+                }}
+              />
+              <FormControl fullWidth size="small">
+                <Select
+                  value={editValues.transactionType}
+                  onChange={(e) =>
+                    handleLocalUpdate("transactionType", e.target.value)
+                  }
+                >
+                  <MenuItem value="EXPENSE">EXPENSE</MenuItem>
+                  <MenuItem value="INCOME">INCOME</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField
+                label="Merchant"
+                fullWidth
+                size="small"
+                value={editValues.merchant}
+                onChange={(e) => handleLocalUpdate("merchant", e.target.value)}
+              />
+              <TextField
+                label="Notes"
+                fullWidth
+                size="small"
+                multiline
+                rows={2}
+                value={editValues.notes}
+                onChange={(e) => handleLocalUpdate("notes", e.target.value)}
+              />
+              <Stack direction="row" spacing={1} justifyContent="flex-end">
+                <Button size="small" onClick={onCancel}>
+                  Cancel
+                </Button>
+                <Button size="small" onClick={handleSave}>
+                  Save
+                </Button>
+              </Stack>
+            </Stack>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    return (
+      <Card sx={{ mb: 2 }}>
+        <CardContent>
+          <Stack spacing={1}>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography variant="h6" component="div">
+                {formatToCurrency(transaction.amount)}
+              </Typography>
+              <Chip
+                label={transaction.transactionType}
+                color={
+                  transaction.transactionType === "INCOME" ? "success" : "error"
+                }
+                size="small"
+              />
+            </Stack>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography variant="body2" color="text.secondary">
+                {dayjs(transaction.date).format("MMM DD, YYYY")}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {transaction.merchant ?? ""}
+              </Typography>
+            </Stack>
+            {transaction.notes && (
+              <Typography variant="body2" color="text.secondary">
+                {transaction.notes}
+              </Typography>
+            )}
+            <Stack direction="row" spacing={1} justifyContent="flex-end" mt={1}>
+              <IconButton size="small" onClick={onEdit}>
+                <EditIcon fontSize="small" />
+              </IconButton>
+              <IconButton size="small" onClick={onDelete}>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
             </Stack>
           </Stack>
         </CardContent>
       </Card>
     );
-  }
-
-  return (
-    <Card sx={{ mb: 2 }}>
-      <CardContent>
-        <Stack spacing={1}>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography variant="h6" component="div">
-              {formatToCurrency(transaction.amount)}
-            </Typography>
-            <Chip
-              label={transaction.transactionType}
-              color={
-                transaction.transactionType === "INCOME" ? "success" : "error"
-              }
-              size="small"
-            />
-          </Stack>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography variant="body2" color="text.secondary">
-              {dayjs(transaction.date).format("MMM DD, YYYY")}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {transaction.merchant ?? ""}
-            </Typography>
-          </Stack>
-          {transaction.notes && (
-            <Typography variant="body2" color="text.secondary">
-              {transaction.notes}
-            </Typography>
-          )}
-          <Stack direction="row" spacing={1} justifyContent="flex-end" mt={1}>
-            <IconButton size="small" onClick={onEdit}>
-              <EditIcon fontSize="small" />
-            </IconButton>
-            <IconButton size="small" onClick={onDelete}>
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </Stack>
-        </Stack>
-      </CardContent>
-    </Card>
-  );
-};
+  },
+);
 
 interface MobileTransactionListProps {
   rows: TransactionRow[] | undefined;
@@ -211,7 +213,7 @@ interface MobileTransactionListProps {
   budgetItemId?: string;
 }
 
-export default function MobileTransactionList({
+function MobileTransactionList({
   rows,
   isLoading,
   editingId,
@@ -306,3 +308,5 @@ export default function MobileTransactionList({
     </Box>
   );
 }
+
+export default memo(MobileTransactionList);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, memo } from "react";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { PieChart } from "@mui/x-charts";
@@ -13,7 +13,7 @@ interface CategoryGraphProps {
   budgets?: BudgetSummary[];
 }
 
-export default function CategoryGraph({ budgets }: CategoryGraphProps) {
+function CategoryGraph({ budgets }: CategoryGraphProps) {
   const router = useRouter();
   const {
     data: categories,
@@ -75,3 +75,5 @@ export default function CategoryGraph({ budgets }: CategoryGraphProps) {
     </>
   );
 }
+
+export default memo(CategoryGraph);
