@@ -9,7 +9,7 @@ import { useSnackbar } from "notistack";
 import dayjs, { Dayjs } from "dayjs";
 import { Transaction, TransactionType } from "@/types/api";
 import { createTransaction } from "@/lib/transactions";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const useAddTransactionForm = (
   onSuccess?: () => void,
@@ -65,6 +65,14 @@ export const useAddTransactionForm = (
       }
     },
   });
+
+  // Sync budgetItemId when initialBudgetItemId changes
+  useEffect(() => {
+    if (initialBudgetItemId) {
+      formik.setFieldValue("budgetItemId", initialBudgetItemId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialBudgetItemId]);
 
   return { formik, transactionDate, setTransactionDate };
 };

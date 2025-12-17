@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import Dialog from "@mui/material/Dialog";
 import Box from "@mui/material/Box";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -38,13 +37,6 @@ export default function AddTransactionDialog({
     onClose,
     budgetItemId,
   );
-
-  // Reset the budget item ID when the dialog opens with a pre-selected item
-  useEffect(() => {
-    if (open && budgetItemId) {
-      formik.setFieldValue("budgetItemId", budgetItemId);
-    }
-  }, [open, budgetItemId, formik]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
