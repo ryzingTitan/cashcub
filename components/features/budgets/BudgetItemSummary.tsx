@@ -12,6 +12,7 @@ import TextField from "@mui/material/TextField";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Transactions from "@/components/ui/Transactions";
 import InputAdornment from "@mui/material/InputAdornment";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useBudgetItemSummary } from "@/hooks/features/budgets/useBudgetItemSummary";
 import { FormikProps } from "formik";
 
@@ -96,15 +97,31 @@ function EditView({ formik, handleCancel }: EditViewProps) {
           width: { xs: "100%", sm: "auto" },
         }}
       >
-        <Tooltip title="Save Budget Item">
-          <IconButton onClick={() => formik.handleSubmit()}>
-            <SaveIcon />
-          </IconButton>
+        <Tooltip title={formik.isSubmitting ? "Saving..." : "Save Budget Item"}>
+          <span>
+            <IconButton
+              onClick={() => formik.handleSubmit()}
+              disabled={formik.isSubmitting}
+              aria-label={formik.isSubmitting ? "Saving..." : "Save Budget Item"}
+            >
+              {formik.isSubmitting ? (
+                <CircularProgress size={24} />
+              ) : (
+                <SaveIcon />
+              )}
+            </IconButton>
+          </span>
         </Tooltip>
         <Tooltip title="Cancel Edit">
-          <IconButton onClick={handleCancel}>
-            <CancelIcon />
-          </IconButton>
+          <span>
+            <IconButton
+              onClick={handleCancel}
+              disabled={formik.isSubmitting}
+              aria-label="Cancel Edit"
+            >
+              <CancelIcon />
+            </IconButton>
+          </span>
         </Tooltip>
       </Stack>
     </>
@@ -178,12 +195,12 @@ function ReadOnlyView({
           budgetItemId={budgetItem.id!}
         />
         <Tooltip title="Edit Budget Item">
-          <IconButton onClick={onEdit}>
+          <IconButton onClick={onEdit} aria-label="Edit Budget Item">
             <EditIcon />
           </IconButton>
         </Tooltip>
         <Tooltip title="Delete Budget Item">
-          <IconButton onClick={onDelete}>
+          <IconButton onClick={onDelete} aria-label="Delete Budget Item">
             <DeleteIcon />
           </IconButton>
         </Tooltip>

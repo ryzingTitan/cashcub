@@ -67,9 +67,15 @@ export default function AddBudgetItemModal({
             </Stack>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button type={"submit"} disabled={!formik.isValid} autoFocus>
-              Save
+            <Button onClick={handleClose} disabled={formik.isSubmitting}>
+              Cancel
+            </Button>
+            <Button
+              type={"submit"}
+              disabled={!formik.isValid || formik.isSubmitting}
+              autoFocus
+            >
+              {formik.isSubmitting ? "Saving..." : "Save"}
             </Button>
           </DialogActions>
         </Box>

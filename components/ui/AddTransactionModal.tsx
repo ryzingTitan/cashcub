@@ -28,5 +28,6 @@ export default function AddTransactionModal() {
       </Tooltip>
       <AddTransactionDialog open={isOpen} onClose={handleClose} />
     </>
+      
   );
 }

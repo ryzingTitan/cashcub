@@ -18,17 +18,23 @@ describe("PieChartSkeleton", () => {
   });
 
   it("should render correct number of legend items when legendItemCount prop changes", () => {
-    const { container: container1 } = render(<PieChartSkeleton legendItemCount={3} />);
+    const { container: container1 } = render(
+      <PieChartSkeleton legendItemCount={3} />,
+    );
     const skeletons1 = container1.querySelectorAll(".MuiSkeleton-root");
     // Expected: title + circular + (3 items × 2) = 8 skeletons
     expect(skeletons1.length).toBe(8);
 
-    const { container: container2 } = render(<PieChartSkeleton legendItemCount={7} />);
+    const { container: container2 } = render(
+      <PieChartSkeleton legendItemCount={7} />,
+    );
     const skeletons2 = container2.querySelectorAll(".MuiSkeleton-root");
     // Expected: title + circular + (7 items × 2) = 16 skeletons
     expect(skeletons2.length).toBe(16);
 
-    const { container: container3 } = render(<PieChartSkeleton legendItemCount={4} />);
+    const { container: container3 } = render(
+      <PieChartSkeleton legendItemCount={4} />,
+    );
     const skeletons3 = container3.querySelectorAll(".MuiSkeleton-root");
     // Expected: title + circular + (4 items × 2) = 10 skeletons
     expect(skeletons3.length).toBe(10);
@@ -75,12 +81,15 @@ describe("PieChartSkeleton", () => {
 
     // Verify there is exactly 1 circular skeleton
     const circularSkeletons = Array.from(skeletons).filter((skeleton) =>
-      skeleton.classList.contains("MuiSkeleton-circular")
+      skeleton.classList.contains("MuiSkeleton-circular"),
     );
     expect(circularSkeletons.length).toBe(1);
 
     // Verify circular skeleton has correct size (200px diameter)
-    expect(circularSkeletons[0]).toHaveStyle({ width: "200px", height: "200px" });
+    expect(circularSkeletons[0]).toHaveStyle({
+      width: "200px",
+      height: "200px",
+    });
   });
 
   it("should render legend items with correct structure", () => {
@@ -96,7 +105,7 @@ describe("PieChartSkeleton", () => {
     // Verify rectangular skeletons (excluding title) for legend items
     const rectangularSkeletons = Array.from(skeletons).filter(
       (skeleton, index) =>
-        index > 0 && skeleton.classList.contains("MuiSkeleton-rectangular")
+        index > 0 && skeleton.classList.contains("MuiSkeleton-rectangular"),
     );
 
     expect(rectangularSkeletons.length).toBeGreaterThan(0);
