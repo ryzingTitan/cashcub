@@ -23,6 +23,7 @@ export default function CloneBudgetModal({
     setBudgetMonthAndYear,
     handleSave,
     handleClose,
+    isMutating,
   } = useCloneBudget(budgetId);
 
   return (
@@ -45,9 +46,11 @@ export default function CloneBudgetModal({
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSave} autoFocus>
-            Save
+          <Button onClick={handleClose} disabled={isMutating}>
+            Cancel
+          </Button>
+          <Button onClick={handleSave} disabled={isMutating} autoFocus>
+            {isMutating ? "Saving..." : "Save"}
           </Button>
         </DialogActions>
       </Dialog>
