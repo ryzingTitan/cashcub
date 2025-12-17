@@ -388,4 +388,124 @@ describe("MobileTransactionList", () => {
       "2024",
     );
   });
+
+  describe("Pagination", () => {
+    it("should show all transactions when less than 20", () => {
+      renderComponent();
+
+      expect(screen.getByText("Test Merchant")).toBeInTheDocument();
+      expect(screen.getByText("Test Income")).toBeInTheDocument();
+      expect(screen.getByText("Earlier Transaction")).toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: /load more/i }),
+      ).not.toBeInTheDocument();
+    });
+
+    it("should show only first 20 transactions when more than 20 exist", () => {
+      // Create 25 transactions
+      const manyTransactions: TransactionRow[] = Array.from(
+        { length: 25 },
+        (_, i) => ({
+          id: `${i + 1}`,
+          date: new Date(2024, 6, i + 1).toISOString(),
+          amount: 100 + i,
+          transactionType: i % 2 === 0 ? "EXPENSE" : "INCOME",
+          merchant: `Merchant ${i + 1}`,
+          notes: `Note ${i + 1}`,
+        }),
+      );
+
+      renderComponent({ rows: manyTransactions });
+
+      // Should show first 20
+      expect(screen.getByText("Merchant 25")).toBeInTheDocument(); // Most recent
+      expect(screen.getByText("Merchant 6")).toBeInTheDocument(); // 20th in sorted order
+
+      // Should not show 21st transaction
+      expect(screen.queryByText("Merchant 5")).not.toBeInTheDocument();
+
+      // Load More button should be visible
+      expect(
+        screen.getByRole("button", { name: /load more/i }),
+      ).toBeInTheDocument();
+    });
+
+    it("should show correct count in Load More button", () => {
+      const manyTransactions: TransactionRow[] = Array.from(
+        { length: 25 },
+        (_, i) => ({
+          id: `${i + 1}`,
+          date: new Date(2024, 6, i + 1).toISOString(),
+          amount: 100 + i,
+          transactionType: i % 2 === 0 ? "EXPENSE" : "INCOME",
+          merchant: `Merchant ${i + 1}`,
+          notes: `Note ${i + 1}`,
+        }),
+      );
+
+      renderComponent({ rows: manyTransactions });
+
+      const loadMoreButton = screen.getByRole("button", { name: /load more/i });
+      expect(loadMoreButton).toHaveTextContent("Load More (5 remaining)");
+    });
+
+    it("should load more transactions when Load More button is clicked", async () => {
+      const user = userEvent.setup();
+      const manyTransactions: TransactionRow[] = Array.from(
+        { length: 25 },
+        (_, i) => ({
+          id: `${i + 1}`,
+          date: new Date(2024, 6, i + 1).toISOString(),
+          amount: 100 + i,
+          transactionType: i % 2 === 0 ? "EXPENSE" : "INCOME",
+          merchant: `Merchant ${i + 1}`,
+          notes: `Note ${i + 1}`,
+        }),
+      );
+
+      renderComponent({ rows: manyTransactions });
+
+      // Initially, Merchant 5 should not be visible
+      expect(screen.queryByText("Merchant 5")).not.toBeInTheDocument();
+
+      const loadMoreButton = screen.getByRole("button", { name: /load more/i });
+      await user.click(loadMoreButton);
+
+      // After clicking, all transactions should be visible
+      expect(screen.getByText("Merchant 5")).toBeInTheDocument();
+      expect(screen.getByText("Merchant 1")).toBeInTheDocument();
+    });
+
+    it("should hide Load More button when all transactions are visible", async () => {
+      const user = userEvent.setup();
+      const manyTransactions: TransactionRow[] = Array.from(
+        { length: 25 },
+        (_, i) => ({
+          id: `${i + 1}`,
+          date: new Date(2024, 6, i + 1).toISOString(),
+          amount: 100 + i,
+          transactionType: i % 2 === 0 ? "EXPENSE" : "INCOME",
+          merchant: `Merchant ${i + 1}`,
+          notes: `Note ${i + 1}`,
+        }),
+      );
+
+      renderComponent({ rows: manyTransactions });
+
+      const loadMoreButton = screen.getByRole("button", {
+        name: /load more/i,
+      });
+      await user.click(loadMoreButton);
+
+      // Wait for button to disappear with explicit timeout
+      await waitFor(
+        () => {
+          expect(
+            screen.queryByRole("button", { name: /load more/i }),
+          ).not.toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
+    }, 10000); // 10 second test timeout
+  });
 });
