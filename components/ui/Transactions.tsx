@@ -13,9 +13,8 @@ import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTransactions } from "@/hooks/ui/useTransactions";
-import MobileTransactionList, {
-  type TransactionRow,
-} from "./MobileTransactionList";
+import MobileTransactionList from "./MobileTransactionList";
+import type { TransactionRow } from "./MobileTransactionCard";
 import DesktopTransactionGrid from "./DesktopTransactionGrid";
 
 interface TransactionsProps {

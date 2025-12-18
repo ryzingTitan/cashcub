@@ -1,6 +1,8 @@
 "use client";
 
-import Autocomplete from "@mui/material/Autocomplete";
+import Autocomplete, {
+  type AutocompleteRenderInputParams,
+} from "@mui/material/Autocomplete";
 import Skeleton from "@mui/material/Skeleton";
 import TextField from "@mui/material/TextField";
 
@@ -34,7 +36,16 @@ export default function BudgetList() {
       loading={isLoading}
       sx={{ width: 300 }}
       getOptionLabel={getOptionLabel}
-      renderInput={(params) => <TextField {...params} label="Budget" />}
+      renderInput={(params: AutocompleteRenderInputParams) => {
+        const { InputProps, ...otherParams } = params;
+        return (
+          <TextField
+            {...otherParams}
+            label="Budget"
+            InputProps={InputProps as any}
+          />
+        );
+      }}
       onChange={handleBudgetChange}
     />
   );

@@ -3,7 +3,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import MobileTransactionList, { TransactionRow } from "./MobileTransactionList";
+import MobileTransactionList from "./MobileTransactionList";
+import { TransactionRow } from "./MobileTransactionCard";
 
 // Mock the AddTransactionDialog component
 vi.mock("./AddTransactionDialog", () => ({
@@ -226,12 +227,8 @@ describe("MobileTransactionList", () => {
   it("should render edit and delete buttons for each transaction", () => {
     renderComponent();
 
-    const editButtons = screen
-      .getAllByRole("button", { name: "" })
-      .filter((button) => button.querySelector('[data-testid="EditIcon"]'));
-    const deleteButtons = screen
-      .getAllByRole("button", { name: "" })
-      .filter((button) => button.querySelector('[data-testid="DeleteIcon"]'));
+    const editButtons = screen.getAllByRole("button", { name: /edit/i });
+    const deleteButtons = screen.getAllByRole("button", { name: /delete/i });
 
     expect(editButtons.length).toBeGreaterThanOrEqual(3);
     expect(deleteButtons.length).toBeGreaterThanOrEqual(3);
@@ -241,9 +238,7 @@ describe("MobileTransactionList", () => {
     const user = userEvent.setup();
     renderComponent();
 
-    const editButtons = screen
-      .getAllByRole("button", { name: "" })
-      .filter((button) => button.querySelector('[data-testid="EditIcon"]'));
+    const editButtons = screen.getAllByRole("button", { name: /edit/i });
 
     await user.click(editButtons[0]);
 
@@ -254,9 +249,7 @@ describe("MobileTransactionList", () => {
     const user = userEvent.setup();
     renderComponent();
 
-    const deleteButtons = screen
-      .getAllByRole("button", { name: "" })
-      .filter((button) => button.querySelector('[data-testid="DeleteIcon"]'));
+    const deleteButtons = screen.getAllByRole("button", { name: /delete/i });
 
     await user.click(deleteButtons[0]);
 
