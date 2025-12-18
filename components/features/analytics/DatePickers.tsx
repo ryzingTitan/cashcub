@@ -22,10 +22,10 @@ export default function DatePickers({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Stack
         data-testid="date-pickers"
-        spacing={2}
-        justifyContent={"center"}
-        direction={"row"}
-        sx={{ m: 2 }}
+        spacing={{ xs: 1, md: 2 }}
+        justifyContent={{ xs: "flex-start", md: "center" }}
+        direction={{ xs: "column", md: "row" }}
+        sx={{ m: { xs: 1, md: 2 } }}
       >
         <DatePicker
           label="Start Date"
@@ -33,7 +33,10 @@ export default function DatePickers({
           format="MM/YYYY"
           value={startDate}
           onChange={onStartDateChange}
-          sx={{ m: 2 }}
+          sx={{
+            m: { xs: 1, md: 2 },
+            width: { xs: "100%", md: "auto" },
+          }}
         />
         <DatePicker
           label="End Date"
@@ -41,7 +44,10 @@ export default function DatePickers({
           format="MM/YYYY"
           value={endDate}
           onChange={onEndDateChange}
-          sx={{ m: 2 }}
+          sx={{
+            m: { xs: 1, md: 2 },
+            width: { xs: "100%", md: "auto" },
+          }}
         />
       </Stack>
     </LocalizationProvider>
