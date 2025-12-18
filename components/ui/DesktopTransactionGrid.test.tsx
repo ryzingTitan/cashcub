@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import userEvent from "@testing-library/user-event";
 import DesktopTransactionGrid from "./DesktopTransactionGrid";
-import { TransactionRow } from "./MobileTransactionList";
+import { TransactionRow } from "./MobileTransactionCard";
 import { GridRowModesModel } from "@mui/x-data-grid";
 
 vi.mock("@mui/x-data-grid", () => ({

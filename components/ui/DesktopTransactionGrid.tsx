@@ -24,7 +24,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
-import type { TransactionRow } from "./MobileTransactionList";
+import type { TransactionRow } from "./MobileTransactionCard";
 
 const AmountEditCell = (props: GridRenderEditCellParams) => {
   const { id, value, field } = props;
