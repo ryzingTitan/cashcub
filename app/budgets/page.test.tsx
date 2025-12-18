@@ -13,6 +13,13 @@ vi.mock("@/lib/budgets", () => ({
   getAllBudgets: vi.fn(),
 }));
 
+vi.mock("@/lib/auth0", () => ({
+  auth0: {
+    getSession: vi.fn(() => Promise.resolve({ user: { sub: "test-user" } })),
+  },
+  loginUrl: "/api/auth/login",
+}));
+
 describe("Budgets page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
