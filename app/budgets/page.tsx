@@ -2,8 +2,15 @@ import { redirect } from "next/navigation";
 import { Box, Typography } from "@mui/material";
 import { getAllBudgets } from "@/lib/budgets";
 import { Budget } from "@/types/api";
+import { auth0, loginUrl } from "@/lib/auth0";
 
 export default async function Budgets() {
+  const session = await auth0.getSession();
+
+  if (!session) {
+    redirect(loginUrl);
+  }
+
   let budgets: Budget[] | null = null;
 
   try {
